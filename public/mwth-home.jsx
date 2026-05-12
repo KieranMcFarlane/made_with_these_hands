@@ -35,7 +35,16 @@ function MastheadMid({ mode = 'editorial' }) {
   );
 }
 
-function Placeholder({ label, h = 400, light = false, style = {} }) {
+function Placeholder({ label, h = 400, light = false, style = {}, src, objectPosition = 'center' }) {
+  if (src) {
+    return (
+      <figure className={`ph ph--image${light ? ' ph--light' : ''}`} style={{ height: h, ...style }}>
+        <img src={src} alt={label} style={{ objectPosition }} />
+        <figcaption className="ph-label">[ {label} ]</figcaption>
+      </figure>
+    );
+  }
+
   return (
     <div className={`ph${light ? ' ph--light' : ''}`} style={{ height: h, ...style }}>
       <span className="ph-label">[ {label} ]</span>
@@ -52,7 +61,12 @@ function HeroA() {
           The hand that<br/>makes, <span className="italic">remembers</span>.
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 56, marginTop: 44, alignItems: 'end' }}>
-          <Placeholder label="Hero portrait — Hugh at the wheel, backlit, grinding a tumbler. 3/4, 35mm, available light." h={520} />
+          <Placeholder
+            label="Hugh's hands engraving a lead-crystal tumbler in the Kilkenny workshop"
+            h={520}
+            src="/images/mwth-hero-glass-engraving.jpg"
+            objectPosition="center"
+          />
           <div>
             <p className="dek" style={{ margin: '0 0 24px' }}>
               A journal of craftspeople, heritage skills, and the quiet
@@ -78,7 +92,12 @@ function HeroA() {
 function HeroB() {
   return (
     <section className="hero-b reveal" data-screen-label="01 Hero">
-      <Placeholder label="Full-bleed cover — hands cradling an engraved lead-crystal tumbler, raking side light" h={640} />
+      <Placeholder
+        label="Full-bleed cover — hands cutting an engraved lead-crystal tumbler, raking side light"
+        h={640}
+        src="/images/mwth-hero-glass-engraving.jpg"
+        objectPosition="center"
+      />
       <div className="wrap center" style={{ padding: '48px 40px 72px' }}>
         <div className="eyebrow" style={{ marginBottom: 18 }}>Field Notes · Vol. I</div>
         <h2 className="hl-serif hl-l" style={{ margin: '0 auto', maxWidth: '18ch' }}>
@@ -172,7 +191,12 @@ function HughStory() {
           <span className="label">Portrait of the Founder</span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56 }}>
-          <Placeholder label="Hugh McNeill — half-lit, workshop, 3/4 portrait, shirt sleeves rolled" h={620} />
+          <Placeholder
+            label="Hugh McNeill — half-lit, workshop, 3/4 portrait, shirt sleeves rolled"
+            h={620}
+            src="/images/mwth-maker-portrait.jpg"
+            objectPosition="center top"
+          />
           <div>
             <div className="smallcaps" style={{ marginBottom: 14 }}>Hugh McNeill · Glass cutter & engraver · Kilkenny</div>
             <h3 className="hl-serif hl-l" style={{ margin: 0 }}>
@@ -251,8 +275,14 @@ function Podcast() {
               </div>
             </div>
           </div>
-          {/* episode list */}
           <div>
+            <Placeholder
+              label="Field recording setup on a craft workshop bench"
+              h={260}
+              src="/images/mwth-podcast-bench.jpg"
+              objectPosition="center"
+              style={{ marginBottom: 22 }}
+            />
             {episodes.map(([n, guest, title, dur], i) => (
               <a key={n} href="#" style={{
                 display: 'grid', gridTemplateColumns: '64px 1fr auto',
@@ -289,7 +319,12 @@ function ArtistOfWeek() {
           <span className="label" style={{ color: 'var(--ink-40)' }}>Artist of the Week</span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, alignItems: 'center' }}>
-          <Placeholder label="Saoirse Doolan at the bench — low light, hedgerow willow drying behind" h={540} />
+          <Placeholder
+            label="Saoirse Doolan's willow basketry — low light, hedgerow willow drying behind"
+            h={540}
+            src="/images/mwth-product-lobster-pot.jpg"
+            objectPosition="center"
+          />
           <div>
             <h3 className="hl-serif hl-l" style={{ color: 'var(--paper)', margin: 0 }}>
               Saoirse <span className="italic">Doolan</span>.

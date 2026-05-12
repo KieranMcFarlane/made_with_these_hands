@@ -26,7 +26,12 @@ function EpisodePage() {
 
         {/* Hero image */}
         <div className="wrap" style={{ paddingBottom: 40 }}>
-          <Placeholder label="Méabh at her bench — bog-oak beams stacked behind, window light from left" h={620} />
+          <Placeholder
+            label="Field recording setup at a maker's bench — microphone, notes, tools, and window light"
+            h={620}
+            src="/images/mwth-podcast-bench.jpg"
+            objectPosition="center"
+          />
           <div className="caption mono" style={{ marginTop: 10 }}>Méabh Ó Riada in her workshop at Carraroe, Co. Galway. March 2026.</div>
         </div>
 

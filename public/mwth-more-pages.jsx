@@ -20,6 +20,16 @@ function ShopPage() {
   const filters = ['All', 'Glass', 'Ceramics', 'Jewellery', 'Woodwork', 'Basketry', 'Textiles', 'Leather', 'Collectors'];
   const [active, setActive] = React.useState('All');
   const shown = active === 'All' ? pieces : pieces.filter(p => p[2] === active);
+  const imageForPiece = (name, cat) => {
+    if (name === 'Lobster pot, small' || name === 'Gathering basket' || cat === 'Basketry') {
+      return '/images/mwth-product-lobster-pot.jpg';
+    }
+    if (name === 'Lead-crystal tumbler' || name === 'Engraved decanter' || cat === 'Glass') {
+      return '/images/mwth-hero-glass-engraving.jpg';
+    }
+    return null;
+  };
+
   return (
     <>
       <MastheadMid mode="editorial" />
@@ -60,7 +70,12 @@ function ShopPage() {
             {shown.map(([name, maker, cat, price, place], i) => (
               <a key={name+i} href="#" onClick={(e) => { e.preventDefault(); window.__setPage && window.__setPage('product'); }}
                  className="reveal in" style={{ textDecoration: 'none', color: 'inherit' }}>
-                <Placeholder label={`${name.toLowerCase()} — still life`} h={360} />
+                <Placeholder
+                  label={`${name.toLowerCase()} — still life`}
+                  h={360}
+                  src={imageForPiece(name, cat)}
+                  objectPosition={cat === 'Glass' ? 'center' : 'center'}
+                />
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 16 }}>
                   <div>
                     <div className="smallcaps" style={{ marginBottom: 6 }}>{maker} · {place}</div>
@@ -82,7 +97,12 @@ function ShopPage() {
       <section className="section reveal" data-screen-label="Shop Insert"
                style={{ background: 'var(--paper-2)', borderTop: '1px solid var(--rule)', borderBottom: '1px solid var(--rule)' }}>
         <div className="wrap" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, alignItems: 'center' }}>
-          <Placeholder label="Hugh selecting pieces in the workshop" h={360} />
+          <Placeholder
+            label="Hugh selecting pieces in the workshop"
+            h={360}
+            src="/images/mwth-maker-portrait.jpg"
+            objectPosition="center top"
+          />
           <div>
             <div className="smallcaps" style={{ marginBottom: 14 }}>A note from Hugh</div>
             <h2 className="hl-serif hl-m" style={{ margin: 0 }}>
@@ -116,10 +136,22 @@ function ProductPage() {
         <div className="wrap" style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: 56 }}>
           {/* Gallery */}
           <div>
-            <Placeholder label="Hero — lobster pot at ¾ angle, side light, linen plinth" h={620} />
+            <Placeholder
+              label="Hero — lobster pot at ¾ angle, side light, linen plinth"
+              h={620}
+              src="/images/mwth-product-lobster-pot.jpg"
+              objectPosition="center"
+            />
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginTop: 10 }}>
               {['Detail — weave', 'Top-down', 'Maker holding it', 'Scale reference'].map(l => (
-                <Placeholder key={l} label={l} h={130} light />
+                <Placeholder
+                  key={l}
+                  label={l}
+                  h={130}
+                  light
+                  src="/images/mwth-product-lobster-pot.jpg"
+                  objectPosition="center"
+                />
               ))}
             </div>
           </div>
@@ -176,7 +208,12 @@ function ProductPage() {
       {/* Maker card */}
       <section className="section reveal" data-screen-label="Product Maker" style={{ background: 'var(--paper-2)', borderTop: '1px solid var(--rule)', borderBottom: '1px solid var(--rule)' }}>
         <div className="wrap" style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 48, alignItems: 'center' }}>
-          <Placeholder label="Saoirse at the bench" h={320} />
+          <Placeholder
+            label="Saoirse at the bench"
+            h={320}
+            src="/images/mwth-product-lobster-pot.jpg"
+            objectPosition="center"
+          />
           <div>
             <div className="smallcaps" style={{ marginBottom: 12 }}>The Maker</div>
             <h2 className="hl-serif hl-m" style={{ margin: 0 }}>Saoirse Doolan</h2>
