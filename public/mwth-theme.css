@@ -1,0 +1,246 @@
+/* Made With These Hands — Mid-fi theme
+   Editorial documentary direction.
+   Cream paper + charcoal ink. Classic serif headlines + neutral grotesk body. */
+
+:root {
+  /* palette — cream + charcoal (default) */
+  --paper:    #f4efe6;
+  --paper-2:  #ece6d9;
+  --paper-3:  #e3ddcf;
+  --ink:      #1b1918;
+  --ink-80:   #2e2a27;
+  --ink-60:   #5a534d;
+  --ink-40:   #8a827a;
+  --ink-20:   #c6beb2;
+  --rule:     #cfc6b5;
+  --accent:   #6b2a1f;   /* oxblood, used sparingly */
+  --white:    #faf6ec;
+
+  --serif: "Cormorant Garamond", "EB Garamond", Georgia, "Times New Roman", serif;
+  --sans:  "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono:  "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* palette swap: stone + off-black */
+[data-palette="stone"] {
+  --paper:    #edeae4;
+  --paper-2:  #e2ddd5;
+  --paper-3:  #d6d0c6;
+  --ink:      #17171a;
+  --ink-80:   #2a2a2e;
+  --ink-60:   #55565a;
+  --ink-40:   #8a8b8f;
+  --ink-20:   #c4c4c8;
+  --rule:     #c4c1ba;
+  --accent:   #2a3f4a;
+  --white:    #f7f4ef;
+}
+
+/* palette swap: ivory + deep brown */
+[data-palette="ivory"] {
+  --paper:    #f7f0df;
+  --paper-2:  #efe7d2;
+  --paper-3:  #e7dec3;
+  --ink:      #3a1f12;
+  --ink-80:   #4d2b1c;
+  --ink-60:   #6d5040;
+  --ink-40:   #9a8773;
+  --ink-20:   #cdbfa9;
+  --rule:     #cfbe9e;
+  --accent:   #7a2316;
+  --white:    #fdf8e9;
+}
+
+html, body {
+  margin: 0; padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+* { box-sizing: border-box; }
+img { max-width: 100%; display: block; }
+
+/* ── Masthead ─────────────────────────────────────────────────── */
+.masthead {
+  border-bottom: 1px solid var(--ink);
+  padding: 18px 40px 16px;
+  background: var(--paper);
+}
+.masthead .rule {
+  display: flex; justify-content: space-between;
+  font-family: var(--sans);
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-60);
+}
+.masthead .title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(34px, 5vw, 56px);
+  letter-spacing: -0.01em;
+  text-align: center;
+  margin: 10px 0 12px;
+  line-height: 1;
+}
+.masthead .nav {
+  display: flex; justify-content: center; gap: 32px;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-80);
+}
+.masthead .nav a {
+  color: inherit; text-decoration: none;
+  padding: 4px 0; border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+.masthead .nav a:hover { border-color: var(--ink); }
+
+/* minimal variant */
+.masthead[data-mode="minimal"] { padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; }
+.masthead[data-mode="minimal"] .rule { display: none; }
+.masthead[data-mode="minimal"] .title { font-size: 22px; margin: 0; text-align: left; letter-spacing: 0; }
+.masthead[data-mode="minimal"] .nav { margin: 0; }
+
+/* ── Typography helpers ──────────────────────────────────────── */
+.hl-serif { font-family: var(--serif); font-weight: 400; letter-spacing: -0.01em; line-height: 1.04; }
+.hl-xl { font-size: clamp(48px, 7vw, 96px); }
+.hl-l  { font-size: clamp(36px, 4.5vw, 64px); }
+.hl-m  { font-size: clamp(28px, 3vw, 40px); line-height: 1.1; }
+.hl-s  { font-size: clamp(22px, 2.2vw, 28px); line-height: 1.2; }
+
+.eyebrow {
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-60); font-weight: 500;
+}
+.dek {
+  font-family: var(--serif); font-style: italic; font-weight: 400;
+  font-size: clamp(17px, 1.4vw, 20px); line-height: 1.45;
+  color: var(--ink-80);
+}
+.body { font-size: 15px; line-height: 1.65; color: var(--ink-80); }
+.caption { font-size: 11px; letter-spacing: 0.08em; color: var(--ink-60); }
+.smallcaps { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-60); }
+
+/* ── Grid + layout ──────────────────────────────────────────── */
+.wrap { max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+.wrap-narrow { max-width: 820px; margin: 0 auto; padding: 0 40px; }
+
+.rule-h { height: 1px; background: var(--rule); }
+.rule-h-ink { height: 1px; background: var(--ink); }
+
+/* ── CTAs ───────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 24px;
+  font-family: var(--sans); font-size: 11px; font-weight: 500;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  border: 1px solid var(--ink); color: var(--ink);
+  background: transparent; cursor: pointer; text-decoration: none;
+  transition: background 0.25s, color 0.25s;
+}
+.btn:hover { background: var(--ink); color: var(--paper); }
+.btn--primary { background: var(--ink); color: var(--paper); }
+.btn--primary:hover { background: transparent; color: var(--ink); }
+.btn .arrow { transition: transform 0.3s ease; }
+.btn:hover .arrow { transform: translateX(4px); }
+
+/* ── Image placeholders (grayscale photography look) ────────── */
+.ph {
+  position: relative; overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.06), rgba(0,0,0,0.10)),
+    repeating-linear-gradient(
+      135deg,
+      var(--ink-40) 0 2px,
+      var(--ink-60) 2px 4px
+    );
+  color: var(--paper);
+}
+.ph::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.18), transparent 60%);
+  mix-blend-mode: screen;
+}
+.ph .ph-label {
+  position: absolute; left: 12px; bottom: 10px; right: 12px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.72);
+  text-transform: none;
+  z-index: 2;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+.ph--light {
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.4), rgba(0,0,0,0.05)),
+    repeating-linear-gradient(135deg, var(--ink-20) 0 2px, var(--ink-40) 2px 4px);
+}
+.ph--light .ph-label { color: rgba(27,25,24,0.7); text-shadow: none; }
+
+/* ── Section structure ──────────────────────────────────────── */
+.section { padding: clamp(48px, 6vw, 96px) 0; }
+.section-head {
+  display: flex; gap: 20px; align-items: baseline;
+  margin-bottom: 28px;
+}
+.section-head .num {
+  font-family: var(--mono); font-size: 12px; color: var(--ink-60);
+  letter-spacing: 0.1em;
+}
+.section-head .line { flex: 1; height: 1px; background: var(--ink-20); align-self: center; }
+.section-head .label {
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-60);
+}
+
+/* reveal animation */
+@keyframes reveal-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+.reveal { opacity: 0; }
+.reveal.in { animation: reveal-in 0.9s ease forwards; }
+
+/* ── Tweaks panel ───────────────────────────────────────────── */
+.tweaks {
+  position: fixed; right: 20px; bottom: 20px; width: 264px;
+  background: var(--ink); color: var(--paper);
+  padding: 18px 20px;
+  font-family: var(--sans); font-size: 11px; line-height: 1.5;
+  z-index: 100;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  display: none;
+}
+.tweaks.open { display: block; }
+.tweaks h3 {
+  margin: 0 0 14px; font-size: 10px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-40); font-weight: 500;
+}
+.tweaks .t-row { margin-bottom: 14px; }
+.tweaks .t-lbl {
+  display: block; margin-bottom: 6px;
+  color: var(--ink-40); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+}
+.tweaks .seg { display: flex; gap: 1px; background: #2a2623; }
+.tweaks .seg button {
+  flex: 1; background: #201d1b; color: var(--paper);
+  border: 0; padding: 7px 6px; font-size: 10px; cursor: pointer;
+  font-family: inherit; letter-spacing: 0.04em;
+}
+.tweaks .seg button.on { background: var(--paper); color: var(--ink); }
+
+/* ── Utility ────────────────────────────────────────────────── */
+.mono { font-family: var(--mono); }
+.italic { font-style: italic; }
+.center { text-align: center; }
+a.link { color: var(--ink); border-bottom: 1px solid var(--ink-40); text-decoration: none; padding-bottom: 1px; }
+a.link:hover { border-color: var(--ink); }
+
+/* responsive */
+@media (max-width: 860px) {
+  .masthead { padding: 14px 20px; }
+  .wrap, .wrap-narrow { padding: 0 20px; }
+  .section { padding: 48px 0; }
+}

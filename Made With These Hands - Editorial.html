@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Made With These Hands — Editorial</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="mwth-theme.css">
+<style>
+  /* page-local */
+  .page-toggle {
+    position: fixed; left: 20px; bottom: 20px; z-index: 90;
+    display: flex; background: var(--ink); color: var(--paper);
+    font-family: var(--sans); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+  }
+  .page-toggle button {
+    background: transparent; color: inherit; border: 0; padding: 10px 16px;
+    cursor: pointer; font: inherit; letter-spacing: inherit;
+  }
+  .page-toggle button.on { background: var(--paper); color: var(--ink); }
+</style>
+</head>
+<body data-palette="cream">
+<div id="root"></div>
+
+<div class="page-toggle" id="pageToggle">
+  <button data-page="home" class="on">Home</button>
+  <button data-page="shop">Shop</button>
+  <button data-page="product">Product</button>
+  <button data-page="hugh">Hugh</button>
+  <button data-page="artists">Artists</button>
+  <button data-page="episode">Episode</button>
+  <button data-page="commissions">Commissions</button>
+  <button data-page="checkout">Checkout</button>
+</div>
+
+<div class="tweaks" id="tweaks">
+  <h3>Tweaks</h3>
+  <div class="t-row">
+    <span class="t-lbl">Hero variant</span>
+    <div class="seg" data-key="hero"><button data-val="A">A · Split</button><button data-val="B">B · Cover</button></div>
+  </div>
+  <div class="t-row">
+    <span class="t-lbl">Palette</span>
+    <div class="seg" data-key="palette"><button data-val="cream">Cream</button><button data-val="stone">Stone</button><button data-val="ivory">Ivory</button></div>
+  </div>
+  <div class="t-row">
+    <span class="t-lbl">Masthead</span>
+    <div class="seg" data-key="masthead"><button data-val="editorial">Editorial</button><button data-val="minimal">Minimal</button></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="mwth-home.jsx"></script>
+<script type="text/babel" src="mwth-episode.jsx"></script>
+<script type="text/babel" src="mwth-more-pages.jsx"></script>
+<script type="text/babel" src="mwth-commerce.jsx"></script>
+
+<script type="text/babel">
+const TWEAKS = /*EDITMODE-BEGIN*/{
+  "hero": "A",
+  "palette": "cream",
+  "masthead": "minimal"
+}/*EDITMODE-END*/;
+
+function App() {
+  const [tweaks, setTweaks] = React.useState(TWEAKS);
+  const [page, setPage] = React.useState(() => localStorage.getItem('mwth-page') || 'home');
+
+  React.useEffect(() => {
+    document.body.setAttribute('data-palette', tweaks.palette);
+  }, [tweaks.palette]);
+
+  React.useEffect(() => {
+    localStorage.setItem('mwth-page', page);
+  }, [page]);
+
+  // Expose for the panel + page toggle
+  React.useEffect(() => {
+    window.__setTweak = (k, v) => {
+      setTweaks(t => ({ ...t, [k]: v }));
+      window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { [k]: v } }, '*');
+    };
+    window.__setPage = setPage;
+  }, []);
+
+  // Scroll reveal
+  React.useEffect(() => {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    return () => io.disconnect();
+  }, [page, tweaks]);
+
+  if (page === 'episode')  return <><EpisodePage /><BasketDrawer /></>;
+  if (page === 'shop')     return <><ShopPage /><BasketDrawer /></>;
+  if (page === 'product')  return <><ProductPage /><BasketDrawer /></>;
+  if (page === 'hugh')     return <><HughStoryPage /><BasketDrawer /></>;
+  if (page === 'artists')  return <><ArtistsPage /><BasketDrawer /></>;
+  if (page === 'commissions') return <><CommissionsPage /><BasketDrawer /></>;
+  if (page === 'checkout')    return <CheckoutPage />;
+
+  const Hero = tweaks.hero === 'B' ? HeroB : HeroA;
+  return (
+    <>
+      <MastheadMid mode={tweaks.masthead} />
+      <Hero />
+      <Mission />
+      <Craft />
+      <HughStory />
+      <Podcast />
+      <ArtistOfWeek />
+      <WhyCraft />
+      <ShopCTA />
+      <FooterMid />
+      <BasketDrawer />
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+<script>
+// Tweaks + page toggle host glue
+(function () {
+  const panel = document.getElementById('tweaks');
+  const state = { hero: 'A', palette: 'cream', masthead: 'editorial' };
+  const paint = () => {
+    panel.querySelectorAll('[data-key]').forEach(g => {
+      const k = g.dataset.key;
+      g.querySelectorAll('button').forEach(b => b.classList.toggle('on', state[k] === b.dataset.val));
+    });
+  };
+  panel.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-val]');
+    if (!btn) return;
+    const k = btn.parentElement.dataset.key, v = btn.dataset.val;
+    state[k] = v; paint();
+    if (window.__setTweak) window.__setTweak(k, v);
+  });
+  paint();
+  window.addEventListener('message', (e) => {
+    const d = e.data || {};
+    if (d.type === '__activate_edit_mode') panel.classList.add('open');
+    if (d.type === '__deactivate_edit_mode') panel.classList.remove('open');
+  });
+  window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+
+  // Page toggle
+  const pt = document.getElementById('pageToggle');
+  const stored = localStorage.getItem('mwth-page') || 'home';
+  pt.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.page === stored));
+  pt.addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-page]');
+    if (!b) return;
+    pt.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    if (window.__setPage) window.__setPage(b.dataset.page);
+    window.scrollTo({ top: 0 });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import '../public/mwth-theme.css';
+
+.page-toggle {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 90;
+  display: flex;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 18%);
+}
+
+.page-toggle button,
+.page-toggle a {
+  background: transparent;
+  color: inherit;
+  border: 0;
+  padding: 10px 16px;
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: inherit;
+  text-decoration: none;
+}
+
+.page-toggle button.on,
+.page-toggle a.on {
+  background: var(--paper);
+  color: var(--ink);
+}

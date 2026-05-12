@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Made With These Hands — Wireframes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  html, body { margin: 0; padding: 0; background: #f0eee9; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+  /* Tweaks panel */
+  .tweaks {
+    position: fixed; right: 20px; bottom: 20px; width: 260px;
+    background: #1a1a1a; color: #e8e6e2; padding: 16px 18px;
+    font-size: 11px; line-height: 1.4; z-index: 100;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.25);
+    display: none;
+  }
+  .tweaks.open { display: block; }
+  .tweaks h3 { margin: 0 0 12px; font-size: 10px; letter-spacing: 1.4px; text-transform: uppercase; color: #8a8884; font-weight: 500; }
+  .tweaks label { display: block; margin-bottom: 12px; }
+  .tweaks .lbl { display: block; margin-bottom: 6px; color: #8a8884; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; }
+  .tweaks .seg { display: flex; gap: 1px; background: #333; }
+  .tweaks .seg button { flex: 1; background: #222; color: #e8e6e2; border: 0; padding: 6px 4px; font-size: 10px; cursor: pointer; font-family: inherit; }
+  .tweaks .seg button.on { background: #e8e6e2; color: #1a1a1a; }
+  .tweaks hr { border: 0; border-top: 1px solid #333; margin: 12px 0; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- Tweaks panel (hidden until host activates edit mode) -->
+<div class="tweaks" id="tweaks">
+  <h3>Tweaks</h3>
+  <label>
+    <span class="lbl">Hero variant</span>
+    <div class="seg" data-key="hero">
+      <button data-val="A">A</button>
+      <button data-val="B">B</button>
+    </div>
+  </label>
+  <label>
+    <span class="lbl">Category grid columns</span>
+    <div class="seg" data-key="catCols">
+      <button data-val="2">2</button>
+      <button data-val="3">3</button>
+      <button data-val="4">4</button>
+    </div>
+  </label>
+  <label>
+    <span class="lbl">Sub-page</span>
+    <div class="seg" data-key="subPage">
+      <button data-val="off">Hide</button>
+      <button data-val="on">Show</button>
+    </div>
+  </label>
+  <hr/>
+  <div style="font-size:10px; color:#8a8884; line-height:1.5;">
+    Scroll / trackpad to pan &amp; zoom.<br/>Three directions sit side-by-side.
+  </div>
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="wire-primitives.jsx"></script>
+<script type="text/babel" src="direction-1-editorial.jsx"></script>
+<script type="text/babel" src="direction-2-gallery.jsx"></script>
+<script type="text/babel" src="direction-3-marketplace.jsx"></script>
+<script type="text/babel" src="sub-pages.jsx"></script>
+
+<script type="text/babel">
+const TWEAKS = /*EDITMODE-BEGIN*/{
+  "hero": "A",
+  "catCols": 3,
+  "subPage": "on"
+}/*EDITMODE-END*/;
+
+function App() {
+  const [tweaks, setTweaks] = React.useState(TWEAKS);
+
+  // Expose setter for the panel
+  React.useEffect(() => { window.__setTweak = (k, v) => {
+    setTweaks(t => ({ ...t, [k]: v }));
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { [k]: v } }, '*');
+  }; }, []);
+
+  const cols = Number(tweaks.catCols) || 3;
+  const heroKey = tweaks.hero === 'B' ? 'HeroB' : 'HeroA';
+
+  const D1Hero = heroKey === 'HeroB' ? D1_HeroB : D1_HeroA;
+  const D2Hero = heroKey === 'HeroB' ? D2_HeroB : D2_HeroA;
+  const D3Hero = heroKey === 'HeroB' ? D3_HeroB : D3_HeroA;
+
+  const W = 420;
+
+  return (
+    <DesignCanvas>
+      {/* Title card */}
+      <div style={{ padding: '0 60px 40px', maxWidth: 900 }} data-screen-label="Title">
+        <div style={{ fontSize: 11, letterSpacing: 1.4, textTransform: 'uppercase', color: 'rgba(60,50,40,0.6)', marginBottom: 10 }}>
+          Wireframes · Low-fi · Grayscale blockframes
+        </div>
+        <div style={{ fontFamily: 'Georgia, serif', fontSize: 42, letterSpacing: -0.5, color: 'rgba(40,30,20,0.9)', lineHeight: 1.05 }}>
+          Made With These Hands
+        </div>
+        <div style={{ fontSize: 13, color: 'rgba(60,50,40,0.7)', marginTop: 10, maxWidth: 640, lineHeight: 1.5 }}>
+          Three distinct creative directions for the homepage, plus a sub-page sketch for each.
+          Toggle <b>Tweaks</b> in the toolbar to switch hero variants, change the category grid density,
+          or hide the sub-page row. Scroll and pinch to explore the canvas.
+        </div>
+      </div>
+
+      {/* Direction 1 */}
+      <DCSection
+        title="Direction 1 · Editorial Documentary"
+        subtitle="Newspaper/magazine bones · issue numbers · long-form · Hugh as portrait + quote"
+      >
+        <DCArtboard label={`Homepage · Hero ${tweaks.hero} · ${cols}-col categories`} width={W}>
+          <Page>
+            <D1Hero />
+            <D1_Body catCols={cols} />
+          </Page>
+        </DCArtboard>
+        {tweaks.subPage === 'on' && (
+          <DCArtboard label="Sub-page · Podcast episode" width={W}>
+            <Page><SubPage_D1_Episode /></Page>
+          </DCArtboard>
+        )}
+        <DCPostIt top={60} rotate={-3}>
+          Hero leans <b>journal / feature story</b>. Podcast = "Field Recordings". Two-column editorial essay for "Why Craft Matters".
+        </DCPostIt>
+      </DCSection>
+
+      {/* Direction 2 */}
+      <DCSection
+        title="Direction 2 · Heritage Gallery"
+        subtitle="Museum bones · centered type · plinthed objects · Hugh as timeline"
+      >
+        <DCArtboard label={`Homepage · Hero ${tweaks.hero} · ${cols}-col rooms`} width={W}>
+          <Page>
+            <D2Hero />
+            <D2_Body catCols={cols} />
+          </Page>
+        </DCArtboard>
+        {tweaks.subPage === 'on' && (
+          <DCArtboard label="Sub-page · Artist exhibition" width={W}>
+            <Page><SubPage_D2_Artist /></Page>
+          </DCArtboard>
+        )}
+        <DCPostIt top={60} rotate={2}>
+          Quietest of the three. Wall labels, plates, and Roman numerals everywhere. Most whitespace, slowest reading rhythm.
+        </DCPostIt>
+      </DCSection>
+
+      {/* Direction 3 */}
+      <DCSection
+        title="Direction 3 · Curated Artisan Marketplace"
+        subtitle="Shop bones, editorial soul · maker bylines · Hugh as workshop vignette"
+      >
+        <DCArtboard label={`Homepage · Hero ${tweaks.hero} · ${cols}-col browse`} width={W}>
+          <Page>
+            <D3Hero />
+            <D3_Body catCols={cols} />
+          </Page>
+        </DCArtboard>
+        {tweaks.subPage === 'on' && (
+          <DCArtboard label="Sub-page · Product detail" width={W}>
+            <Page><SubPage_D3_Product /></Page>
+          </DCArtboard>
+        )}
+        <DCPostIt top={60} rotate={-2}>
+          Most commerce-forward. Every object has a price. Podcast framed as part of the brand daily habit, not a bolt-on.
+        </DCPostIt>
+      </DCSection>
+
+      {/* Legend */}
+      <div style={{ padding: '0 60px 40px', maxWidth: 820, fontSize: 12, color: 'rgba(60,50,40,0.75)', lineHeight: 1.6 }} data-screen-label="Legend">
+        <div style={{ fontSize: 10, letterSpacing: 1.4, textTransform: 'uppercase', color: 'rgba(60,50,40,0.55)', marginBottom: 8 }}>What you are looking at</div>
+        <b>Blockframe wireframes.</b> Grayscale only. Solid gray blocks mark where photography sits — labels describe the intended shot.
+        Copy is real-ish; imagery and illustration come later. Next step: pick a direction (or mix), then we move to mid-fi with type and photography.
+      </div>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+<script>
+// ── Tweaks host protocol ──────────────────────────────────────────────
+(function () {
+  const panel = document.getElementById('tweaks');
+  const syncUI = () => {
+    // Read current state by re-querying App — but since we can't easily, reflect defaults/localStorage
+    // We'll just reflect based on 'on' class presence via a local cache.
+  };
+  // Local cache mirroring what we send
+  const state = { hero: 'A', catCols: '3', subPage: 'on' };
+  const paint = () => {
+    panel.querySelectorAll('[data-key]').forEach(group => {
+      const k = group.dataset.key;
+      group.querySelectorAll('button').forEach(b => {
+        b.classList.toggle('on', String(state[k]) === b.dataset.val);
+      });
+    });
+  };
+  panel.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-val]');
+    if (!btn) return;
+    const k = btn.parentElement.dataset.key;
+    const v = btn.dataset.val;
+    state[k] = v;
+    paint();
+    const val = k === 'catCols' ? Number(v) : v;
+    if (window.__setTweak) window.__setTweak(k, val);
+  });
+  paint();
+
+  window.addEventListener('message', (e) => {
+    const d = e.data || {};
+    if (d.type === '__activate_edit_mode') panel.classList.add('open');
+    if (d.type === '__deactivate_edit_mode') panel.classList.remove('open');
+  });
+  window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+})();
+</script>
+</body>
+</html>
