@@ -128,7 +128,7 @@ function ProductPage() {
     <>
       <MastheadMid mode="editorial" />
       <div className="wrap" style={{ padding: '24px 40px', fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--ink-60)' }}>
-        <a href="#" onClick={(e)=>{e.preventDefault(); window.__setPage && window.__setPage('shop');}} style={{ color: 'inherit' }}>Shop</a>
+        <a href="/shop/en" style={{ color: 'inherit' }}>Shop</a>
         &nbsp;/&nbsp;Basketry&nbsp;/&nbsp;Saoirse Doolan&nbsp;/&nbsp;Lobster pot, small
       </div>
 

@@ -370,7 +370,7 @@ function ShopCTA() {
           A rotating selection of handmade pieces and one-off collectors
           items, chosen by Hugh. Numbers are always small.
         </p>
-        <a className="btn btn--primary" href="#">Browse the collection <span className="arrow">→</span></a>
+        <a className="btn btn--primary" href="/shop/en">Browse the collection <span className="arrow">→</span></a>
       </div>
     </section>
   );

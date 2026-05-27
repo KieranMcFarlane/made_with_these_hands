@@ -15,7 +15,7 @@ export default function PageToggle() {
       {pages.map(([page, label]) => (
         <a
           key={page}
-          href={`/?page=${page}`}
+          href={page === 'shop' ? '/shop/en' : `/?page=${page}`}
           data-page={page}
         >
           {label}
