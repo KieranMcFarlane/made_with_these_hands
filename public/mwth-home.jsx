@@ -17,7 +17,7 @@ function MastheadMid({ mode = 'editorial' }) {
             <a href="/?page=blog" data-page="blog">Blog</a>
             <a href="/?page=podcasts" data-page="podcasts">Podcast</a>
             <a href="/?page=shop" data-page="shop">Objects</a>
-            <a href="#about">About</a>
+            <a href="/?page=hugh" data-page="hugh">About</a>
           </nav>
         </>
       ) : (
@@ -28,7 +28,7 @@ function MastheadMid({ mode = 'editorial' }) {
             <a href="/?page=blog" data-page="blog">Blog</a>
             <a href="/?page=podcasts" data-page="podcasts">Podcast</a>
             <a href="/?page=shop" data-page="shop">Objects</a>
-            <a href="#about">About</a>
+            <a href="/?page=hugh" data-page="hugh">About</a>
           </nav>
         </>
       )}
