@@ -1,12 +1,15 @@
 const pages = [
   ['home', 'Home'],
-  ['shop', 'Shop'],
+  ['shop', 'Objects'],
   ['product', 'Product'],
+  ['maker', 'Maker'],
+  ['craft', 'Craft'],
   ['hugh', 'Hugh'],
+  ['blog', 'Blog'],
   ['artists', 'Artists'],
+  ['podcasts', 'Podcasts'],
   ['episode', 'Episode'],
   ['commissions', 'Commissions'],
-  ['checkout', 'Checkout'],
 ];
 
 export default function PageToggle() {
@@ -15,7 +18,7 @@ export default function PageToggle() {
       {pages.map(([page, label]) => (
         <a
           key={page}
-          href={page === 'shop' ? '/shop/en' : `/?page=${page}`}
+          href={`/?page=${page}`}
           data-page={page}
         >
           {label}
