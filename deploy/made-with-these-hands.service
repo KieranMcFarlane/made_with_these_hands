@@ -1,0 +1,22 @@
+[Unit]
+Description=Made With These Hands Next.js app
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/repos/made_with_these_hands
+EnvironmentFile=-/home/ubuntu/repos/made_with_these_hands/.env
+EnvironmentFile=-/home/ubuntu/repos/made_with_these_hands/.env.production
+Environment=NODE_ENV=production
+Environment=HOSTNAME=127.0.0.1
+Environment=PORT=3009
+ExecStart=/usr/bin/npm run start
+Restart=always
+RestartSec=10
+TimeoutStopSec=30
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target

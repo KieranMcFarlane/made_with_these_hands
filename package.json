@@ -5,12 +5,16 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "directus:bootstrap": "node scripts/bootstrap-directus-mwth.mjs",
+    "directus:seed": "node scripts/seed-directus-mwth.mjs",
+    "directus:site-token": "node scripts/create-directus-site-token.mjs"
   },
   "dependencies": {
+    "@directus/sdk": "^21.3.0",
     "next": "^16.2.2",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
-  },
-  "devDependencies": {}
+    "react-dom": "^19.2.4",
+    "resend": "^6.12.4"
+  }
 }
