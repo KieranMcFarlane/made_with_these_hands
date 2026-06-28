@@ -947,7 +947,7 @@ function DataArtistsPage() {
       <MastheadMid mode="editorial" />
       <section className="section reveal" data-screen-label="Artists Head" style={{ paddingBottom: 24 }}>
         <div className="wrap">
-          <div className="smallcaps" style={{ marginBottom: 18 }}>The Directory · {data.makers.length} makers in this prototype</div>
+          <div className="smallcaps" style={{ marginBottom: 18 }}>The Directory · {data.makers.length} makers in this archive</div>
           <h1 className="hl-serif hl-xl" style={{ margin: 0, maxWidth: '16ch' }}>Every maker <span className="italic">by name</span>.</h1>
           <p className="dek" style={{ margin: '24px 0 0', maxWidth: '46ch' }}>An index of every maker whose work is in the object archive, or whose voice is on the podcast.</p>
         </div>

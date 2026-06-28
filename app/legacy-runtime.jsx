@@ -256,7 +256,7 @@ export default function LegacyRuntime() {
     }
 
     boot().catch((error) => {
-      console.error('Failed to start Made With These Hands prototype', error);
+      console.error('Failed to start Made With These Hands', error);
     });
 
     return () => {
