@@ -91,6 +91,29 @@ async function ensureField(collection, field, type, meta = {}, schema = {}) {
   console.log(`created field: ${collection}.${field}`);
 }
 
+async function ensureAliasField(collection, field, meta = {}) {
+  if (await fieldExists(collection, field)) {
+    console.log(`field exists: ${collection}.${field}`);
+    return;
+  }
+
+  try {
+    await request(`/fields/${collection}`, {
+      method: 'POST',
+      body: JSON.stringify({
+        field,
+        type: 'alias',
+        meta,
+        schema: null,
+      }),
+    });
+    console.log(`created field: ${collection}.${field}`);
+  } catch (error) {
+    console.warn(`could not create alias field ${collection}.${field}: ${error.message}`);
+    console.warn('Create this as a Builder (M2A) field in Directus if your API version requires UI setup.');
+  }
+}
+
 function interfaceFor(type) {
   if (type === 'text') return 'input-multiline';
   if (type === 'json') return 'input-code';
@@ -188,7 +211,122 @@ async function ensureContentCollection(collection, fields, options = {}) {
   }
 }
 
+async function ensureCoreCollections() {
+  await ensureContentCollection('tenants', [
+    ['slug', 'string', {}, { is_nullable: false, is_unique: true }],
+    ['status', 'string'],
+    ['name', 'string', {}, { is_nullable: false }],
+    ['site_url', 'string'],
+    ['description', 'text'],
+    ['email', 'string'],
+    ['location', 'string'],
+    ['footer_tagline', 'text'],
+  ], { icon: 'domain', displayTemplate: '{{name}}' });
+
+  await ensureContentCollection('site_pages', [
+    ['tenant', 'string'],
+    ['path', 'string', {}, { is_nullable: false }],
+    ['canonical_path', 'string'],
+    ['status', 'string'],
+    ['page_type', 'string'],
+    ['title', 'string', {}, { is_nullable: false }],
+    ['seo_title', 'string'],
+    ['description', 'text'],
+    ['priority', 'decimal'],
+    ['change_frequency', 'string'],
+    ['sort', 'integer'],
+  ], { icon: 'web', displayTemplate: '{{path}} - {{title}}' });
+
+  await ensureContentCollection('navigation_items', [
+    ['tenant', 'string'],
+    ['menu', 'string', {}, { is_nullable: false }],
+    ['href', 'string', {}, { is_nullable: false }],
+    ['label', 'string', {}, { is_nullable: false }],
+    ['sort', 'integer'],
+  ], { icon: 'menu', displayTemplate: '{{menu}} - {{label}}' });
+}
+
+function baseBlockFields(extraFields = []) {
+  return [
+    ['tenant', 'string'],
+    ['status', 'string'],
+    ['key', 'string'],
+    ['eyebrow', 'string'],
+    ['title', 'text'],
+    ['dek', 'text'],
+    ['theme', 'string'],
+    ...extraFields,
+  ];
+}
+
+async function ensureBlockCollections() {
+  await ensureContentCollection('block_hero', baseBlockFields([
+    ['image', 'uuid'],
+    ['image_alt', 'string'],
+    ['cta_label', 'string'],
+    ['cta_href', 'string'],
+    ['secondary_cta_label', 'string'],
+    ['secondary_cta_href', 'string'],
+  ]), { icon: 'panorama', displayTemplate: '{{title}}' });
+
+  await ensureContentCollection('block_text', baseBlockFields([
+    ['body', 'json'],
+    ['alignment', 'string'],
+  ]), { icon: 'notes', displayTemplate: '{{title}}' });
+
+  await ensureContentCollection('block_media', baseBlockFields([
+    ['image', 'uuid'],
+    ['image_alt', 'string'],
+    ['images', 'json'],
+    ['caption', 'text'],
+  ]), { icon: 'image', displayTemplate: '{{title}}' });
+
+  await ensureContentCollection('block_quote', baseBlockFields([
+    ['quote', 'text', {}, { is_nullable: false }],
+    ['quote_attribution', 'string'],
+  ]), { icon: 'format_quote', displayTemplate: '{{quote}}' });
+
+  await ensureContentCollection('block_listing', baseBlockFields([
+    ['listing_type', 'string', {}, { is_nullable: false }],
+    ['craft', 'string'],
+    ['maker', 'string'],
+    ['items_limit', 'integer'],
+  ]), { icon: 'view_list', displayTemplate: '{{listing_type}} - {{title}}' });
+
+  await ensureContentCollection('block_cta', baseBlockFields([
+    ['cta_label', 'string'],
+    ['cta_href', 'string'],
+    ['secondary_cta_label', 'string'],
+    ['secondary_cta_href', 'string'],
+  ]), { icon: 'ads_click', displayTemplate: '{{title}}' });
+}
+
+async function ensurePageBuilderField() {
+  await ensureAliasField('site_pages', 'blocks', {
+    interface: 'list-m2a',
+    special: ['m2a'],
+    options: {
+      collections: [
+        'block_hero',
+        'block_text',
+        'block_media',
+        'block_quote',
+        'block_listing',
+        'block_cta',
+      ],
+    },
+    display: 'related-values',
+    display_options: {
+      template: '{{item.title}}',
+    },
+    width: 'full',
+  });
+}
+
 async function main() {
+  await ensureCoreCollections();
+  await ensureBlockCollections();
+  await ensurePageBuilderField();
   await ensureTenant();
 
   await Promise.all([

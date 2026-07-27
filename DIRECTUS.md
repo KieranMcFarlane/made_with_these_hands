@@ -67,6 +67,7 @@ makers
 products
 episodes
 posts
+site_pages
 site_sections
 comments
 ```
@@ -78,6 +79,7 @@ DIRECTUS_MAKERS_COLLECTION="makers"
 DIRECTUS_PRODUCTS_COLLECTION="products"
 DIRECTUS_EPISODES_COLLECTION="episodes"
 DIRECTUS_POSTS_COLLECTION="posts"
+DIRECTUS_PAGES_COLLECTION="site_pages"
 DIRECTUS_SECTIONS_COLLECTION="site_sections"
 DIRECTUS_COMMENTS_COLLECTION="comments"
 ```
@@ -184,6 +186,36 @@ extra
 
 Use `site_sections` for page-level content that is not a maker, product, episode, or post. Current keys include homepage sections, shop/blog/podcast headers, the Hugh page, commissions page, shared episode imagery, and footer content. The `extra` JSON field holds structured repeaters such as footer columns, metrics, process steps, past commissions, timeline items, and commission type options.
 
+`site_pages`:
+
+```text
+tenant
+path
+canonical_path
+status
+page_type
+title
+seo_title
+description
+priority
+change_frequency
+sort
+blocks
+```
+
+`site_pages.blocks` is the preferred Directus v12 page builder field. It should be a Builder / Many-to-Any field that can reference these block collections:
+
+```text
+block_hero
+block_text
+block_media
+block_quote
+block_listing
+block_cta
+```
+
+Each block can set a stable `key`. When a block key matches an existing frontend section key, it is also exposed through `site.sections[key]`; this lets the site migrate from `site_sections` to proper content blocks without a hard cutover.
+
 `comments`:
 
 ```text
@@ -208,6 +240,10 @@ Episode pages read approved comments and create new comments as pending. If you 
 ## Runtime
 
 The browser fetches `/api/mwth-data`. If Directus is not configured or the request fails, the site uses the local data file.
+
+## MCP
+
+Directus v12 can expose a remote MCP endpoint for schema and content edits. Use `DIRECTUS_MCP.md` for the Codex/Claude connection recipe and the recommended role permissions.
 
 ## Enquiries
 

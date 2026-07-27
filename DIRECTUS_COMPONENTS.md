@@ -1,60 +1,195 @@
-# Directus Component Model
+# Directus v12 Content Block Model
 
-This is the repeatable content structure for Made With These Hands. It is designed so Directus, the Directus MCP, and the frontend all work from predictable collections and field names.
+This is the canonical content structure for Made With These Hands. It is designed for Directus v12, Directus MCP, and the frontend to work from one predictable model.
 
 ## Primary Collections
 
 ```text
+tenants
+site_pages
+navigation_items
 makers
 products
 episodes
 posts
 comments
-pages
-page_blocks
 enquiries
+site_sections
 ```
 
-## Core Relationships
+`site_sections` remains a legacy fallback for existing keyed content. New flexible page content should use `site_pages.blocks`.
+
+## Page Builder
+
+Use a Directus Builder field on `site_pages`:
 
 ```text
-maker 1--many products
-maker 1--many episodes
-episode many--many products
-post many--many makers
-post many--many products
-post many--many episodes
-episode 1--many comments
-page 1--many page_blocks
+collection: site_pages
+field: blocks
+type: alias
+interface: Builder (M2A)
+allowed collections:
+  block_hero
+  block_text
+  block_media
+  block_quote
+  block_listing
+  block_cta
 ```
 
-## Makers
+This creates a Many-to-Any relationship from a page to ordered block items. Agents should edit the target block item, not duplicate whole pages.
 
-Used for maker pages and podcast guest pages.
+## Core Page Fields
 
 ```text
+tenant
+path
+canonical_path
+status
+page_type
+title
+seo_title
+description
+priority
+change_frequency
+sort
+blocks
+```
+
+Recommended page types:
+
+```text
+home
+about
+objects_index
+product_detail
+makers_index
+maker_detail
+podcast_index
+episode_detail
+journal_index
+post_detail
+contact
+commissions
+craft_index
+custom
+```
+
+## Block Collections
+
+All block collections share these fields:
+
+```text
+tenant
+status
+key
+eyebrow
+title
+dek
+theme
+```
+
+Use `key` only when the block should also feed an existing keyed frontend section such as `hero`, `mission`, `shop_index`, `blog_index`, `podcast_index`, `hugh`, or `commissions`.
+
+### block_hero
+
+```text
+image
+image_alt
+cta_label
+cta_href
+secondary_cta_label
+secondary_cta_href
+```
+
+### block_text
+
+```text
+body
+alignment
+```
+
+`body` is JSON so it can hold paragraphs, notes, or small repeaters.
+
+### block_media
+
+```text
+image
+image_alt
+images
+caption
+```
+
+Use `images` JSON only for lightweight galleries. If galleries become large, move them to a proper related collection.
+
+### block_quote
+
+```text
+quote
+quote_attribution
+```
+
+### block_listing
+
+```text
+listing_type
+craft
+maker
+items_limit
+```
+
+Recommended listing types:
+
+```text
+products
+makers
+episodes
+posts
+related_objects
+related_episodes
+related_posts
+```
+
+### block_cta
+
+```text
+cta_label
+cta_href
+secondary_cta_label
+secondary_cta_href
+```
+
+## Editorial Collections
+
+### makers
+
+```text
+tenant
 slug
+status
 name
 craft
 place
 established
 dek
 bio
-portrait
+image
 hero_image
 hero_label
 practice_title
-practice_body
+practice
 seo_title
 seo_description
 ```
 
-## Products / Objects
+### products
 
-Used for the object archive and product detail pages.
+Products are enquiry-led objects, not checkout SKUs.
 
 ```text
+tenant
 slug
+status
 name
 maker
 craft
@@ -65,22 +200,21 @@ summary
 description
 image
 gallery
-status
 enquiry_enabled
 seo_title
 seo_description
 ```
 
-## Episodes
-
-Used for the podcast archive and individual podcast pages.
+### episodes
 
 ```text
+tenant
 number
 slug
-title
+status
 maker
 guest
+title
 craft
 place
 duration
@@ -97,12 +231,12 @@ seo_title
 seo_description
 ```
 
-## Posts
-
-Used for the journal/blog index and article pages.
+### posts
 
 ```text
+tenant
 slug
+status
 title
 dek
 author
@@ -117,18 +251,16 @@ seo_title
 seo_description
 ```
 
-## Comments
-
-Used under podcast episode pages.
+### comments
 
 ```text
+tenant
 episode
 name
 email
 body
 status
 date_created
-tenant
 ```
 
 Recommended statuses:
@@ -139,11 +271,10 @@ approved
 rejected
 ```
 
-## Enquiries
-
-Optional Directus record of product enquiries. Email is sent through Resend, but storing a Directus record gives Hugh an admin trail.
+### enquiries
 
 ```text
+tenant
 product
 product_name
 maker_name
@@ -153,7 +284,6 @@ phone
 message
 status
 date_created
-tenant
 ```
 
 Recommended statuses:
@@ -164,139 +294,17 @@ replied
 closed
 ```
 
-## Pages
-
-Used when non-model pages need flexible content.
+## MCP Editing Rules
 
 ```text
-slug
-title
-page_type
-seo_title
-seo_description
-blocks
-```
-
-Recommended page types:
-
-```text
-home
-about
-objects_index
-podcast_index
-journal_index
-contact
-craft_index
-custom
-```
-
-## Repeatable Blocks
-
-Use one `page_blocks` collection with a `block_type` field and type-specific fields. This keeps the MCP workflow predictable.
-
-```text
-id
-page
-sort
-block_type
-eyebrow
-title
-dek
-body
-image
-images
-quote
-quote_attribution
-cta_label
-cta_url
-maker
-product
-episode
-post
-craft
-items_limit
-theme
-```
-
-Recommended block types:
-
-```text
-hero
-text
-image
-gallery
-quote
-maker_bio
-product_grid
-episode_list
-post_list
-related_objects
-related_episodes
-comments
-enquiry_cta
-contact_form
-newsletter
-```
-
-## Page Mapping
-
-```text
-Home
-  pages.slug = home
-  blocks: hero, text, episode_list, maker_bio, product_grid, post_list, enquiry_cta
-
-Objects
-  products collection
-  optional pages.slug = objects
-
-Product Page
-  products.slug
-  maker relation
-  related episodes by maker
-  enquiry_cta block
-
-Hugh Bio
-  pages.slug = about
-  or makers.slug = hugh-mcneill
-
-Maker / Guest Page
-  makers.slug
-  related products
-  related episodes
-
-Podcast Archive
-  episodes collection
-  optional pages.slug = podcast
-
-Podcast Episode Page
-  episodes.slug or episodes.number
-  maker relation
-  related products
-  comments
-
-Journal
-  posts collection
-  optional pages.slug = journal
-
-Journal Article
-  posts.slug
-  related makers/products/episodes
-
-Contact / Commissions
-  pages.slug = contact
-  blocks: hero, text, contact_form
-```
-
-## MCP Rules
-
-For reliable Directus MCP usage:
-
-```text
-Use stable slugs for all public records.
-Use relation fields instead of copying names where possible.
-Keep block_type values from the approved list.
+Inspect schema before editing.
+Use stable slugs and page paths.
+Find the page, then find the specific block in site_pages.blocks.
+Edit the existing block item when possible.
+Create a new block only when a new visual/content section is required.
+Keep products enquiry-first, never checkout-first.
 Keep comments moderated by status.
-Keep products enquiry-first, not checkout-first.
-Store SEO title/description per public record.
+Store SEO title and description on public records.
 Use tenant filtering or tenant-scoped Directus roles.
 ```
+

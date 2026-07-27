@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "directus": {
+      "url": "https://your-directus.example.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${DIRECTUS_MCP_TOKEN}"
+      }
+    }
+  }
+}
