@@ -1,4 +1,6 @@
 import './globals.css';
+import { brandCssVariables } from '../lib/brand-settings.mjs';
+import { getMwthBrandSettings } from '../lib/directus';
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://madewiththesehands.ie'),
@@ -21,10 +23,12 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const brand = await getMwthBrandSettings();
+
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body style={brandCssVariables(brand)}>{children}</body>
     </html>
   );
 }

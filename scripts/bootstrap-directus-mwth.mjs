@@ -241,6 +241,13 @@ async function ensureCoreCollections() {
     ['footer_tagline', 'text'],
   ], { icon: 'domain', displayTemplate: '{{name}}' });
 
+  await ensureContentCollection('brand_settings', [
+    ['tenant', 'string', {}, { is_nullable: false }],
+    ['setting_key', 'string', {}, { is_nullable: false }],
+    ['value', 'json'],
+    ['source', 'string'],
+  ], { icon: 'palette', displayTemplate: '{{setting_key}}' });
+
   await ensureContentCollection('site_pages', [
     ['tenant', 'string'],
     ['path', 'string', {}, { is_nullable: false }],

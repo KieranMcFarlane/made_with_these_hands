@@ -236,7 +236,7 @@ async function main() {
   const published = { status: { _eq: 'published' } };
   const tenantOnly = tenantReadFilter();
 
-  for (const collection of ['tenants', 'site_pages', 'page_sections', 'navigation_items']) {
+  for (const collection of ['tenants', 'site_pages', 'page_sections', 'navigation_items', 'brand_settings']) {
     await ensurePermission(policy.id, collection, 'read', {
       permissions: tenantOnly,
       fields: ['*'],
