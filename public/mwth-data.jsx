@@ -330,11 +330,37 @@ function MWTH_MERGE_SITE(site = {}) {
   return {
     ...fallback,
     ...site,
-    sections: {
-      ...(fallback.sections || {}),
-      ...((site && site.sections) || {}),
-    },
+    sections: MWTH_MERGE_SECTIONS(
+      fallback.sections || {},
+      (site && site.sections) || {},
+    ),
   };
+}
+
+function MWTH_MERGE_SECTIONS(fallbackSections = {}, cmsSections = {}) {
+  const sectionKeys = new Set([
+    ...Object.keys(fallbackSections),
+    ...Object.keys(cmsSections),
+  ]);
+
+  return Object.fromEntries(
+    Array.from(sectionKeys, (key) => [
+      key,
+      MWTH_MERGE_SECTION(fallbackSections[key], cmsSections[key]),
+    ]),
+  );
+}
+
+function MWTH_MERGE_SECTION(fallbackSection = {}, cmsSection = {}) {
+  const merged = { ...(fallbackSection || {}) };
+
+  Object.entries(cmsSection || {}).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      merged[key] = value;
+    }
+  });
+
+  return merged;
 }
 
 function MWTH_SECTION_VALUE(section, key, fallback) {
@@ -343,8 +369,28 @@ function MWTH_SECTION_VALUE(section, key, fallback) {
     : fallback;
 }
 
+function MWTH_APPLY_BRAND(brand = {}) {
+  const palette = brand.palette || {};
+  const activeKey = palette.active || 'cream';
+  const active = palette.palettes?.[activeKey];
+  const tokens = active?.tokens || {};
+
+  Object.entries(tokens).forEach(([key, value]) => {
+    if (typeof value === 'string') {
+      document.body.style.setProperty(`--${key.replaceAll('_', '-')}`, value);
+    }
+  });
+
+  const typography = brand.typography || {};
+  if (typography.display?.stack) document.body.style.setProperty('--serif', typography.display.stack);
+  if (typography.body?.stack) document.body.style.setProperty('--sans', typography.body.stack);
+  if (typography.utility?.stack) document.body.style.setProperty('--mono', typography.utility.stack);
+  document.body.dataset.brandPalette = activeKey;
+}
+
 window.MWTH_SET_DATA = (data) => {
   window.MWTH_DATA = MWTH_WITH_CRAFTS(data);
+  MWTH_APPLY_BRAND(window.MWTH_DATA.site?.brand);
   window.MWTH_SECTION = (key) => window.MWTH_DATA.site?.sections?.[key] || MWTH_DATA.site.sections[key] || {};
   window.MWTH_FIELD = (key, field, fallback = '') => MWTH_SECTION_VALUE(window.MWTH_SECTION(key), field, fallback);
   window.MWTH_LIST = (key, field, fallback = []) => {

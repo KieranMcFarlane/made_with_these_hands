@@ -1,2 +1,39 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 @import '../public/mwth-theme.css';
+
+.site-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  opacity: 1;
+  transition: opacity 240ms ease, visibility 240ms ease;
+}
+
+.site-loading span {
+  font-family: var(--serif);
+  font-size: clamp(36px, 6vw, 72px);
+  letter-spacing: -0.035em;
+}
+
+.site-loading small {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.site-loading--complete {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.site-loading--error small {
+  color: var(--accent);
+}

@@ -7,6 +7,10 @@ export default function SiteShell() {
   return (
     <>
       <div id="root" />
+      <div className="site-loading" id="siteLoading" role="status" aria-live="polite">
+        <span>Made With These Hands</span>
+        <small>Opening the journal…</small>
+      </div>
 
       <PageToggle />
 

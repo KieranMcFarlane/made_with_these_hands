@@ -8,10 +8,12 @@
     "start": "next start",
     "directus:bootstrap": "node scripts/bootstrap-directus-mwth.mjs",
     "directus:seed": "node scripts/seed-directus-mwth.mjs",
+    "directus:brand": "node scripts/seed-directus-brand.mjs",
     "directus:site-token": "node scripts/create-directus-site-token.mjs",
     "directus:mcp-user": "node scripts/create-directus-mcp-user.mjs"
   },
   "dependencies": {
+    "@babel/standalone": "^7.29.0",
     "@directus/sdk": "^21.3.0",
     "next": "^16.2.2",
     "react": "^19.2.4",

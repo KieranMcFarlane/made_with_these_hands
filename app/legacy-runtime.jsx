@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
+import Babel from '@babel/standalone';
 
 const files = [
   '/mwth-data.jsx',
@@ -178,21 +179,18 @@ window.__mwthRoot = window.__mwthRoot || ReactDOM.createRoot(document.getElement
 window.__mwthRoot.render(<App />);
 `;
 
-function loadScript(src) {
-  return new Promise((resolve, reject) => {
-    const existing = document.querySelector(`script[src="${src}"]`);
-    if (existing) {
-      resolve();
-      return;
-    }
+function finishLoading(error = null) {
+  const loading = document.getElementById('siteLoading');
+  if (!loading) return;
 
-    const script = document.createElement('script');
-    script.src = src;
-    script.async = true;
-    script.onload = resolve;
-    script.onerror = reject;
-    document.head.appendChild(script);
-  });
+  if (error) {
+    loading.classList.add('site-loading--error');
+    const message = loading.querySelector('small');
+    if (message) message.textContent = 'The journal could not open. Please refresh the page.';
+    return;
+  }
+
+  loading.classList.add('site-loading--complete');
 }
 
 function attachHostControls() {
@@ -238,25 +236,26 @@ export default function LegacyRuntime() {
       window.React = React;
       window.ReactDOM = { createRoot };
 
-      await loadScript('https://unpkg.com/@babel/standalone@7.29.0/babel.min.js');
       const sources = await Promise.all(files.map(async (file) => {
-        const response = await fetch(file);
+        const response = await fetch(file, { cache: 'no-store' });
         if (!response.ok) throw new Error(`Unable to load ${file}`);
         return response.text();
       }));
 
       if (cancelled) return;
 
-      const compiled = window.Babel.transform([...sources, appSource].join('\n\n'), {
+      const compiled = Babel.transform([...sources, appSource].join('\n\n'), {
         presets: ['react'],
       }).code;
 
       Function(compiled)();
       attachHostControls();
+      window.requestAnimationFrame(() => finishLoading());
     }
 
     boot().catch((error) => {
       console.error('Failed to start Made With These Hands', error);
+      finishLoading(error);
     });
 
     return () => {
