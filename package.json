@@ -8,7 +8,8 @@
     "start": "next start",
     "directus:bootstrap": "node scripts/bootstrap-directus-mwth.mjs",
     "directus:seed": "node scripts/seed-directus-mwth.mjs",
-    "directus:site-token": "node scripts/create-directus-site-token.mjs"
+    "directus:site-token": "node scripts/create-directus-site-token.mjs",
+    "directus:mcp-user": "node scripts/create-directus-mcp-user.mjs"
   },
   "dependencies": {
     "@directus/sdk": "^21.3.0",
