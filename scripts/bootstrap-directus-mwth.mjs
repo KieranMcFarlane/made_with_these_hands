@@ -37,6 +37,11 @@ async function fieldExists(collection, field) {
   return result.data.some((item) => item.field === field);
 }
 
+async function relationExists(collection, field) {
+  const result = await request(`/relations/${collection}`);
+  return result.data.some((item) => item.collection === collection && item.field === field);
+}
+
 async function itemExists(collection, filter) {
   const query = new URLSearchParams({
     filter: JSON.stringify(filter),
@@ -112,6 +117,19 @@ async function ensureAliasField(collection, field, meta = {}) {
     console.warn(`could not create alias field ${collection}.${field}: ${error.message}`);
     console.warn('Create this as a Builder (M2A) field in Directus if your API version requires UI setup.');
   }
+}
+
+async function ensureRelation(relation) {
+  if (await relationExists(relation.collection, relation.field)) {
+    console.log(`relation exists: ${relation.collection}.${relation.field}`);
+    return;
+  }
+
+  await request('/relations', {
+    method: 'POST',
+    body: JSON.stringify(relation),
+  });
+  console.log(`created relation: ${relation.collection}.${relation.field}`);
 }
 
 function interfaceFor(type) {
@@ -320,6 +338,44 @@ async function ensurePageBuilderField() {
       template: '{{item.title}}',
     },
     width: 'full',
+  });
+
+  await ensureContentCollection('site_pages_blocks', [
+    ['site_pages_id', 'integer', { interface: 'select-dropdown-m2o', special: ['m2o'], hidden: true }, { foreign_key_table: 'site_pages', foreign_key_column: 'id' }],
+    ['collection', 'string', { interface: 'select-dropdown', special: ['m2a'], hidden: true }],
+    ['item', 'string', { interface: 'input', special: ['m2a'], hidden: true }],
+    ['sort', 'integer', { interface: 'input', hidden: true }],
+  ], { icon: 'link', displayTemplate: '{{collection}} {{item}}' });
+
+  await ensureRelation({
+    collection: 'site_pages_blocks',
+    field: 'site_pages_id',
+    related_collection: 'site_pages',
+    schema: {
+      table: 'site_pages_blocks',
+      column: 'site_pages_id',
+      foreign_key_table: 'site_pages',
+      foreign_key_column: 'id',
+      on_delete: 'CASCADE',
+    },
+    meta: {
+      many_collection: 'site_pages_blocks',
+      many_field: 'site_pages_id',
+      one_collection: 'site_pages',
+      one_field: 'blocks',
+      one_collection_field: 'collection',
+      one_allowed_collections: [
+        'block_hero',
+        'block_text',
+        'block_media',
+        'block_quote',
+        'block_listing',
+        'block_cta',
+      ],
+      junction_field: 'item',
+      sort_field: 'sort',
+      one_deselect_action: 'delete',
+    },
   });
 }
 
