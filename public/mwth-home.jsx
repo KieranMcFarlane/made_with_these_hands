@@ -67,7 +67,7 @@ function HeroA() {
       <div className="wrap">
         <div className="eyebrow" style={{ marginBottom: 18 }}>{hero.eyebrow}</div>
         <RichText as="h2" html={hero.title} className="hl-serif hl-xl" style={{ margin: 0, maxWidth: '14ch' }} />
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 56, marginTop: 44, alignItems: 'end' }}>
+        <div className="hero-a-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 56, marginTop: 44, alignItems: 'end' }}>
           <Placeholder label={hero.imageAlt} h={520} src={hero.image} objectPosition="center" />
           <div>
             <p className="dek" style={{ margin: '0 0 24px' }}>{hero.dek}</p>

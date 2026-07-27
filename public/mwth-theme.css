@@ -266,6 +266,14 @@ a.link:hover { border-color: var(--ink); }
   .masthead { padding: 14px 20px; }
   .wrap, .wrap-narrow { padding: 0 20px; }
   .section { padding: 48px 0; }
+  .hero-a-grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+    margin-top: 32px !important;
+  }
+  .hero-a-grid > .ph {
+    height: min(110vw, 520px) !important;
+  }
 }
 
 .page-toggle {
