@@ -605,7 +605,8 @@
 
 .podcastPlayerBlock {
   display: grid;
-  gap: clamp(32px, 5vw, 64px);
+  gap: clamp(28px, 4vw, 48px);
+  padding-block: clamp(56px, 7vw, 96px);
 }
 
 .podcastPlayerHeader {
@@ -626,7 +627,7 @@
 }
 
 .podcastMeta {
-  margin: 18px 0 0;
+  margin: 16px 0 0;
   color: var(--ink-60);
   font-family: var(--mono);
   font-size: 10px;
@@ -638,9 +639,9 @@
 .podcastPlayerShell {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 24px;
+  gap: 20px;
   align-items: center;
-  padding: 24px;
+  padding: 22px;
   border: 1px solid currentColor;
   background: var(--paper-2);
 }
@@ -684,7 +685,7 @@
 .podcastTranscript {
   max-width: 78ch;
   border-top: 1px solid var(--rule);
-  padding-top: 18px;
+  padding-top: 16px;
   color: var(--ink-80);
   line-height: 1.7;
 }
@@ -706,9 +707,9 @@
 .podcastRelated {
   display: grid;
   grid-template-columns: minmax(180px, 0.28fr) minmax(0, 1fr);
-  gap: 24px;
+  gap: 20px;
   border-top: 1px solid var(--rule);
-  padding-top: 20px;
+  padding-top: 18px;
 }
 
 .podcastRelated > div {
@@ -719,7 +720,7 @@
 .podcastRelated a {
   display: flex;
   justify-content: space-between;
-  gap: 24px;
+  gap: 20px;
   padding: 14px 0;
   border-bottom: 1px solid var(--rule);
   color: inherit;
