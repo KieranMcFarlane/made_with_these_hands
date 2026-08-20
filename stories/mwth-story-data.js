@@ -5,7 +5,7 @@ export const products = [
     craft: 'Basketry',
     price: 'GBP 220',
     place: 'Kilkenny',
-    image: '/images/mwth-basket-detail.jpg',
+    image: '/images/mwth-product-lobster-pot.jpg',
     meta: 'Willow, hand-shaped and enquiry-led.',
   },
   {
