@@ -1,0 +1,55 @@
+{
+  "collection": "block_slideshow",
+  "label": "Slideshow",
+  "description": "Brand-governed image carousel built from approved shadcn primitives.",
+  "status": "proposed",
+  "version": "0.1.0",
+  "renderer": "SlideshowBlock",
+  "primitives": [
+    "shadcn:carousel",
+    "shadcn:button"
+  ],
+  "variants": [
+    "editorial",
+    "full-width",
+    "thumbnail-rail"
+  ],
+  "slots": [
+    "main",
+    "before-content",
+    "after-content"
+  ],
+  "fields": [
+    {
+      "field": "slides",
+      "type": "json",
+      "required": true
+    },
+    {
+      "field": "variant",
+      "type": "string",
+      "required": true
+    },
+    {
+      "field": "autoplay",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "field": "interval",
+      "type": "integer",
+      "minimum": 4000
+    }
+  ],
+  "accessibility": [
+    "Keyboard-operable controls",
+    "Visible focus states",
+    "Required alternative text",
+    "Reduced-motion autoplay suppression"
+  ],
+  "limits": {
+    "maximum_slides": 12,
+    "autoplay_minimum_interval_ms": 4000
+  },
+  "bespoke_gap": null
+}

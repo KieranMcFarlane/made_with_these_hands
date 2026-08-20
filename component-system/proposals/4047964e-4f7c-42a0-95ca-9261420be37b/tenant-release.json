@@ -1,0 +1,14 @@
+{
+  "proposal_id": "4047964e-4f7c-42a0-95ca-9261420be37b",
+  "component_key": "block_podcast_player",
+  "status": "ready_for_tenant_install",
+  "approval": "not_required_inside_guardrails",
+  "guardrail_mode": "tenant",
+  "requiredGates": [
+    "guardrail check",
+    "reviewed source change",
+    "production build",
+    "tenant deployment"
+  ],
+  "prepared_at": "2026-08-20T08:12:51.615Z"
+}

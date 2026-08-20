@@ -17,7 +17,7 @@ const appSource = `
 const TWEAKS = {
   "hero": "A",
   "palette": "cream",
-  "masthead": "minimal"
+  "masthead": "editorial"
 };
 
 function routeFromLocation() {
@@ -37,7 +37,9 @@ function routeFromLocation() {
 
   const [section, slug] = parts;
   if (section === 'objects') return { ...route, page: slug ? 'product' : 'shop', product: slug || route.product };
-  if (section === 'makers' || section === 'guests') return { ...route, page: 'maker', maker: slug || route.maker };
+  if (section === 'makers' || section === 'guests') {
+    return { ...route, page: slug ? 'maker' : 'artists', maker: slug || route.maker };
+  }
   if (section === 'about' || section === 'bio' || section === 'hugh') return { ...route, page: 'hugh' };
   if (section === 'podcast') return { ...route, page: slug ? 'episode' : 'podcasts', episode: slug || route.episode, maker: slug || route.maker };
   if (section === 'journal' || section === 'blog') return { ...route, page: slug ? 'blog-post' : 'blog', post: slug || route.post };
@@ -152,7 +154,7 @@ function App() {
   if (page === 'blog')     return <><window.BlogPage /><window.EnquiryDrawer /></>;
   if (page === 'blog-post') return <><window.BlogPostPage post={MWTH_BY_POST(context.post)} /><window.EnquiryDrawer /></>;
   if (page === 'artists')  return <><window.ArtistsPage /><window.EnquiryDrawer /></>;
-  if (page === 'podcasts') return <><window.PodcastArchivePage /><window.EnquiryDrawer /></>;
+  if (page === 'podcasts') return <><window.PodcastArchivePage mastheadMode={tweaks.masthead} /><window.EnquiryDrawer /></>;
   if (page === 'craft')    return <><window.CraftPage craft={MWTH_BY_CRAFT(context.craft)} /><window.EnquiryDrawer /></>;
   if (page === 'commissions') return <><window.CommissionsPage /><window.EnquiryDrawer /></>;
   void dataVersion;

@@ -1,0 +1,12 @@
+{
+  "proposal_id": "4047964e-4f7c-42a0-95ca-9261420be37b",
+  "component_key": "block_podcast_player",
+  "status": "awaiting_human_approval",
+  "requiredGates": [
+    "Directus approval",
+    "reviewed source change",
+    "production build",
+    "CI deployment"
+  ],
+  "prepared_at": "2026-08-18T07:18:52.208Z"
+}

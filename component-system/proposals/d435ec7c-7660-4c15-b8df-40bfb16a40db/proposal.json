@@ -1,0 +1,104 @@
+{
+  "id": "d435ec7c-7660-4c15-b8df-40bfb16a40db",
+  "request": "Demonstrate the governed shadcn-first slideshow component workflow from proposal through human approval gate.",
+  "component_key": "block_slideshow",
+  "requested_by": "Codex on behalf of the workspace owner",
+  "status": "published",
+  "brand_contract_version": "1.0.0",
+  "created_at": "2026-07-27T15:29:18.448Z",
+  "directus_id": 1,
+  "proposal": {
+    "collection": "block_slideshow",
+    "label": "Slideshow",
+    "description": "Brand-governed image carousel built from approved shadcn primitives.",
+    "status": "proposed",
+    "version": "0.1.0",
+    "renderer": "SlideshowBlock",
+    "primitives": [
+      "shadcn:carousel",
+      "shadcn:button"
+    ],
+    "variants": [
+      "editorial",
+      "full-width",
+      "thumbnail-rail"
+    ],
+    "slots": [
+      "main",
+      "before-content",
+      "after-content"
+    ],
+    "fields": [
+      {
+        "field": "slides",
+        "type": "json",
+        "required": true
+      },
+      {
+        "field": "variant",
+        "type": "string",
+        "required": true
+      },
+      {
+        "field": "autoplay",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "field": "interval",
+        "type": "integer",
+        "minimum": 4000
+      }
+    ],
+    "accessibility": [
+      "Keyboard-operable controls",
+      "Visible focus states",
+      "Required alternative text",
+      "Reduced-motion autoplay suppression"
+    ],
+    "limits": {
+      "maximum_slides": 12,
+      "autoplay_minimum_interval_ms": 4000
+    },
+    "bespoke_gap": null
+  },
+  "updated_at": "2026-07-27T16:28:27.300Z",
+  "validation_summary": {
+    "ok": true,
+    "results": [
+      {
+        "command": "npm run components:validate",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 components:validate\n> npm run components:validate-brand && node scripts/validate-components.mjs\n\n\n> made-with-these-hands@0.1.0 components:validate-brand\n> node scripts/validate-brand-contract.mjs\n\nBrand contract 1.0.0 is valid.\nComponent manifest 1.0.0 is valid (7 components)."
+      },
+      {
+        "command": "npm run components:validate-live",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 components:validate-live\n> node --env-file-if-exists=.env.local scripts/validate-directus-component-system.mjs\n\nLive Directus component system is valid (7 approved components, manifest 1.0.0)."
+      },
+      {
+        "command": "npm run components:test",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 components:test\n> node --test component-system/tests/*.test.mjs\n\nTAP version 13\n# Subtest: approved collections are unique and resolvable\nok 1 - approved collections are unique and resolvable\n  ---\n  duration_ms: 1.133709\n  type: 'test'\n  ...\n# Subtest: slideshow contract enforces safe variants, slots, and limits\nok 2 - slideshow contract enforces safe variants, slots, and limits\n  ---\n  duration_ms: 1.087414\n  type: 'test'\n  ...\n# Subtest: CMS contracts never include executable source\nok 3 - CMS contracts never include executable source\n  ---\n  duration_ms: 0.427078\n  type: 'test'\n  ...\n# Subtest: component publication cannot advance before approval and only publishes the allowed transition\nok 4 - component publication cannot advance before approval and only publishes the allowed transition\n  ---\n  duration_ms: 417.943292\n  type: 'test'\n  ...\n# Subtest: component factory exposes the governed portable MCP contract\nok 5 - component factory exposes the governed portable MCP contract\n  ---\n  duration_ms: 283.809518\n  type: 'test'\n  ...\n# Subtest: slideshow normalization enforces the manifest limit and preserves accessible metadata\nok 6 - slideshow normalization enforces the manifest limit and preserves accessible metadata\n  ---\n  duration_ms: 1.761461\n  type: 'test'\n  ...\n# Subtest: slideshow autoplay never runs for reduced motion, paused playback, or one slide\nok 7 - slideshow autoplay never runs for reduced motion, paused playback, or one slide\n  ---\n  duration_ms: 0.264716\n  type: 'test'\n  ...\n# Subtest: slideshow interval and index helpers enforce safe boundaries\nok 8 - slideshow interval and index helpers enforce safe boundaries\n  ---\n  duration_ms: 0.202739\n  type: 'test'\n  ...\n1..8\n# tests 8\n# suites 0\n# pass 8\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 684.48927"
+      },
+      {
+        "command": "npm audit --audit-level=high",
+        "ok": true,
+        "output": "found 0 vulnerabilities"
+      },
+      {
+        "command": "npm run build",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 build\n> next build\n\n▲ Next.js 16.2.12 (Turbopack)\n- Environments: .env.local\n\n  Creating an optimized production build ...\n✓ Compiled successfully in 12.0s\n  Running TypeScript ...\n  Finished TypeScript in 304ms ...\n  Collecting page data using 7 workers ...\n  Generating static pages using 7 workers (0/5) ...\n  Generating static pages using 7 workers (1/5) \r\n  Generating static pages using 7 workers (2/5) \r\n  Generating static pages using 7 workers (3/5) \r\n✓ Generating static pages using 7 workers (5/5) in 492ms\n  Finalizing page optimization ...\n\nRoute (app)\n┌ ○ /\n├ ○ /_not-found\n├ ƒ /[...slug]\n├ ƒ /api/assets/[id]\n├ ƒ /api/comments\n├ ƒ /api/enquiries\n├ ƒ /api/mwth-data\n├ ƒ /brand\n├ ƒ /brand/proposals/[id]\n├ ○ /robots.txt\n└ ○ /sitemap.xml\n\n\n○  (Static)   prerendered as static content\nƒ  (Dynamic)  server-rendered on demand"
+      },
+      {
+        "command": "npm run components:smoke",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 components:smoke\n> node --env-file-if-exists=.env.local scripts/smoke-test-built-site.mjs\n\nProduction smoke test passed for 29 routes.\n200 /\n200 /about\n200 /brand\n200 /brand/demo\n200 /brand/proposals/d435ec7c-7660-4c15-b8df-40bfb16a40db\n200 /contact\n200 /journal\n200 /journal/the-object-archive\n200 /journal/why-we-record-the-tools\n200 /makers\n200 /makers/hugh-mcneill\n200 /makers/meabh-o-riada\n200 /makers/nuala-finn\n200 /makers/saoirse-doolan\n200 /makers/tomas-kelly\n200 /objects\n200 /objects/bog-oak-spoon\n200 /objects/engraved-decanter\n200 /objects/gathering-basket\n200 /objects/herb-trug\n200 /objects/lead-crystal-tumbler\n200 /objects/lobster-pot-small\n200 /objects/silver-cuff\n200 /podcast\n200 /podcast/042\n200 /podcast/043\n200 /podcast/045\n200 /podcast/046\n200 /podcast/047"
+      }
+    ],
+    "checked_at": "2026-07-27T15:56:04.023Z"
+  },
+  "preview_url": "http://localhost:3000/brand/proposals/d435ec7c-7660-4c15-b8df-40bfb16a40db",
+  "published_at": "2026-07-27T16:28:27.299Z"
+}

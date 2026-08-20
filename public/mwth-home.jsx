@@ -1,15 +1,44 @@
 // Homepage sections — Editorial Documentary, mid-fi
 
-function MastheadMid({ mode = 'editorial' }) {
+function MastheadMid({ mode = 'editorial', collapseOnScroll = true }) {
   const masthead = MWTH_SECTION('masthead');
+  const [collapsed, setCollapsed] = React.useState(mode === 'minimal');
+  const forceMinimal = mode === 'minimal';
+  const isCollapsed = forceMinimal || collapsed;
+
+  React.useEffect(() => {
+    if (!collapseOnScroll || forceMinimal) {
+      setCollapsed(forceMinimal);
+      return undefined;
+    }
+
+    let ticking = false;
+    const update = () => setCollapsed(window.scrollY > 56);
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        update();
+        ticking = false;
+      });
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [collapseOnScroll, forceMinimal]);
+
   return (
-    <header className="masthead" data-mode={mode}>
-      {mode === 'editorial' ? (
-        <>
+    <header
+      className="masthead"
+      data-collapsed={isCollapsed ? 'true' : 'false'}
+      data-collapse-on-scroll={collapseOnScroll ? 'true' : 'false'}
+      data-mode={mode}
+    >
+      <div className="masthead-layer masthead-layer--editorial" aria-hidden={isCollapsed ? 'true' : 'false'}>
+        <div className="masthead-layer-inner">
           <div className="rule">
             <span>{masthead.eyebrow}</span>
             <span>{masthead.dek}</span>
-            <span>{masthead.meta}</span>
           </div>
           <h1 className="title">{masthead.title}</h1>
           <nav className="nav">
@@ -19,9 +48,10 @@ function MastheadMid({ mode = 'editorial' }) {
             <a href="/?page=shop" data-page="shop">Objects</a>
             <a href="/?page=hugh" data-page="hugh">About</a>
           </nav>
-        </>
-      ) : (
-        <>
+        </div>
+      </div>
+      <div className="masthead-layer masthead-layer--compact" aria-hidden={isCollapsed ? 'false' : 'true'}>
+        <div className="masthead-layer-inner">
           <h1 className="title">{masthead.title}</h1>
           <nav className="nav">
             <a href="/?page=craft&craft=glass-engraving" data-page="craft" data-craft="glass-engraving">Craft</a>
@@ -30,10 +60,14 @@ function MastheadMid({ mode = 'editorial' }) {
             <a href="/?page=shop" data-page="shop">Objects</a>
             <a href="/?page=hugh" data-page="hugh">About</a>
           </nav>
-        </>
-      )}
+        </div>
+      </div>
     </header>
   );
+}
+
+function TemplateSlot({ name }) {
+  return <div data-mwth-template-slot={name} />;
 }
 
 
@@ -234,5 +268,5 @@ function FooterMid() {
 
 Object.assign(window, {
   MastheadMid, HeroA, HeroB, Mission, Craft, HughStory,
-  Podcast, ArtistOfWeek, WhyCraft, ShopCTA, FooterMid, Placeholder,
+  Podcast, ArtistOfWeek, WhyCraft, ShopCTA, FooterMid, Placeholder, TemplateSlot,
 });

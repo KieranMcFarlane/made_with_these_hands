@@ -36,7 +36,7 @@ const MWTH_DATA = {
       craft: 'Woodwork',
       place: 'Co. Galway',
       established: '2003',
-      image: null,
+      image: '/images/portuguese-woodworker-maker.png',
       heroLabel: 'Méabh Ó Riada with bog oak in Carraroe',
       dek: 'Bog-oak woodworker in Carraroe. Works with timber held underground since the Bronze Age.',
       practiceTitle: 'Ancient oak, hand tools, and material that refuses haste.',
@@ -304,11 +304,12 @@ function MWTH_CRAFT_SLUG(name) {
 }
 
 function MWTH_WITH_CRAFTS(data) {
+  const fallback = MWTH_DATA || {};
   const next = {
-    makers: Array.isArray(data.makers) ? data.makers : [],
-    products: Array.isArray(data.products) ? data.products : [],
-    episodes: Array.isArray(data.episodes) ? data.episodes : [],
-    posts: Array.isArray(data.posts) && data.posts.length ? data.posts : MWTH_DATA.posts,
+    makers: MWTH_MERGE_COLLECTION(fallback.makers, data.makers),
+    products: MWTH_MERGE_COLLECTION(fallback.products, data.products),
+    episodes: MWTH_MERGE_COLLECTION(fallback.episodes, data.episodes, 'number'),
+    posts: Array.isArray(data.posts) && data.posts.length ? MWTH_MERGE_COLLECTION(fallback.posts, data.posts) : MWTH_DATA.posts,
     site: MWTH_MERGE_SITE(data.site),
   };
 
@@ -323,6 +324,24 @@ function MWTH_WITH_CRAFTS(data) {
     }));
 
   return next;
+}
+
+function MWTH_MERGE_COLLECTION(fallbackItems = [], cmsItems = [], key = 'slug') {
+  if (!Array.isArray(cmsItems) || !cmsItems.length) return Array.isArray(fallbackItems) ? fallbackItems : [];
+  const fallbackByKey = new Map((fallbackItems || []).map((item) => [item && item[key], item]));
+  return cmsItems.map((item) => MWTH_MERGE_RECORD(fallbackByKey.get(item && item[key]), item));
+}
+
+function MWTH_MERGE_RECORD(fallbackRecord = {}, cmsRecord = {}) {
+  const merged = { ...(fallbackRecord || {}) };
+
+  Object.entries(cmsRecord || {}).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      merged[key] = value;
+    }
+  });
+
+  return merged;
 }
 
 function MWTH_MERGE_SITE(site = {}) {

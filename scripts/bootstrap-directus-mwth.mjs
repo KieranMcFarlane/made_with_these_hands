@@ -1,3 +1,9 @@
+import {
+  APPROVED_COMPONENT_COLLECTIONS,
+  APPROVED_COMPONENTS,
+  COMPONENT_SLOTS,
+} from '../component-system/components.mjs';
+
 const directusUrl = process.env.DIRECTUS_URL || 'http://127.0.0.1:8055';
 const token = process.env.DIRECTUS_ADMIN_TOKEN;
 
@@ -37,9 +43,9 @@ async function fieldExists(collection, field) {
   return result.data.some((item) => item.field === field);
 }
 
-async function relationExists(collection, field) {
+async function getRelation(collection, field) {
   const result = await request(`/relations/${collection}`);
-  return result.data.some((item) => item.collection === collection && item.field === field);
+  return result.data.find((item) => item.collection === collection && item.field === field) || null;
 }
 
 async function itemExists(collection, filter) {
@@ -120,7 +126,22 @@ async function ensureAliasField(collection, field, meta = {}) {
 }
 
 async function ensureRelation(relation) {
-  if (await relationExists(relation.collection, relation.field)) {
+  const existing = await getRelation(relation.collection, relation.field);
+  if (existing) {
+    if (relation.meta) {
+      await request(`/relations/${relation.collection}/${relation.field}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          collection: existing.collection,
+          field: existing.field,
+          related_collection: existing.related_collection,
+          schema: existing.schema,
+          meta: relation.meta,
+        }),
+      });
+      console.log(`updated relation: ${relation.collection}.${relation.field}`);
+      return;
+    }
     console.log(`relation exists: ${relation.collection}.${relation.field}`);
     return;
   }
@@ -248,6 +269,53 @@ async function ensureCoreCollections() {
     ['source', 'string'],
   ], { icon: 'palette', displayTemplate: '{{setting_key}}' });
 
+  await ensureContentCollection('component_registry', [
+    ['key', 'string', {}, { is_nullable: false, is_unique: true }],
+    ['label', 'string', {}, { is_nullable: false }],
+    ['description', 'text'],
+    ['block_collection', 'string', {}, { is_nullable: false }],
+    ['status', 'string', choiceField([
+      ['Proposed', 'proposed'],
+      ['Testing', 'testing'],
+      ['Approved', 'approved'],
+      ['Deprecated', 'deprecated'],
+    ], 'Only approved components may be published in the page builder.'), { default_value: 'proposed' }],
+    ['version', 'string', {}, { is_nullable: false }],
+    ['variants', 'json'],
+    ['allowed_slots', 'json'],
+    ['field_contract', 'json'],
+    ['accessibility_contract', 'json'],
+    ['limits', 'json'],
+    ['trusted_open_source', 'json'],
+    ['preview_url', 'string'],
+    ['renderer_key', 'string', {}, { is_nullable: false }],
+    ['approved_by', 'string'],
+    ['approved_at', 'timestamp'],
+  ], { icon: 'widgets', displayTemplate: '{{label}} · {{status}} · v{{version}}' });
+
+  await ensureContentCollection('component_proposals', [
+    ['request', 'text', {}, { is_nullable: false }],
+    ['component_key', 'string', {}, { is_nullable: false }],
+    ['requested_by', 'string'],
+    ['status', 'string', choiceField([
+      ['Proposed', 'proposed'],
+      ['Testing', 'testing'],
+      ['Awaiting approval', 'awaiting_approval'],
+      ['Ready for tenant install', 'ready_for_tenant_install'],
+      ['Approved', 'approved'],
+      ['Rejected', 'rejected'],
+      ['Published', 'published'],
+    ], 'Publishing tools require an approved proposal.'), { default_value: 'proposed' }],
+    ['proposal', 'json'],
+    ['guardrail', 'json'],
+    ['tenant_release', 'json'],
+    ['brand_contract_version', 'string'],
+    ['branch_or_change_id', 'string'],
+    ['validation_summary', 'json'],
+    ['preview_url', 'string'],
+    ['approval', 'json'],
+  ], { icon: 'approval', displayTemplate: '{{component_key}} · {{status}}' });
+
   await ensureContentCollection('site_pages', [
     ['tenant', 'string'],
     ['path', 'string', {}, { is_nullable: false }],
@@ -284,46 +352,49 @@ function baseBlockFields(extraFields = []) {
   ];
 }
 
+function choiceField(choices, note) {
+  return {
+    interface: 'select-dropdown',
+    note,
+    options: {
+      choices: choices.map(([text, value]) => ({ text, value })),
+    },
+  };
+}
+
 async function ensureBlockCollections() {
-  await ensureContentCollection('block_hero', baseBlockFields([
-    ['image', 'uuid'],
-    ['image_alt', 'string'],
-    ['cta_label', 'string'],
-    ['cta_href', 'string'],
-    ['secondary_cta_label', 'string'],
-    ['secondary_cta_href', 'string'],
-  ]), { icon: 'panorama', displayTemplate: '{{title}}' });
+  for (const component of APPROVED_COMPONENTS) {
+    const fields = component.directusFields.map((field) => {
+      const meta = {};
+      if (field.choices) Object.assign(meta, choiceField(field.choices, field.note));
+      if (field.interface) meta.interface = field.interface;
+      if (field.note && !field.choices) meta.note = field.note;
+      if (field.listFields) {
+        meta.options = {
+          fields: field.listFields.map((listField) => ({
+            field: listField.field,
+            name: listField.name,
+            type: listField.type,
+            meta: {
+              interface: listField.interface,
+              required: Boolean(listField.required),
+            },
+          })),
+          template: '{{image_alt}}',
+        };
+      }
+      const schema = {};
+      if (field.required) schema.is_nullable = false;
+      if (field.default !== undefined) schema.default_value = field.default;
+      return [field.name, field.type, meta, schema];
+    });
 
-  await ensureContentCollection('block_text', baseBlockFields([
-    ['body', 'json'],
-    ['alignment', 'string'],
-  ]), { icon: 'notes', displayTemplate: '{{title}}' });
-
-  await ensureContentCollection('block_media', baseBlockFields([
-    ['image', 'uuid'],
-    ['image_alt', 'string'],
-    ['images', 'json'],
-    ['caption', 'text'],
-  ]), { icon: 'image', displayTemplate: '{{title}}' });
-
-  await ensureContentCollection('block_quote', baseBlockFields([
-    ['quote', 'text', {}, { is_nullable: false }],
-    ['quote_attribution', 'string'],
-  ]), { icon: 'format_quote', displayTemplate: '{{quote}}' });
-
-  await ensureContentCollection('block_listing', baseBlockFields([
-    ['listing_type', 'string', {}, { is_nullable: false }],
-    ['craft', 'string'],
-    ['maker', 'string'],
-    ['items_limit', 'integer'],
-  ]), { icon: 'view_list', displayTemplate: '{{listing_type}} - {{title}}' });
-
-  await ensureContentCollection('block_cta', baseBlockFields([
-    ['cta_label', 'string'],
-    ['cta_href', 'string'],
-    ['secondary_cta_label', 'string'],
-    ['secondary_cta_href', 'string'],
-  ]), { icon: 'ads_click', displayTemplate: '{{title}}' });
+    await ensureContentCollection(
+      component.collection,
+      baseBlockFields(fields),
+      { icon: component.icon, displayTemplate: component.displayTemplate },
+    );
+  }
 }
 
 async function ensurePageBuilderField() {
@@ -331,14 +402,7 @@ async function ensurePageBuilderField() {
     interface: 'list-m2a',
     special: ['m2a'],
     options: {
-      collections: [
-        'block_hero',
-        'block_text',
-        'block_media',
-        'block_quote',
-        'block_listing',
-        'block_cta',
-      ],
+      collections: APPROVED_COMPONENT_COLLECTIONS,
     },
     display: 'related-values',
     display_options: {
@@ -352,6 +416,10 @@ async function ensurePageBuilderField() {
     ['collection', 'string', { interface: 'select-dropdown', special: ['m2a'], hidden: true }],
     ['item', 'string', { interface: 'input', special: ['m2a'], hidden: true }],
     ['sort', 'integer', { interface: 'input', hidden: true }],
+    ['slot', 'string', choiceField(
+      COMPONENT_SLOTS.map(({ label, value }) => [label, value]),
+      'Places this block into a controlled template region.',
+    ), { default_value: 'main' }],
   ], { icon: 'link', displayTemplate: '{{collection}} {{item}}' });
 
   await ensureRelation({
@@ -371,14 +439,7 @@ async function ensurePageBuilderField() {
       one_collection: 'site_pages',
       one_field: 'blocks',
       one_collection_field: 'collection',
-      one_allowed_collections: [
-        'block_hero',
-        'block_text',
-        'block_media',
-        'block_quote',
-        'block_listing',
-        'block_cta',
-      ],
+      one_allowed_collections: APPROVED_COMPONENT_COLLECTIONS,
       junction_field: 'item',
       sort_field: 'sort',
       one_deselect_action: 'delete',
@@ -400,6 +461,7 @@ async function main() {
     ensureGenericPage('/podcast', 'podcast_index', 'Field Recordings', 50),
     ensureGenericPage('/journal', 'journal_index', 'Journal', 60),
     ensureGenericPage('/contact', 'contact', 'Contact', 70),
+    ensureGenericPage('/brand', 'brand_book', 'Brand Book', 80),
   ]);
 
   await Promise.all([

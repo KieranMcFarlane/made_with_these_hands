@@ -516,12 +516,15 @@ function HughStoryPage() {
   return (
     <>
       <MastheadMid mode="editorial" />
+      <TemplateSlot name="before-content" />
       <section className="section reveal" data-screen-label="Hugh Hero" style={{ paddingBottom: 40 }}>
         <div className="wrap-narrow"><div className="smallcaps" style={{ marginBottom: 20 }}>{section.eyebrow}</div><RichText as="h1" html={section.title} className="hl-serif hl-xl" style={{ margin: 0, letterSpacing: '-0.02em' }} /><p className="dek" style={{ marginTop: 24 }}>{section.dek}</p></div>
       </section>
       <div className="wrap" style={{ paddingBottom: 56 }}><Placeholder label={section.imageAlt} h={680} src={section.image} objectPosition="center" /><div className="caption mono" style={{ marginTop: 10 }}>{section.imageCaption}</div></div>
       <section className="section reveal" data-screen-label="Hugh Body"><div className="wrap" style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: 72, alignItems: 'start' }}><div className="body" style={{ fontSize: 17, lineHeight: 1.75, color: 'var(--ink-80)' }}>{body.map((paragraph, index) => <p key={index} style={{ marginTop: index === 0 ? 0 : undefined }}>{paragraph}</p>)}{section.quote && <blockquote className="hl-serif italic" style={{ margin: '40px -20px', padding: '28px 28px', fontSize: 26, lineHeight: 1.35, borderLeft: '2px solid var(--accent)', color: 'var(--ink)' }}>&ldquo;{section.quote}&rdquo;</blockquote>}</div><aside style={{ position: 'sticky', top: 28 }}><div style={{ padding: 28, background: 'var(--paper-2)' }}><div className="smallcaps" style={{ marginBottom: 14 }}>The Workshop</div>{stats.map(([k, v]) => <div key={k} style={{ display: 'grid', gridTemplateColumns: '1fr auto', padding: '10px 0', borderBottom: '1px solid var(--rule)', fontSize: 13 }}><span className="smallcaps" style={{ fontSize: 10 }}>{k}</span><span className="hl-serif" style={{ fontSize: 15 }}>{v}</span></div>)}<a className="btn" href="/?page=commissions" data-page="commissions" style={{ marginTop: 20, width: '100%', justifyContent: 'center' }}>Enquire about a commission</a></div><Placeholder label="Detail - Hugh hands at the wheel" h={260} src={section.image} objectPosition="center" style={{ marginTop: 20 }} /></aside></div></section>
       <section className="section reveal" data-screen-label="Hugh Timeline" style={{ background: 'var(--paper-2)', borderTop: '1px solid var(--rule)', borderBottom: '1px solid var(--rule)' }}><div className="wrap"><div className="section-head"><span className="num">-</span><span className="line" /><span className="label">A selected chronology</span></div><div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 28 }}>{timeline.map(([y, t, d]) => <div key={y} style={{ borderTop: '1px solid var(--ink)', paddingTop: 16 }}><div className="mono" style={{ fontSize: 12, color: 'var(--accent)' }}>{y}</div><div className="hl-serif" style={{ fontSize: 18, marginTop: 8 }}>{t}</div><div className="caption" style={{ marginTop: 6 }}>{d}</div></div>)}</div></div></section>
+      <TemplateSlot name="after-content" />
+      <TemplateSlot name="related-content" />
       <FooterMid />
     </>
   );
@@ -691,7 +694,8 @@ function ShopPage() {
   return (
     <>
       <MastheadMid mode="editorial" />
-            <section className="section reveal" data-screen-label="Shop Head" style={{ paddingBottom: 32 }}>
+      <TemplateSlot name="before-content" />
+      <section className="section reveal" data-screen-label="Shop Head" style={{ paddingBottom: 32 }}>
         <div className="wrap">
           <div className="smallcaps" style={{ marginBottom: 18 }}>{section.eyebrow}</div>
           <RichText as="h1" html={section.title} className="hl-serif hl-xl" style={{ margin: 0, maxWidth: '16ch' }} />
@@ -723,6 +727,8 @@ function ShopPage() {
           </div>
         </div>
       </section>
+      <TemplateSlot name="after-content" />
+      <TemplateSlot name="related-content" />
       <FooterMid />
     </>
   );
@@ -737,6 +743,7 @@ function DataProductPage({ product = MWTH_BY_PRODUCT('lobster-pot-small') }) {
   return (
     <>
       <MastheadMid mode="editorial" />
+      <TemplateSlot name="before-content" />
       <div className="wrap" style={{ padding: '24px 40px', fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--ink-60)' }}>
         <a href="/?page=shop" data-page="shop" style={{ color: 'inherit' }}>Objects</a>
         &nbsp;/&nbsp;<CraftLink craft={MWTH_BY_CRAFT(product.craft.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))} style={{ color: 'inherit' }}>{product.craft}</CraftLink>
@@ -794,6 +801,8 @@ function DataProductPage({ product = MWTH_BY_PRODUCT('lobster-pot-small') }) {
           </div>
         </section>
       )}
+      <TemplateSlot name="after-content" />
+      <TemplateSlot name="related-content" />
       <FooterMid />
     </>
   );
@@ -807,6 +816,7 @@ function DataMakerPage({ maker = MWTH_BY_MAKER('saoirse-doolan') }) {
   return (
     <>
       <MastheadMid mode="editorial" />
+      <TemplateSlot name="before-content" />
       <section className="section reveal" data-screen-label="Maker Hero" style={{ paddingBottom: 40 }}>
         <div className="wrap" style={{ display: 'grid', gridTemplateColumns: '1fr 1.05fr', gap: 64, alignItems: 'end' }}>
           <Placeholder label={maker.heroLabel} h={620} light={!maker.image} src={maker.image} objectPosition="center" />
@@ -869,6 +879,8 @@ function DataMakerPage({ maker = MWTH_BY_MAKER('saoirse-doolan') }) {
           </div>
         </section>
       ))}
+      <TemplateSlot name="after-content" />
+      <TemplateSlot name="related-content" />
       <FooterMid />
     </>
   );
@@ -945,6 +957,7 @@ function DataArtistsPage() {
   return (
     <>
       <MastheadMid mode="editorial" />
+      <TemplateSlot name="before-content" />
       <section className="section reveal" data-screen-label="Artists Head" style={{ paddingBottom: 24 }}>
         <div className="wrap">
           <div className="smallcaps" style={{ marginBottom: 18 }}>The Directory · {data.makers.length} makers in this archive</div>
@@ -979,6 +992,8 @@ function DataArtistsPage() {
           ))}
         </div>
       </section>
+      <TemplateSlot name="after-content" />
+      <TemplateSlot name="related-content" />
       <FooterMid />
     </>
   );

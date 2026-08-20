@@ -1,0 +1,17 @@
+# Made With These Hands Codex MCP template
+#
+# Copy these blocks into the client's Codex MCP configuration.
+# Keep the tokens in the client's shell, OS keychain, or Codex secret store.
+# Do not paste token values into this file.
+
+[mcp_servers.directus]
+url = "https://cms.nakanodigital.com/mcp"
+
+[mcp_servers.directus.headers]
+Authorization = "Bearer ${DIRECTUS_MCP_TOKEN}"
+
+[mcp_servers.component_factory]
+url = "https://factory.nakanodigital.com/mcp"
+
+[mcp_servers.component_factory.headers]
+Authorization = "Bearer ${CLIENT_COMPONENT_FACTORY_TOKEN}"

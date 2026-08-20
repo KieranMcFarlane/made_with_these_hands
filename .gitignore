@@ -1,6 +1,7 @@
 .next
 node_modules
 out
+storybook-static
 .env*
 !.env.example
 npm-debug.log*

@@ -66,16 +66,77 @@ img { max-width: 100%; display: block; }
 
 /* ── Masthead ─────────────────────────────────────────────────── */
 .masthead {
+  --masthead-ease-sine: cubic-bezier(0.37, 0, 0.63, 1);
+  --masthead-expanded-height: 144px;
+  --masthead-collapsed-height: 49px;
+  position: sticky;
+  top: 0;
+  z-index: 80;
   border-bottom: 1px solid var(--ink);
-  padding: 18px 40px 16px;
   background: var(--paper);
+  height: var(--masthead-expanded-height);
+  overflow: hidden;
+  transition:
+    height 320ms var(--masthead-ease-sine),
+    box-shadow 320ms var(--masthead-ease-sine),
+    background-color 320ms var(--masthead-ease-sine);
+  will-change: height;
+}
+.masthead[data-collapsed="true"] {
+  height: var(--masthead-collapsed-height);
+  box-shadow: 0 8px 22px rgb(27 25 24 / 8%);
+}
+.masthead-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  transition:
+    opacity 260ms var(--masthead-ease-sine),
+    transform 320ms var(--masthead-ease-sine),
+    visibility 0ms linear 0ms;
+}
+.masthead-layer-inner {
+  height: 100%;
+  padding: 18px 40px 16px;
+}
+.masthead-layer--editorial {
+  opacity: 1;
+  transform: translateY(0);
+}
+.masthead-layer--compact {
+  opacity: 0;
+  transform: translateY(-8px);
+  visibility: hidden;
+  pointer-events: none;
+}
+.masthead[data-collapsed="true"] .masthead-layer--editorial {
+  opacity: 0;
+  transform: translateY(-12px);
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 220ms var(--masthead-ease-sine),
+    transform 280ms var(--masthead-ease-sine),
+    visibility 0ms linear 280ms;
+}
+.masthead[data-collapsed="true"] .masthead-layer--compact {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    opacity 260ms var(--masthead-ease-sine) 60ms,
+    transform 320ms var(--masthead-ease-sine) 40ms,
+    visibility 0ms linear 0ms;
 }
 .masthead .rule {
-  display: flex; justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   font-family: var(--sans);
   font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--ink-60);
 }
+.masthead .rule span:nth-child(2) { grid-column: 2; }
 .masthead .title {
   font-family: var(--serif);
   font-weight: 400;
@@ -98,10 +159,24 @@ img { max-width: 100%; display: block; }
 .masthead .nav a:hover { border-color: var(--ink); }
 
 /* minimal variant */
-.masthead[data-mode="minimal"] { padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; }
-.masthead[data-mode="minimal"] .rule { display: none; }
-.masthead[data-mode="minimal"] .title { font-size: 22px; margin: 0; text-align: left; letter-spacing: 0; }
-.masthead[data-mode="minimal"] .nav { margin: 0; }
+.masthead-layer--compact .masthead-layer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 40px;
+}
+.masthead-layer--compact .rule { display: none; }
+.masthead-layer--compact .title { font-size: 22px; margin: 0; text-align: left; letter-spacing: 0; }
+.masthead-layer--compact .nav { margin: 0; justify-content: flex-end; }
+
+@media (prefers-reduced-motion: reduce) {
+  .masthead,
+  .masthead-layer,
+  .masthead[data-collapsed="true"] .masthead-layer--editorial,
+  .masthead[data-collapsed="true"] .masthead-layer--compact {
+    transition: none;
+  }
+}
 
 /* ── Typography helpers ──────────────────────────────────────── */
 .hl-serif { font-family: var(--serif); font-weight: 400; letter-spacing: -0.01em; line-height: 1.04; }
@@ -263,7 +338,34 @@ a.link:hover { border-color: var(--ink); }
 
 /* responsive */
 @media (max-width: 860px) {
-  .masthead { padding: 14px 20px; }
+  .masthead {
+    --masthead-expanded-height: 128px;
+    --masthead-collapsed-height: 76px;
+  }
+  .masthead-layer-inner {
+    padding: 14px 20px;
+  }
+  .masthead .title {
+    font-size: clamp(34px, 7vw, 48px);
+    margin: 8px 0 10px;
+  }
+  .masthead .nav {
+    gap: 22px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+  .masthead-layer--compact .masthead-layer-inner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 20px;
+  }
+  .masthead-layer--compact .nav {
+    justify-content: flex-start;
+    gap: 18px;
+    overflow-x: auto;
+    width: 100%;
+  }
   .wrap, .wrap-narrow { padding: 0 20px; }
   .section { padding: 48px 0; }
   .hero-a-grid {

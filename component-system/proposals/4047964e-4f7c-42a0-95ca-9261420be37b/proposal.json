@@ -1,0 +1,274 @@
+{
+  "id": "4047964e-4f7c-42a0-95ca-9261420be37b",
+  "client_id": "local",
+  "request": "Create an approved, reusable podcast player block for Made With These Hands. Use Media Chrome as the recommended open-source audio-control foundation where a shadcn primitive does not cover native podcast playback. The block should connect Hugh McNeill podcast episodes to maker pages, related products, transcripts, and external listening links while remaining editable through Directus MCP.",
+  "component_key": "block_podcast_player",
+  "requested_by": "Codex / Made With These Hands demo branch",
+  "status": "ready_for_tenant_install",
+  "brand_contract_version": "1.0.0",
+  "created_at": "2026-08-18T07:17:35.656Z",
+  "directus_id": 2,
+  "proposal": {
+    "collection": "block_podcast_player",
+    "label": "Podcast Player",
+    "description": "A branded, accessible episode player for Hugh McNeill podcast audio, related maker context, external listen links, transcript prompts, and connected object shelves.",
+    "status": "proposed",
+    "version": "0.1.0",
+    "renderer": "PodcastPlayerBlock",
+    "primitives": [
+      "shadcn:button"
+    ],
+    "trustedOpenSource": [
+      {
+        "package": "media-chrome",
+        "source": "github:muxinc/media-chrome",
+        "license": "MIT",
+        "purpose": "Accessible, brandable native media controls for audio and video playback.",
+        "allowedFor": [
+          "audio-playback",
+          "video-playback",
+          "podcast-player"
+        ]
+      }
+    ],
+    "variants": [
+      "feature",
+      "compact",
+      "sticky-bar"
+    ],
+    "slots": [
+      "main",
+      "before-content",
+      "after-content",
+      "related-content"
+    ],
+    "fields": [
+      {
+        "name": "variant",
+        "type": "string",
+        "default": "feature",
+        "choices": [
+          [
+            "Feature",
+            "feature"
+          ],
+          [
+            "Compact",
+            "compact"
+          ],
+          [
+            "Sticky bar",
+            "sticky-bar"
+          ]
+        ],
+        "note": "Controlled podcast player layout."
+      },
+      {
+        "name": "episode",
+        "type": "string",
+        "required": true,
+        "note": "Episode slug, number, or Directus relation key."
+      },
+      {
+        "name": "episode_title",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "guest",
+        "type": "string"
+      },
+      {
+        "name": "audio_url",
+        "type": "string",
+        "required": true,
+        "note": "Direct audio URL from Podbean/RSS or uploaded Directus file URL. No embed JavaScript."
+      },
+      {
+        "name": "poster_image",
+        "type": "uuid"
+      },
+      {
+        "name": "duration",
+        "type": "string"
+      },
+      {
+        "name": "published_date",
+        "type": "date"
+      },
+      {
+        "name": "transcript",
+        "type": "text"
+      },
+      {
+        "name": "apple_url",
+        "type": "string"
+      },
+      {
+        "name": "spotify_url",
+        "type": "string"
+      },
+      {
+        "name": "podbean_url",
+        "type": "string"
+      },
+      {
+        "name": "related_maker",
+        "type": "string"
+      },
+      {
+        "name": "related_products",
+        "type": "json",
+        "note": "Array of product slugs; maximum 6."
+      }
+    ],
+    "accessibility": [
+      "Use native audio semantics and labelled controls.",
+      "All play, pause, seek, mute, and transcript controls must be keyboard operable.",
+      "Visible focus states are required for every control.",
+      "Do not autoplay audio.",
+      "Provide a text transcript or transcript link where available.",
+      "External listen links must be plain anchors with readable labels."
+    ],
+    "limits": {
+      "actions": 4,
+      "relatedProducts": 6,
+      "autoplay": false,
+      "cmsExecutableContent": false,
+      "externalLibraries": [
+        "media-chrome"
+      ]
+    },
+    "bespoke_gap": "shadcn provides buttons, cards, and layout primitives, but it does not provide accessible native audio playback controls, seek/progress controls, or media controller semantics. Media Chrome is the trusted MIT-licensed open-source media-control package for this gap; CMS content stores only data such as audio URLs, episode metadata, transcript text, and related content slugs.",
+    "guardrail": {
+      "mode": "tenant",
+      "allowed": true,
+      "checks": [
+        {
+          "ok": true,
+          "scope": "slots",
+          "reason": "Slots are inside the tenant page-slot contract."
+        },
+        {
+          "ok": true,
+          "scope": "fields",
+          "reason": "Fields are data-only and CMS-safe."
+        },
+        {
+          "ok": true,
+          "scope": "open_source",
+          "reason": "Trusted package allowlist matched: media-chrome"
+        },
+        {
+          "ok": true,
+          "scope": "media",
+          "reason": "Podcast/audio playback uses the trusted Media Chrome package rather than arbitrary embeds."
+        }
+      ],
+      "trusted_packages": [
+        {
+          "package": "media-chrome",
+          "source": "github:muxinc/media-chrome",
+          "license": "MIT",
+          "purpose": "Accessible, brandable native media controls for audio and video playback.",
+          "allowedFor": [
+            "audio-playback",
+            "video-playback",
+            "podcast-player"
+          ]
+        }
+      ]
+    }
+  },
+  "updated_at": "2026-08-20T08:12:51.616Z",
+  "preview_url": "http://localhost:3038/brand/proposals/4047964e-4f7c-42a0-95ca-9261420be37b",
+  "validation_summary": {
+    "ok": true,
+    "results": [
+      {
+        "command": "npm run components:validate",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 components:validate\n> npm run components:validate-brand && node scripts/validate-components.mjs\n\n\n> made-with-these-hands@0.1.0 components:validate-brand\n> node scripts/validate-brand-contract.mjs\n\nBrand contract 1.0.0 is valid.\nComponent manifest 1.0.0 is valid (7 components)."
+      },
+      {
+        "command": "npm run components:validate-live",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 components:validate-live\n> node --env-file-if-exists=.env.local scripts/validate-directus-component-system.mjs\n\nLive Directus component system is valid (7 approved components, manifest 1.0.0)."
+      },
+      {
+        "command": "npm run components:test",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 components:test\n> node --test component-system/tests/*.test.mjs\n\nTAP version 13\n# Subtest: approved collections are unique and resolvable\nok 1 - approved collections are unique and resolvable\n  ---\n  duration_ms: 1.612697\n  type: 'test'\n  ...\n# Subtest: slideshow contract enforces safe variants, slots, and limits\nok 2 - slideshow contract enforces safe variants, slots, and limits\n  ---\n  duration_ms: 1.37804\n  type: 'test'\n  ...\n# Subtest: CMS contracts never include executable source\nok 3 - CMS contracts never include executable source\n  ---\n  duration_ms: 0.319436\n  type: 'test'\n  ...\n# Subtest: component publication cannot advance before approval and only publishes the allowed transition\nok 4 - component publication cannot advance before approval and only publishes the allowed transition\n  ---\n  duration_ms: 402.213033\n  type: 'test'\n  ...\n# Subtest: remote component factory requires authentication and preserves client isolation context\nok 5 - remote component factory requires authentication and preserves client isolation context\n  ---\n  duration_ms: 132.038013\n  type: 'test'\n  ...\n# Subtest: component factory exposes the governed portable MCP contract\nok 6 - component factory exposes the governed portable MCP contract\n  ---\n  duration_ms: 264.12608\n  type: 'test'\n  ...\n# Subtest: slideshow normalization enforces the manifest limit and preserves accessible metadata\nok 7 - slideshow normalization enforces the manifest limit and preserves accessible metadata\n  ---\n  duration_ms: 1.944528\n  type: 'test'\n  ...\n# Subtest: slideshow autoplay never runs for reduced motion, paused playback, or one slide\nok 8 - slideshow autoplay never runs for reduced motion, paused playback, or one slide\n  ---\n  duration_ms: 0.302878\n  type: 'test'\n  ...\n# Subtest: slideshow interval and index helpers enforce safe boundaries\nok 9 - slideshow interval and index helpers enforce safe boundaries\n  ---\n  duration_ms: 0.196242\n  type: 'test'\n  ...\n1..9\n# tests 9\n# suites 0\n# pass 9\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 656.824257"
+      },
+      {
+        "command": "npm audit --audit-level=high",
+        "ok": true,
+        "output": "found 0 vulnerabilities"
+      },
+      {
+        "command": "npm run build",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 build\n> next build\n\n▲ Next.js 16.2.12 (Turbopack)\n- Environments: .env.local\n\n  Creating an optimized production build ...\n✓ Compiled successfully in 10.7s\n  Running TypeScript ...\n  Finished TypeScript in 185ms ...\n  Collecting page data using 7 workers ...\n  Generating static pages using 7 workers (0/5) ...\n  Generating static pages using 7 workers (1/5) \r\n  Generating static pages using 7 workers (2/5) \r\n  Generating static pages using 7 workers (3/5) \r\n✓ Generating static pages using 7 workers (5/5) in 408ms\n  Finalizing page optimization ...\n\nRoute (app)\n┌ ○ /\n├ ○ /_not-found\n├ ƒ /[...slug]\n├ ƒ /api/assets/[id]\n├ ƒ /api/comments\n├ ƒ /api/enquiries\n├ ƒ /api/mwth-data\n├ ƒ /brand\n├ ƒ /brand/proposals/[id]\n├ ○ /robots.txt\n└ ○ /sitemap.xml\n\n\n○  (Static)   prerendered as static content\nƒ  (Dynamic)  server-rendered on demand"
+      },
+      {
+        "command": "npm run components:smoke",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 components:smoke\n> node --env-file-if-exists=.env.local scripts/smoke-test-built-site.mjs\n\nProduction smoke test passed for 31 routes.\n200 /\n200 /about\n200 /brand\n200 /brand/demo\n200 /brand/proposals/4047964e-4f7c-42a0-95ca-9261420be37b\n200 /brand/proposals/d435ec7c-7660-4c15-b8df-40bfb16a40db\n200 /contact\n200 /dashboard\n200 /journal\n200 /journal/the-object-archive\n200 /journal/why-we-record-the-tools\n200 /makers\n200 /makers/hugh-mcneill\n200 /makers/meabh-o-riada\n200 /makers/nuala-finn\n200 /makers/saoirse-doolan\n200 /makers/tomas-kelly\n200 /objects\n200 /objects/bog-oak-spoon\n200 /objects/engraved-decanter\n200 /objects/gathering-basket\n200 /objects/herb-trug\n200 /objects/lead-crystal-tumbler\n200 /objects/lobster-pot-small\n200 /objects/silver-cuff\n200 /podcast\n200 /podcast/042\n200 /podcast/043\n200 /podcast/045\n200 /podcast/046\n200 /podcast/047"
+      }
+    ],
+    "checked_at": "2026-08-18T07:18:52.081Z"
+  },
+  "guardrail": {
+    "mode": "tenant",
+    "allowed": true,
+    "checks": [
+      {
+        "ok": true,
+        "scope": "slots",
+        "reason": "Slots are inside the tenant page-slot contract."
+      },
+      {
+        "ok": true,
+        "scope": "fields",
+        "reason": "Fields are data-only and CMS-safe."
+      },
+      {
+        "ok": true,
+        "scope": "open_source",
+        "reason": "Trusted package allowlist matched: media-chrome"
+      },
+      {
+        "ok": true,
+        "scope": "media",
+        "reason": "Podcast/audio playback uses the trusted Media Chrome package rather than arbitrary embeds."
+      }
+    ],
+    "trusted_packages": [
+      {
+        "package": "media-chrome",
+        "source": "github:muxinc/media-chrome",
+        "license": "MIT",
+        "purpose": "Accessible, brandable native media controls for audio and video playback.",
+        "allowedFor": [
+          "audio-playback",
+          "video-playback",
+          "podcast-player"
+        ]
+      }
+    ]
+  },
+  "tenant_release": {
+    "proposal_id": "4047964e-4f7c-42a0-95ca-9261420be37b",
+    "component_key": "block_podcast_player",
+    "status": "ready_for_tenant_install",
+    "approval": "not_required_inside_guardrails",
+    "guardrail_mode": "tenant",
+    "requiredGates": [
+      "guardrail check",
+      "reviewed source change",
+      "production build",
+      "tenant deployment"
+    ],
+    "prepared_at": "2026-08-20T08:12:51.615Z"
+  }
+}

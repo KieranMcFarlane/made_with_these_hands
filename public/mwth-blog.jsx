@@ -26,6 +26,7 @@ function BlogPage() {
   return (
     <>
       <MastheadMid mode="editorial" />
+      <TemplateSlot name="before-content" />
       <section className="section reveal" data-screen-label="Blog Head" style={{ paddingBottom: 32 }}>
         <div className="wrap">
 <div className="smallcaps" style={{ marginBottom: 18 }}>{section.eyebrow}</div>
@@ -56,6 +57,8 @@ function BlogPage() {
           </div>
         </div>
       </section>
+      <TemplateSlot name="after-content" />
+      <TemplateSlot name="related-content" />
       <FooterMid />
     </>
   );
@@ -67,6 +70,7 @@ function BlogPostPage({ post = MWTH_BY_POST() }) {
   return (
     <>
       <MastheadMid mode="editorial" />
+      <TemplateSlot name="before-content" />
       <article>
         <section className="section reveal" data-screen-label="Post Title" style={{ paddingBottom: 38 }}>
           <div className="wrap-narrow">
@@ -96,6 +100,8 @@ function BlogPostPage({ post = MWTH_BY_POST() }) {
           </div>
         </section>
       </article>
+      <TemplateSlot name="after-content" />
+      <TemplateSlot name="related-content" />
       <FooterMid />
     </>
   );

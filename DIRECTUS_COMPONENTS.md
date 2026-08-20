@@ -35,9 +35,92 @@ allowed collections:
   block_quote
   block_listing
   block_cta
+  block_slideshow
 ```
 
 This creates a Many-to-Any relationship from a page to ordered block items. Agents should edit the target block item, not duplicate whole pages.
+
+## Frontend Rendering Contract
+
+Every published `site_pages` record is addressable by its `path`. The Next.js catch-all route reads that record, keeps the Builder order, and dispatches each item by its collection:
+
+```text
+block_hero    -> Hero
+block_text    -> Text
+block_media   -> Media
+block_quote   -> Quote
+block_listing -> Listing
+block_cta     -> Call to action
+block_slideshow -> Slideshow
+```
+
+This means a client can create, compose, reorder, edit, and publish pages in Directus without changing frontend code. Directus MCP operates on the same records and relationships.
+
+The Brand Book at `/brand` is the visual catalogue for these supported components. It is not the renderer for ordinary pages.
+
+Frontend code is only required when introducing a new block collection, new component behaviour, or a field that an existing component does not yet render.
+
+New component work is governed by `component-system/components.mjs` and the Component Factory MCP server. The manifest is the single source for Directus bootstrap, Builder collections, permissions, hydration, the frontend catalogue, and the Brand Book. Component proposals prefer shadcn primitives and require validation plus human approval before release.
+
+## Controlled Variants and Template Slots
+
+Variants are dropdowns, not freeform style values. They increase composition options while keeping the approved design system:
+
+```text
+block_hero.variant     split | cover | minimal
+block_text.variant     left | centered | two-column
+block_media.variant    full-width | figure | gallery
+block_listing.variant  grid | featured | archive
+block_cta.variant      panel | band
+block_slideshow.variant editorial | full-width | thumbnail-rail
+```
+
+Each `site_pages_blocks` junction item also has a controlled `slot`:
+
+```text
+main
+before-content
+after-content
+related-content
+```
+
+The generic page renderer consumes these slots in that order. Existing junction rows without a stored slot safely fall back to `main`, and existing blocks without a stored variant use their original layout.
+
+The core archive, static, and detail routes are hybrid `site_pages` templates. Their structured records and legacy layouts remain the source of core content; Builder blocks provide optional supporting sections around them:
+
+```text
+about
+contact
+objects_index
+makers_index
+podcast_index
+journal_index
+product_detail
+maker_detail
+episode_detail
+post_detail
+```
+
+```text
+before-content   after the masthead, before the structured record
+main             safe fallback; rendered after the structured record
+after-content    after the structured record
+related-content  after supporting content, before the footer
+```
+
+Published index/static pages, products, makers, episodes, and posts have corresponding published `site_pages` records. New editorial records should receive the same detail-page record as part of their publishing workflow.
+
+## Client Page Workflow
+
+```text
+1. Create a site_pages record with a unique path.
+2. Keep the page in draft while composing.
+3. Add blocks through the Builder field.
+4. Edit block content and accessible image text.
+5. Drag blocks into the intended order.
+6. Change the page status to published.
+7. Visit the configured path on the website.
+```
 
 ## Core Page Fields
 
@@ -94,6 +177,7 @@ Use `key` only when the block should also feed an existing keyed frontend sectio
 ### block_hero
 
 ```text
+variant
 image
 image_alt
 cta_label
@@ -105,6 +189,7 @@ secondary_cta_href
 ### block_text
 
 ```text
+variant
 body
 alignment
 ```
@@ -114,6 +199,7 @@ alignment
 ### block_media
 
 ```text
+variant
 image
 image_alt
 images
@@ -132,6 +218,7 @@ quote_attribution
 ### block_listing
 
 ```text
+variant
 listing_type
 craft
 maker
@@ -153,11 +240,29 @@ related_posts
 ### block_cta
 
 ```text
+variant
 cta_label
 cta_href
 secondary_cta_label
 secondary_cta_href
 ```
+
+### block_slideshow
+
+```text
+variant
+slides
+  image
+  image_alt
+  caption
+  credit
+show_captions
+show_counter
+autoplay
+interval
+```
+
+The slideshow uses the approved shadcn Carousel and Button primitives. It supports swipe and keyboard navigation, visible focus, reduced-motion preferences, a maximum of 12 slides, and an autoplay interval of at least four seconds.
 
 ## Editorial Collections
 
@@ -307,4 +412,3 @@ Keep comments moderated by status.
 Store SEO title and description on public records.
 Use tenant filtering or tenant-scoped Directus roles.
 ```
-

@@ -5,6 +5,17 @@
       "headers": {
         "Authorization": "Bearer ${DIRECTUS_MCP_TOKEN}"
       }
+    },
+    "component-factory": {
+      "command": "node",
+      "args": [
+        "/absolute/path/to/made_with_these_hands/tools/component-factory-mcp/index.mjs"
+      ],
+      "env": {
+        "DIRECTUS_URL": "https://your-directus.example.com",
+        "DIRECTUS_COMPONENT_FACTORY_TOKEN": "${DIRECTUS_COMPONENT_FACTORY_TOKEN}",
+        "COMPONENT_FACTORY_SITE_URL": "https://your-site.example.com"
+      }
     }
   }
 }
