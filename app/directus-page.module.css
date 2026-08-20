@@ -653,9 +653,8 @@
 
 .podcastPlayerShell {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 20px;
-  align-items: center;
+  gap: 16px;
+  align-items: stretch;
   padding: 22px;
   border: 1px solid currentColor;
   background: var(--paper-2);
@@ -663,10 +662,12 @@
 
 .mediaController {
   display: block;
+  width: 100%;
   min-width: 0;
   --media-primary-color: var(--ink);
   --media-secondary-color: var(--paper);
-  --media-control-background: transparent;
+  --media-background-color: var(--paper);
+  --media-control-background: var(--paper);
   --media-control-hover-background: var(--paper-3);
   --media-range-track-background: var(--ink-20);
   --media-range-bar-color: var(--ink);
@@ -674,6 +675,7 @@
 }
 
 .mediaControlBar {
+  width: 100%;
   min-height: 52px;
   border: 1px solid var(--rule);
   background: var(--paper);
