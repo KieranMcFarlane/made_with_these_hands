@@ -12,8 +12,16 @@ function MastheadMid({ mode = 'editorial', collapseOnScroll = true }) {
       return undefined;
     }
 
+    const collapseAfter = 112;
+    const expandBefore = 28;
     let ticking = false;
-    const update = () => setCollapsed(window.scrollY > 56);
+    const update = () => {
+      const scrollY = window.scrollY;
+      setCollapsed((current) => {
+        if (current) return scrollY > expandBefore;
+        return scrollY > collapseAfter;
+      });
+    };
     const onScroll = () => {
       if (ticking) return;
       ticking = true;
