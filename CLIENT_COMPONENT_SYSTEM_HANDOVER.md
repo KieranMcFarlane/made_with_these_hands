@@ -69,6 +69,8 @@ The authoritative implementation references are:
 - `COMPONENT_INVENTORY.md`
 - `handover/migration-workflow.md`
 - `handover/migration-intake-template.md`
+- `handover/migration-intake.example.json`
+- `component-system/schemas/migration-intake.schema.json`
 - `tools/component-factory-mcp/README.md`
 - `deploy/component-factory/README.md`
 

@@ -190,6 +190,7 @@ a rollback path.
 Every migrated component/page should pass:
 
 ```bash
+npm run migration:validate -- handover/client-name.intake.json
 npm run components:test
 npm run registry:validate
 npm run build
@@ -214,6 +215,8 @@ Use Storybook to inspect:
 ### 8. Configure Client Codex
 
 Generate a client-specific TOML from `handover/codex-mcp.example.toml`.
+Generate a client-specific migration intake JSON from
+`handover/migration-intake.example.json` and validate it before onboarding.
 
 The client should receive:
 
@@ -264,4 +267,3 @@ A migration is ready when:
 - build and component tests pass;
 - the owner can complete one content edit and one draft component operation in
   Codex without developer intervention.
-

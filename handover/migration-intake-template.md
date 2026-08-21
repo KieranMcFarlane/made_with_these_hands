@@ -3,6 +3,13 @@
 Use this for every client before converting an existing site or Claude design
 output into the Directus and Component Factory system.
 
+For machine-readable onboarding, copy
+`handover/migration-intake.example.json`, fill it for the client, and run:
+
+```bash
+npm run migration:validate -- handover/client-name.intake.json
+```
+
 ## Client
 
 | Field | Notes |
@@ -118,4 +125,3 @@ Only fill this when approved blocks cannot cover the requirement.
 - [ ] `npm run build` passes.
 - [ ] Client can edit one content record.
 - [ ] Client can draft or reorder one approved page block.
-
