@@ -398,6 +398,7 @@ server.registerTool(
       const created = await directusRequest('/items/component_proposals', {
         method: 'POST',
         body: JSON.stringify({
+          tenant: clientId,
           request,
           component_key,
           requested_by: proposal.requested_by,

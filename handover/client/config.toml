@@ -1,8 +1,4 @@
-# Made With These Hands Codex MCP template
-#
-# Copy these blocks into the client's Codex MCP configuration.
-# Keep the tokens in the client's shell, OS keychain, or Codex secret store.
-# Do not paste token values into this file.
+# Install as .codex/config.toml in Hugh's trusted Made With These Hands project.
 
 [mcp_servers.directus]
 url = "https://cms.nakanodigital.com/mcp"

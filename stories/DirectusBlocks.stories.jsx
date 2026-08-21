@@ -2,9 +2,12 @@ import { DirectusBlock, DirectusBlocks } from '../app/directus-blocks';
 import {
   block,
   content,
+  ctaBlock,
   heroBlock,
   listingBlock,
+  mediaBlock,
   podcastItem,
+  quoteBlock,
   slideshowItem,
   textBlock,
 } from './mwth-story-data';
@@ -37,9 +40,30 @@ export const Text = {
   },
 };
 
+export const Media = {
+  args: {
+    block: mediaBlock,
+    content,
+  },
+};
+
+export const Quote = {
+  args: {
+    block: quoteBlock,
+    content,
+  },
+};
+
 export const Listing = {
   args: {
     block: listingBlock,
+    content,
+  },
+};
+
+export const CallToAction = {
+  args: {
+    block: ctaBlock,
     content,
   },
 };
@@ -50,9 +74,12 @@ export const PageSequence = {
       blocks={[
         heroBlock,
         textBlock,
-        listingBlock,
-        block('block_slideshow', slideshowItem, { sort: 40 }),
-        block('block_podcast_player', podcastItem, { sort: 50 }),
+        { ...mediaBlock, sort: 30 },
+        { ...quoteBlock, sort: 40 },
+        { ...listingBlock, sort: 50 },
+        block('block_slideshow', slideshowItem, { sort: 60 }),
+        block('block_podcast_player', podcastItem, { sort: 70 }),
+        { ...ctaBlock, sort: 80 },
       ]}
       content={content}
       slot="main"

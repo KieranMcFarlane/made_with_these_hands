@@ -1,7 +1,8 @@
+import { notFound } from 'next/navigation';
+
 import { getMwthPage } from '../../lib/directus';
 import DirectusHybridTemplate, { HYBRID_PAGE_TYPES } from '../directus-detail-template';
 import DirectusPage from '../directus-page';
-import SiteShell from '../site-shell';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,5 +33,5 @@ export default async function CatchAllPage({ params }) {
     return <DirectusHybridTemplate page={page} />;
   }
   if (page) return <DirectusPage page={page} />;
-  return <SiteShell />;
+  notFound();
 }

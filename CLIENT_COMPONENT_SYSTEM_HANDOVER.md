@@ -44,9 +44,11 @@ safe rendering and behaviour.
 The current implementation provides:
 
 - a tenant-aware `site_pages` collection;
-- an ordered Directus v12 Builder field at `site_pages.blocks`;
-- seven approved block collections: Hero, Text, Media, Quote, Listing, Call to
+- an ordered Directus Builder field at `site_pages.blocks`;
+- seven deployed block collections: Hero, Text, Media, Quote, Listing, Call to
   action, and Slideshow;
+- one governed pending block, Podcast Player, implemented and proven in
+  Storybook but awaiting a Directus collection slot and owner approval;
 - controlled layout variants rather than arbitrary CSS;
 - `main`, `before-content`, `after-content`, and `related-content` slots;
 - hybrid product, maker, episode, and article templates;
@@ -60,6 +62,14 @@ The current implementation provides:
   production build, and published routes;
 - a private single-client Component Factory MCP deployment.
 
+The live runtime is Directus 12.0.2 with native MCP. Directus Core is at its
+`25/25` custom-collection limit and does not enable custom permission rules.
+This deployment is therefore operated as a single-tenant database containing
+only `made-with-these-hands`, with collection-level read/create/update and no
+delete or administration permissions. Do not add another tenant to this
+database. A second client requires a separate Directus database/instance unless
+custom permission rules are licensed.
+
 The authoritative implementation references are:
 
 - `component-system/components.mjs`
@@ -70,6 +80,7 @@ The authoritative implementation references are:
 - `handover/migration-workflow.md`
 - `handover/migration-intake-template.md`
 - `handover/migration-intake.example.json`
+- `handover/nakano-mission-control-demo.md`
 - `component-system/schemas/migration-intake.schema.json`
 - `tools/component-factory-mcp/README.md`
 - `deploy/component-factory/README.md`
@@ -257,19 +268,14 @@ token is used, store it in the client secret manager or environment:
 DIRECTUS_MCP_TOKEN=secret-value
 ```
 
-Example MCP connection shape:
+Codex Streamable HTTP connection:
 
-```json
-{
-  "mcpServers": {
-    "directus": {
-      "url": "https://cms.client.example/mcp",
-      "headers": {
-        "Authorization": "Bearer ${DIRECTUS_MCP_TOKEN}"
-      }
-    }
-  }
-}
+```toml
+[mcp_servers.directus]
+url = "https://cms.client.example/mcp"
+bearer_token_env_var = "DIRECTUS_MCP_TOKEN"
+required = true
+default_tools_approval_mode = "auto"
 ```
 
 Test read, create, update, file upload, Builder ordering, and the expected denial
@@ -370,7 +376,7 @@ enabled_tools = [
   "prepare_component_release",
   "publish_approved_component",
 ]
-default_tools_approval_mode = "writes"
+default_tools_approval_mode = "auto"
 ```
 
 Give the client's coding agent a project instruction equivalent to:
@@ -393,7 +399,7 @@ Verify the affected public route after every change.
 
 Before handover, prove the complete story:
 
-- Directus MCP can list only the intended collections;
+- Directus MCP can list only the intended collection surface;
 - the client can create a draft page;
 - approved blocks can be added and reordered;
 - controlled variants and slots render correctly;
@@ -410,6 +416,10 @@ Before handover, prove the complete story:
 - an approved proposal passes the complete verification gate;
 - production deployment remains a separate authorized action;
 - logs contain no plaintext tokens.
+
+For the current Directus Core deployment, acceptance must also prove that the
+database contains exactly one tenant. Row-level tenant filters and folder
+presets are not available under the active Core entitlement.
 
 For this repository the complete implementation gate is:
 

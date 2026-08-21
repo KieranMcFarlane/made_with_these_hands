@@ -135,6 +135,35 @@ export const textBlock = block('block_text', {
   theme: 'paper-2',
 });
 
+export const mediaBlock = block(
+  'block_media',
+  {
+    key: 'storybook_media',
+    variant: 'figure',
+    eyebrow: 'Documented process',
+    title: 'The evidence stays in the frame.',
+    dek: 'Meaningful imagery carries alternative text, a caption, and a stable editorial ratio.',
+    image_alt: 'Hands engraving a crystal tumbler at a workshop bench',
+    caption: 'Hugh McNeill at the engraving wheel / Made With These Hands',
+    theme: 'paper',
+  },
+  {
+    section: {
+      image: '/images/mwth-hero-glass-engraving.jpg',
+      imageAlt: 'Hands engraving a crystal tumbler at a workshop bench',
+    },
+  },
+);
+
+export const quoteBlock = block('block_quote', {
+  key: 'storybook_quote',
+  eyebrow: 'Field note',
+  title: 'A voice kept close to the work.',
+  quote: 'The wheel teaches you to slow down. You cannot argue with it.',
+  quote_attribution: 'Workshop conversation',
+  theme: 'paper-2',
+});
+
 export const listingBlock = block('block_listing', {
   key: 'storybook_listing',
   variant: 'featured',
@@ -144,6 +173,19 @@ export const listingBlock = block('block_listing', {
   listing_type: 'products',
   items_limit: 3,
   theme: 'paper',
+});
+
+export const ctaBlock = block('block_cta', {
+  key: 'storybook_cta',
+  variant: 'band',
+  eyebrow: 'Continue personally',
+  title: 'Ask about the object, not the checkout.',
+  dek: 'The final action follows the Made With These Hands enquiry-led promise.',
+  cta_label: 'Make an enquiry',
+  cta_href: '/contact',
+  secondary_cta_label: 'Read the journal',
+  secondary_cta_href: '/journal',
+  theme: 'ink',
 });
 
 export const slideshowItem = {

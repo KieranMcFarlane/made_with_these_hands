@@ -31,7 +31,9 @@ SITE_URL=http://localhost:3038
 
 ## Codex TOML
 
-Use [codex-mcp.example.toml](./codex-mcp.example.toml) as the template.
+Use [client/config.toml](./client/config.toml) as the project-scoped template.
+The same server blocks are also available in
+[codex-mcp.example.toml](./codex-mcp.example.toml).
 
 The client machine should provide the token values as environment variables:
 
@@ -42,7 +44,10 @@ export CLIENT_COMPONENT_FACTORY_TOKEN="provided-through-secret-manager"
 
 ## Permission Model
 
-Directus MCP should be scoped to the Made With These Hands tenant.
+The current Directus 12.0.2 Core database is dedicated to Made With These Hands.
+The MCP identity is collection-scoped and has no delete or administration
+rights. Core does not provide the custom row filters required for secure shared
+database multitenancy, so do not add another client tenant to this database.
 
 Allowed:
 
@@ -50,7 +55,8 @@ Allowed:
 - create/update pages;
 - create/update page blocks;
 - reorder `site_pages.blocks`;
-- create/update makers, products, podcast episodes, posts, comments, enquiries, and navigation;
+- create/update makers, products, podcast episodes, posts, and navigation;
+- read and moderate tenant-owned comments and enquiries created by the public site;
 - upload/read media where needed.
 
 Denied:
@@ -93,11 +99,19 @@ Expected result:
 - It creates/updates a proposal, not production frontend code.
 - It explains the brand and approval checks.
 
+The server operator can verify both remote transports without printing either
+credential:
+
+```bash
+npm run client-access:verify
+```
+
 ## Handover Checklist
 
 - Directus is reachable over HTTPS.
 - Directus MCP is enabled in Directus settings.
-- Directus MCP user has tenant-scoped read/create/update permissions.
+- Directus MCP user has collection-scoped read/create/update permissions in the
+  dedicated MWTH database.
 - Directus MCP user has no delete permissions.
 - Site token is separate from MCP token.
 - Component Factory is hosted on HTTPS.
@@ -105,4 +119,8 @@ Expected result:
 - Unauthenticated `/mcp` requests are rejected.
 - Authenticated Component Factory MCP discovery works.
 - `npm run components:validate-live` passes before handover.
+- The server-side `scripts/validate-directus-mcp-policy.mjs` check passes without
+  exposing its admin verification credential to the client.
 - Client Codex can read approved components and create a draft test page.
+- `npm run client-access:verify` proves a real native-MCP tenant read without
+  printing either bearer token.

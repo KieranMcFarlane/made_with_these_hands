@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
+import { APPROVED_COMPONENTS } from '../components.mjs';
 
 const registry = JSON.parse(fs.readFileSync('registry.json', 'utf8'));
 
@@ -47,5 +48,20 @@ test('storybook kit registry item distributes all story files and config', () =>
   for (const file of kit.files) {
     assert.ok(path.isAbsolute(file.target) || file.target.startsWith('~/'), `${file.path} should use an install target`);
     assert.ok(fs.existsSync(file.path), `Registry file does not exist: ${file.path}`);
+  }
+});
+
+test('every approved Directus block is represented in Storybook data', () => {
+  const storySources = [
+    fs.readFileSync('stories/DirectusBlocks.stories.jsx', 'utf8'),
+    fs.readFileSync('stories/mwth-story-data.js', 'utf8'),
+  ].join('\n');
+
+  for (const component of APPROVED_COMPONENTS) {
+    assert.match(
+      storySources,
+      new RegExp(`['\"]${component.collection}['\"]`),
+      `Storybook should represent ${component.collection}`,
+    );
   }
 });

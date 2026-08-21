@@ -1,6 +1,5 @@
 import assert from 'node:assert/strict';
 import {
-  APPROVED_COMPONENT_COLLECTIONS,
   APPROVED_COMPONENTS,
   COMPONENT_MANIFEST_VERSION,
 } from '../component-system/components.mjs';
@@ -55,8 +54,9 @@ function assertDirectusFieldType(actual, expected, label) {
 
 const collections = await request('/collections?limit=-1');
 const collectionNames = new Set(collections.map(({ collection }) => collection));
+const deployedComponents = APPROVED_COMPONENTS.filter(({ collection }) => collectionNames.has(collection));
+const pendingComponents = APPROVED_COMPONENTS.filter(({ collection }) => !collectionNames.has(collection));
 for (const collection of [
-  ...APPROVED_COMPONENT_COLLECTIONS,
   'component_registry',
   'component_proposals',
   'site_pages',
@@ -66,7 +66,7 @@ for (const collection of [
 }
 
 const commonBlockFields = ['tenant', 'status', 'key', 'eyebrow', 'title', 'dek', 'theme'];
-for (const component of APPROVED_COMPONENTS) {
+for (const component of deployedComponents) {
   const fields = await request(`/fields/${component.collection}`);
   const fieldsByName = new Map(fields.map((field) => [field.field, field]));
   for (const field of [...commonBlockFields, ...component.directusFields.map(({ name }) => name)]) {
@@ -99,7 +99,7 @@ const registryQuery = new URLSearchParams({
 const registry = await request(`/items/component_registry?${registryQuery}`);
 const registryByKey = new Map(registry.map((record) => [record.key, record]));
 
-for (const component of APPROVED_COMPONENTS) {
+for (const component of deployedComponents) {
   const record = registryByKey.get(component.collection);
   assert.ok(record, `Missing component_registry record: ${component.collection}`);
   assert.equal(record.status, 'approved', `${component.collection} is not approved in Directus`);
@@ -119,6 +119,20 @@ for (const component of APPROVED_COMPONENTS) {
   assertContractEqual(record.trusted_open_source || [], component.trustedOpenSource || [], `${component.collection}.trusted_open_source`);
 }
 
+if (pendingComponents.length) {
+  const proposalQuery = new URLSearchParams({
+    fields: 'component_key,status',
+    limit: '-1',
+  });
+  const proposals = await request(`/items/component_proposals?${proposalQuery}`);
+  const proposalByKey = new Map(proposals.map((proposal) => [proposal.component_key, proposal]));
+  for (const component of pendingComponents) {
+    const proposal = proposalByKey.get(component.collection);
+    assert.ok(proposal, `${component.collection} is neither deployed nor represented by a governed proposal`);
+    assert.notEqual(proposal.status, 'published', `${component.collection} is marked published without a Directus collection`);
+  }
+}
+
 const relations = await request('/relations/site_pages_blocks');
 const pageBuilderRelation = relations.find(({ collection, field }) => (
   collection === 'site_pages_blocks' && field === 'site_pages_id'
@@ -126,7 +140,7 @@ const pageBuilderRelation = relations.find(({ collection, field }) => (
 assert.ok(pageBuilderRelation, 'The site_pages Builder relation is missing');
 assertContractEqual(
   pageBuilderRelation.meta?.one_allowed_collections,
-  APPROVED_COMPONENT_COLLECTIONS,
+  deployedComponents.map(({ collection }) => collection),
   'site_pages Builder allowed collections',
 );
 
@@ -148,5 +162,10 @@ assert.equal(brandContractValue.component_sources?.fallback, 'bespoke-after-docu
 assert.equal(brandContractValue.nesting?.executable_content_in_cms, false);
 
 console.log(
-  `Live Directus component system is valid (${APPROVED_COMPONENTS.length} approved components, manifest ${COMPONENT_MANIFEST_VERSION}).`,
+  JSON.stringify({
+    ok: true,
+    manifest: COMPONENT_MANIFEST_VERSION,
+    deployed_components: deployedComponents.map(({ collection }) => collection),
+    governed_pending_components: pendingComponents.map(({ collection }) => collection),
+  }, null, 2),
 );

@@ -39,6 +39,7 @@ block_quote
 block_listing
 block_cta
 block_slideshow
+block_podcast_player
 ```
 
 ## Brand

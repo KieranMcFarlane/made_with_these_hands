@@ -11,6 +11,9 @@
     "directus:brand": "node scripts/seed-directus-brand.mjs",
     "directus:brand-page": "node scripts/seed-directus-brand-page.mjs",
     "directus:dashboard-demo": "node --env-file-if-exists=.env.local scripts/seed-directus-dashboard-demo.mjs",
+    "directus:owner-acceptance": "node --env-file-if-exists=.env.local scripts/seed-directus-owner-acceptance.mjs",
+    "directus:podcast-sync": "node --env-file-if-exists=.env.local scripts/sync-podcast-rss.mjs",
+    "directus:content-audit": "node --env-file-if-exists=.env.local scripts/audit-directus-content-readiness.mjs",
     "directus:component-registry": "node scripts/seed-component-registry.mjs",
     "directus:site-token": "node scripts/create-directus-site-token.mjs",
     "directus:mcp-user": "node scripts/create-directus-mcp-user.mjs",
@@ -18,6 +21,7 @@
     "migration:validate": "node scripts/validate-migration-intake.mjs",
     "components:validate": "npm run components:validate-brand && node scripts/validate-components.mjs",
     "components:validate-live": "node --env-file-if-exists=.env.local scripts/validate-directus-component-system.mjs",
+    "components:validate-policy": "node --env-file-if-exists=.env.local scripts/validate-directus-mcp-policy.mjs",
     "components:test": "node --test component-system/tests/*.test.mjs",
     "components:smoke": "node --env-file-if-exists=.env.local scripts/smoke-test-built-site.mjs",
     "components:verify": "npm run components:validate && npm run components:validate-live && npm run components:test && npm audit --audit-level=high && npm run build && npm run components:smoke",
@@ -31,7 +35,9 @@
     "component-factory:remote": "node tools/component-factory-mcp/remote.mjs",
     "component-factory:token": "node tools/component-factory-mcp/generate-client-token.mjs",
     "component-factory:provision-local": "node tools/component-factory-mcp/provision-local-client.mjs",
-    "component-factory:verify-local": "node tools/component-factory-mcp/verify-local-client.mjs"
+    "component-factory:verify-local": "node tools/component-factory-mcp/verify-local-client.mjs",
+    "client-access:verify": "node scripts/verify-client-codex-access.mjs",
+    "client-access:rotate": "node --env-file-if-exists=.env.local scripts/rotate-client-access-tokens.mjs"
   },
   "dependencies": {
     "@babel/standalone": "^7.29.0",
@@ -41,6 +47,8 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.6.0",
+    "fast-xml-parser": "^5.11.0",
+    "html-to-text": "^9.0.5",
     "lucide-react": "^1.27.0",
     "media-chrome": "^4.19.2",
     "next": "^16.2.12",

@@ -681,6 +681,16 @@
   background: var(--paper);
 }
 
+.mediaControllerPlaceholder {
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid var(--rule);
+  background:
+    linear-gradient(var(--ink), var(--ink)) 14px 50% / 10px 14px no-repeat,
+    linear-gradient(var(--ink-20), var(--ink-20)) 40px 50% / calc(100% - 98px) 2px no-repeat,
+    var(--paper);
+}
+
 .podcastPlayerActions {
   display: flex;
   flex-wrap: wrap;

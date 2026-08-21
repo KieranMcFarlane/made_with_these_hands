@@ -139,12 +139,28 @@ function App() {
   }, [context]);
 
   React.useEffect(() => {
+    const elements = Array.from(document.querySelectorAll('.reveal'));
+    const revealVisible = () => {
+      elements.forEach((element) => {
+        const rect = element.getBoundingClientRect();
+        if (rect.top < window.innerHeight + 40 && rect.bottom > -40) {
+          element.classList.add('in');
+        }
+      });
+    };
+
+    revealVisible();
+    if (!('IntersectionObserver' in window)) {
+      elements.forEach((element) => element.classList.add('in'));
+      return undefined;
+    }
+
     const io = new IntersectionObserver((entries) => {
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
     }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    elements.forEach(el => io.observe(el));
     return () => io.disconnect();
-  }, [page, tweaks]);
+  }, [page, tweaks, dataVersion]);
 
   if (page === 'episode')  return <><window.EpisodePage episode={MWTH_BY_EPISODE(context.episode || context.maker)} /><window.EnquiryDrawer /></>;
   if (page === 'shop')     return <><window.ShopPage /><window.EnquiryDrawer /></>;

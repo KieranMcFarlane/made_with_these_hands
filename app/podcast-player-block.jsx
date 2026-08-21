@@ -2,6 +2,7 @@
 
 import 'media-chrome';
 import { ExternalLink } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import styles from './directus-page.module.css';
 
@@ -20,6 +21,7 @@ function externalLinks(item) {
 }
 
 export default function PodcastPlayerBlock({ item = {}, content = {} }) {
+  const [mediaReady, setMediaReady] = useState(false);
   const audioUrl = cleanUrl(item.audio_url);
   const links = externalLinks(item);
   const relatedProducts = Array.isArray(item.related_products) ? item.related_products : [];
@@ -32,6 +34,10 @@ export default function PodcastPlayerBlock({ item = {}, content = {} }) {
     item.duration,
     item.published_date,
   ].filter(Boolean).join(' / ');
+
+  useEffect(() => {
+    setMediaReady(true);
+  }, []);
 
   return (
     <section
@@ -50,7 +56,7 @@ export default function PodcastPlayerBlock({ item = {}, content = {} }) {
       </div>
 
       <div className={styles.podcastPlayerShell}>
-        {audioUrl ? (
+        {audioUrl && mediaReady ? (
           <media-controller audio className={styles.mediaController}>
             <audio
               preload="metadata"
@@ -64,6 +70,8 @@ export default function PodcastPlayerBlock({ item = {}, content = {} }) {
               <media-mute-button aria-label="Mute episode" />
             </media-control-bar>
           </media-controller>
+        ) : audioUrl ? (
+          <div aria-hidden="true" className={styles.mediaControllerPlaceholder} />
         ) : (
           <p className={styles.emptyListing}>No audio URL has been added for this episode yet.</p>
         )}

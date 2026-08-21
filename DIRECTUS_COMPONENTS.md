@@ -1,6 +1,8 @@
-# Directus v12 Content Block Model
+# Directus Content Block Model
 
-This is the canonical content structure for Made With These Hands. It is designed for Directus v12, Directus MCP, and the frontend to work from one predictable model.
+This is the canonical content structure for Made With These Hands. It is
+currently verified against Directus 12.0.2 and its native Streamable HTTP MCP.
+Directus MCP and the frontend work from this one predictable model.
 
 ## Primary Collections
 
@@ -38,6 +40,12 @@ allowed collections:
   block_slideshow
 ```
 
+`block_podcast_player` is implemented in the frontend, represented in Storybook,
+and held in `component_proposals` as `awaiting_approval`. The Directus Core
+instance is at its `25/25` custom-collection limit, so the dedicated collection
+is not deployed. It must remain proposed until collections are consolidated or
+the Directus entitlement changes.
+
 This creates a Many-to-Any relationship from a page to ordered block items. Agents should edit the target block item, not duplicate whole pages.
 
 ## Frontend Rendering Contract
@@ -52,6 +60,7 @@ block_quote   -> Quote
 block_listing -> Listing
 block_cta     -> Call to action
 block_slideshow -> Slideshow
+block_podcast_player -> Podcast player (frontend ready; CMS collection pending)
 ```
 
 This means a client can create, compose, reorder, edit, and publish pages in Directus without changing frontend code. Directus MCP operates on the same records and relationships.

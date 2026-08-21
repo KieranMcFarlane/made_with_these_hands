@@ -413,6 +413,11 @@
           "path": "SHADCN_REGISTRY.md",
           "type": "registry:file",
           "target": "~/SHADCN_REGISTRY.md"
+        },
+        {
+          "path": "handover/nakano-mission-control-demo.md",
+          "type": "registry:file",
+          "target": "~/handover/nakano-mission-control-demo.md"
         }
       ],
       "meta": {

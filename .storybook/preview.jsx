@@ -1,25 +1,19 @@
 import '../app/globals.css';
+import {
+  DEFAULT_BRAND_RECORDS,
+  brandCssVariables,
+  brandFromRecords,
+} from '../lib/brand-settings.mjs';
 
-const brandVars = {
-  '--paper': '#f4efe6',
-  '--paper-2': '#ece6d9',
-  '--paper-3': '#e3ddcf',
-  '--ink': '#1b1918',
-  '--ink-80': '#2e2a27',
-  '--ink-60': '#5a534d',
-  '--ink-40': '#8a827a',
-  '--ink-20': '#c6beb2',
-  '--rule': '#cfc6b5',
-  '--accent': '#2a3f4a',
-  '--white': '#faf6ec',
-  '--serif': '"Cormorant Garamond", "EB Garamond", Georgia, "Times New Roman", serif',
-  '--sans': '"Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif',
-  '--mono': '"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace',
-};
+const brand = brandFromRecords(DEFAULT_BRAND_RECORDS);
+const brandVars = brandCssVariables(brand);
 
 export const decorators = [
   (Story) => (
-    <div style={{ ...brandVars, minHeight: '100vh', background: 'var(--paper)', color: 'var(--ink)' }}>
+    <div
+      data-brand-contract={brand.component_contract.version}
+      style={{ ...brandVars, minHeight: '100vh', background: 'var(--paper)', color: 'var(--ink)' }}
+    >
       <Story />
     </div>
   ),
@@ -27,7 +21,7 @@ export const decorators = [
 
 export const parameters = {
   a11y: {
-    test: 'todo',
+    test: 'error',
   },
   backgrounds: {
     default: 'paper',

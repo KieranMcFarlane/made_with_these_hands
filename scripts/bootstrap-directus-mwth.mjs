@@ -5,11 +5,31 @@ import {
 } from '../component-system/components.mjs';
 
 const directusUrl = process.env.DIRECTUS_URL || 'http://127.0.0.1:8055';
-const token = process.env.DIRECTUS_ADMIN_TOKEN;
+let token = process.env.DIRECTUS_ADMIN_TOKEN;
 
-if (!token) {
-  console.error('DIRECTUS_ADMIN_TOKEN is required.');
-  process.exit(1);
+async function resolveAdminToken() {
+  if (token) {
+    const response = await fetch(`${directusUrl}/users/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (response.ok) return token;
+  }
+
+  const email = process.env.DIRECTUS_ADMIN_EMAIL || process.env.ADMIN_EMAIL;
+  const password = process.env.DIRECTUS_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD;
+  if (!email || !password) {
+    throw new Error('A valid DIRECTUS_ADMIN_TOKEN or Directus admin email/password is required.');
+  }
+  const response = await fetch(`${directusUrl}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+  const body = await response.json().catch(() => null);
+  if (!response.ok || !body?.data?.access_token) {
+    throw new Error(body?.errors?.[0]?.message || 'Directus admin login failed.');
+  }
+  return body.data.access_token;
 }
 
 async function request(path, options = {}) {
@@ -250,6 +270,23 @@ async function ensureContentCollection(collection, fields, options = {}) {
   }
 }
 
+async function ensureProposalTenantOwnership() {
+  const result = await request('/items/component_proposals?fields=id,tenant&limit=-1');
+  for (const proposal of result.data) {
+    if (proposal.tenant) continue;
+    await request(`/items/component_proposals/${proposal.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ tenant: 'made-with-these-hands' }),
+    });
+    console.log(`backfilled component proposal tenant: ${proposal.id}`);
+  }
+  await request('/fields/component_proposals/tenant', {
+    method: 'PATCH',
+    body: JSON.stringify({ schema: { is_nullable: false } }),
+  });
+  console.log('enforced field: component_proposals.tenant is not nullable');
+}
+
 async function ensureCoreCollections() {
   await ensureContentCollection('tenants', [
     ['slug', 'string', {}, { is_nullable: false, is_unique: true }],
@@ -294,6 +331,7 @@ async function ensureCoreCollections() {
   ], { icon: 'widgets', displayTemplate: '{{label}} · {{status}} · v{{version}}' });
 
   await ensureContentCollection('component_proposals', [
+    ['tenant', 'string'],
     ['request', 'text', {}, { is_nullable: false }],
     ['component_key', 'string', {}, { is_nullable: false }],
     ['requested_by', 'string'],
@@ -315,6 +353,7 @@ async function ensureCoreCollections() {
     ['preview_url', 'string'],
     ['approval', 'json'],
   ], { icon: 'approval', displayTemplate: '{{component_key}} · {{status}}' });
+  await ensureProposalTenantOwnership();
 
   await ensureContentCollection('site_pages', [
     ['tenant', 'string'],
@@ -448,6 +487,7 @@ async function ensurePageBuilderField() {
 }
 
 async function main() {
+  token = await resolveAdminToken();
   await ensureCoreCollections();
   await ensureBlockCollections();
   await ensurePageBuilderField();
@@ -528,6 +568,9 @@ async function main() {
     ['audio_url', 'string'],
     ['transcript', 'text'],
     ['transcript_url', 'string'],
+    ['podcast_guid', 'string'],
+    ['podcast_source_url', 'string'],
+    ['podcast_feed_url', 'string'],
     ['chapters', 'json'],
     ['related_products', 'json'],
     ['related_posts', 'json'],
