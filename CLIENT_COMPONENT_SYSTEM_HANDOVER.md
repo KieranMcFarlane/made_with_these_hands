@@ -67,6 +67,8 @@ The authoritative implementation references are:
 - `lib/brand-settings.mjs`
 - `DIRECTUS_COMPONENTS.md`
 - `COMPONENT_INVENTORY.md`
+- `handover/migration-workflow.md`
+- `handover/migration-intake-template.md`
 - `tools/component-factory-mcp/README.md`
 - `deploy/component-factory/README.md`
 
