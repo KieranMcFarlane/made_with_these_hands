@@ -17,10 +17,10 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Check out release
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -53,7 +53,7 @@ jobs:
     environment: production
     steps:
       - name: Check out verified release
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Deploy website and Storybook
         run: bash scripts/deploy-production.sh
