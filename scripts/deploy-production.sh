@@ -26,7 +26,7 @@ rsync -a --delete \
   --exclude 'node_modules/' \
   --exclude 'storybook-static/' \
   --exclude 'public/storybook/' \
-  --exclude '.env*' \
+  --exclude '/.env*' \
   "$GITHUB_WORKSPACE/" "$release_dir/"
 
 cd "$release_dir"
