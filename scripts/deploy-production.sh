@@ -38,7 +38,9 @@ set +a
 npm ci
 npm run registry:validate
 npm run registry:build
-npm run storybook:build -- --output-dir public/storybook
+npm run storybook:build
+mkdir -p public/storybook
+rsync -a --delete storybook-static/ public/storybook/
 npm run build
 
 ln -sfn "$release_dir" "$deploy_root/current.next"
