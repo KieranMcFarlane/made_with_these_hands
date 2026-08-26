@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
 import { APPROVED_COMPONENTS } from '../components.mjs';
+import { COMPONENT_INVENTORY_COUNT, COMPONENT_INVENTORY_GROUPS } from '../../app/component-inventory.js';
 
 const registry = JSON.parse(fs.readFileSync('registry.json', 'utf8'));
 
@@ -63,5 +64,27 @@ test('every approved Directus block is represented in Storybook data', () => {
       new RegExp(`['\"]${component.collection}['\"]`),
       `Storybook should represent ${component.collection}`,
     );
+  }
+});
+
+test('Storybook proves every approved spacing density', () => {
+  const story = fs.readFileSync('stories/DirectusBlocks.stories.jsx', 'utf8');
+  assert.match(story, /Composition \/ spacing densities/);
+  for (const spacing of ['compact', 'standard', 'generous']) {
+    assert.ok(story.includes(`'${spacing}'`), `Missing ${spacing} spacing proof state`);
+  }
+});
+
+test('every component inventory entry links to a concrete proof instance', () => {
+  const entries = COMPONENT_INVENTORY_GROUPS.flatMap((group) => group.components);
+  assert.equal(entries.length, COMPONENT_INVENTORY_COUNT);
+  assert.equal(COMPONENT_INVENTORY_COUNT, 39);
+
+  for (const component of entries) {
+    assert.ok(component.instances?.length, `${component.name} should link to at least one proof instance`);
+    for (const instance of component.instances) {
+      assert.ok(['site', 'storybook'].includes(instance.surface), `${component.name} has an unknown proof surface`);
+      assert.match(instance.href, /^(http:\/\/localhost:3038|\/\?path=\/story\/)/, `${component.name} has an invalid proof link`);
+    }
   }
 });

@@ -11,6 +11,7 @@
     "version",
     "renderer",
     "variants",
+    "spacingModes",
     "slots",
     "fields",
     "accessibility",
@@ -52,6 +53,10 @@
     "icon": { "type": "string" },
     "displayTemplate": { "type": "string" },
     "variants": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+    "spacingModes": {
+      "type": "array",
+      "const": ["compact", "standard", "generous"]
+    },
     "slots": {
       "type": "array",
       "minItems": 1,

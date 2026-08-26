@@ -56,6 +56,10 @@ const collections = await request('/collections?limit=-1');
 const collectionNames = new Set(collections.map(({ collection }) => collection));
 const deployedComponents = APPROVED_COMPONENTS.filter(({ collection }) => collectionNames.has(collection));
 const pendingComponents = APPROVED_COMPONENTS.filter(({ collection }) => !collectionNames.has(collection));
+const sectionFields = await request('/fields/site_sections');
+const genericStorageEnabled = ['component_key', 'schema_version', 'data'].every((required) => (
+  sectionFields.some(({ field }) => field === required)
+));
 for (const collection of [
   'component_registry',
   'component_proposals',
@@ -103,7 +107,7 @@ for (const component of deployedComponents) {
   const record = registryByKey.get(component.collection);
   assert.ok(record, `Missing component_registry record: ${component.collection}`);
   assert.equal(record.status, 'approved', `${component.collection} is not approved in Directus`);
-  assert.equal(record.block_collection, component.collection);
+  assert.equal(record.block_collection, genericStorageEnabled ? 'site_sections' : component.collection);
   assert.equal(record.renderer_key, component.renderer);
   assert.equal(record.version, component.version);
   assert.equal(record.preview_url, `/brand#component-${component.collection}`);
@@ -140,7 +144,10 @@ const pageBuilderRelation = relations.find(({ collection, field }) => (
 assert.ok(pageBuilderRelation, 'The site_pages Builder relation is missing');
 assertContractEqual(
   pageBuilderRelation.meta?.one_allowed_collections,
-  deployedComponents.map(({ collection }) => collection),
+  [
+    ...deployedComponents.map(({ collection }) => collection),
+    ...(genericStorageEnabled ? ['site_sections'] : []),
+  ],
   'site_pages Builder allowed collections',
 );
 
@@ -167,5 +174,6 @@ console.log(
     manifest: COMPONENT_MANIFEST_VERSION,
     deployed_components: deployedComponents.map(({ collection }) => collection),
     governed_pending_components: pendingComponents.map(({ collection }) => collection),
+    generic_storage_enabled: genericStorageEnabled,
   }, null, 2),
 );

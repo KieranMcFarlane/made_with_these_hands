@@ -46,6 +46,8 @@ test('component factory exposes the governed portable MCP contract', async () =>
     assert.ok(workflow.policy.some((rule) => rule.includes('shadcn')));
     assert.ok(workflow.policy.some((rule) => rule.includes('permissionless')));
     assert.ok(workflow.policy.some((rule) => rule.includes('human-approved')));
+    assert.ok(workflow.policy.some((rule) => rule.includes('semantic tokens')));
+    assert.ok(workflow.policy.some((rule) => rule.includes('Storybook')));
 
     const guardrail = await client.callTool({
       name: 'check_component_guardrails',
@@ -63,6 +65,19 @@ test('component factory exposes the governed portable MCP contract', async () =>
     const classified = JSON.parse(guardrail.content[0].text);
     assert.equal(classified.mode, 'tenant');
     assert.equal(classified.allowed, true);
+
+    const rawSpacing = await client.callTool({
+      name: 'check_component_guardrails',
+      arguments: {
+        request: 'Add a text block with custom spacing.',
+        component_key: 'block_text',
+        slots: ['main'],
+        fields: [{ name: 'padding', type: 'string' }],
+      },
+    });
+    const rejected = JSON.parse(rawSpacing.content[0].text);
+    assert.equal(rejected.allowed, false);
+    assert.equal(rejected.mode, 'platform');
   } finally {
     await client.close();
   }

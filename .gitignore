@@ -2,6 +2,7 @@
 node_modules
 out
 storybook-static
+/public/storybook/
 .env*
 !.env.example
 npm-debug.log*

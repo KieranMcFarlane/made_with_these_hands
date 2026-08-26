@@ -4,9 +4,28 @@
   color: var(--ink);
 }
 
+.componentFrame {
+  --component-inline: var(--space-8, 64px);
+  --component-block: var(--space-9, 96px);
+  --component-gap: var(--space-6, 32px);
+  display: contents;
+}
+
+.componentFrame[data-spacing='compact'] {
+  --component-inline: var(--space-5, 24px);
+  --component-block: var(--space-8, 64px);
+  --component-gap: var(--space-4, 16px);
+}
+
+.componentFrame[data-spacing='generous'] {
+  --component-inline: var(--space-9, 96px);
+  --component-block: var(--space-10, 128px);
+  --component-gap: var(--space-7, 48px);
+}
+
 .pageHeader,
 .block {
-  padding: clamp(64px, 9vw, 132px) clamp(24px, 6vw, 88px);
+  padding: var(--component-block, clamp(64px, 9vw, 132px)) var(--component-inline, clamp(24px, 6vw, 88px));
   border-bottom: 1px solid var(--rule);
 }
 
@@ -63,7 +82,7 @@
   min-height: 82vh;
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
-  gap: clamp(40px, 7vw, 112px);
+  gap: var(--component-gap, 32px);
   align-items: center;
 }
 
@@ -154,7 +173,7 @@
 .textBlock {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(300px, 1.1fr);
-  gap: clamp(48px, 8vw, 128px);
+  gap: var(--component-gap, 32px);
 }
 
 .textBlock[data-variant='centered'] {
@@ -839,9 +858,13 @@
 }
 
 @media (max-width: 640px) {
+  .componentFrame {
+    --component-inline: var(--space-5, 24px);
+  }
+
   .pageHeader,
   .block {
-    padding-inline: 20px;
+    padding-inline: var(--component-inline, 24px);
   }
 
   .cardGrid {

@@ -12,8 +12,10 @@ to make tenant owners ask permission for normal site work:
 - shadcn primitives are preferred and checked against an allowlist;
 - trusted open-source packages can be used for documented capability gaps;
 - no CMS field can contain executable frontend code;
+- presentation fields use closed semantic choices; raw CSS and numeric spacing are rejected;
+- every approved component carries `compact`, `standard`, and `generous` Storybook states;
 - validation commands are fixed by the server;
-- validation checks repository schemas, the live Directus schema/registry, unit behaviour, dependency advisories, the production build, and every published route;
+- validation checks repository schemas, the live Directus schema/registry, unit behaviour, Storybook and accessibility states, dependency advisories, the production build, and every published route;
 - tenant releases do not require human approval when guardrails pass;
 - platform releases require a human-approved Directus proposal;
 - deployment remains a separate CI/release action.
@@ -77,7 +79,19 @@ The same complete gate can be run outside an MCP client:
 npm run components:verify
 ```
 
-`validate_component` runs that gate as individually reported steps. Any failure returns the proposal to `testing`; a successful run moves it to `awaiting_approval`.
+`validate_component` reports seven named gates: contract, live contract, behaviour,
+Storybook/accessibility, dependencies, production build, and route smoke. Any
+failure keeps the proposal in `testing`; only a complete proof set moves it to
+`awaiting_approval`.
+
+Directus composition fields expose semantic decisions such as:
+
+```text
+spacing: compact | standard | generous
+```
+
+The renderer resolves those values through the versioned 4px brand scale. Raw
+padding, margin, gap, class names, and CSS remain outside CMS content.
 
 ## Guardrail Model
 

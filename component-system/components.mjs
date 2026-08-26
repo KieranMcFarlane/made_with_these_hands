@@ -1,4 +1,18 @@
-export const COMPONENT_MANIFEST_VERSION = '1.0.0';
+export const COMPONENT_MANIFEST_VERSION = '1.1.0';
+
+export const COMPONENT_SPACING_MODES = ['compact', 'standard', 'generous'];
+
+export const COMPONENT_SPACING_FIELD = {
+  name: 'spacing',
+  type: 'string',
+  default: 'standard',
+  choices: [
+    ['Compact', 'compact'],
+    ['Standard', 'standard'],
+    ['Generous', 'generous'],
+  ],
+  note: 'Approved brand density. Raw CSS and numeric spacing values are not accepted.',
+};
 
 export const COMPONENT_SLOTS = [
   { label: 'Main content', value: 'main' },
@@ -13,7 +27,7 @@ const sharedAccessibility = [
   'Do not communicate state by colour alone.',
 ];
 
-export const COMPONENTS = [
+const COMPONENT_DEFINITIONS = [
   {
     collection: 'block_hero',
     label: 'Hero',
@@ -237,6 +251,16 @@ export const COMPONENTS = [
     ],
   },
 ];
+
+export const COMPONENTS = COMPONENT_DEFINITIONS.map((component) => ({
+  ...component,
+  version: COMPONENT_MANIFEST_VERSION,
+  spacingModes: [...COMPONENT_SPACING_MODES],
+  fields: component.fields.includes('spacing') ? component.fields : [...component.fields, 'spacing'],
+  directusFields: component.directusFields.some(({ name }) => name === 'spacing')
+    ? component.directusFields
+    : [{ ...COMPONENT_SPACING_FIELD, choices: COMPONENT_SPACING_FIELD.choices.map((choice) => [...choice]) }, ...component.directusFields],
+}));
 
 export const APPROVED_COMPONENTS = COMPONENTS.filter(({ status }) => status === 'approved');
 export const APPROVED_COMPONENT_COLLECTIONS = APPROVED_COMPONENTS.map(({ collection }) => collection);

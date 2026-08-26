@@ -4,6 +4,7 @@ import {
   content,
   ctaBlock,
   heroBlock,
+  genericBlock,
   listingBlock,
   mediaBlock,
   podcastItem,
@@ -33,11 +34,54 @@ export const Hero = {
   },
 };
 
+export const HeroCover = {
+  name: 'Hero / cover',
+  args: {
+    block: {
+      ...heroBlock,
+      item: {
+        ...heroBlock.item,
+        key: 'storybook_hero_cover',
+        variant: 'cover',
+        eyebrow: 'Storybook / cover opening',
+        title: 'The workshop fills the frame.',
+      },
+    },
+    content,
+  },
+};
+
 export const Text = {
   args: {
     block: textBlock,
     content,
   },
+};
+
+export const SpacingDensities = {
+  name: 'Composition / spacing densities',
+  render: () => (
+    <main>
+      {['compact', 'standard', 'generous'].map((spacing) => (
+        <DirectusBlock
+          block={{
+            ...textBlock,
+            id: `storybook-spacing-${spacing}`,
+            item: {
+              ...textBlock.item,
+              key: `storybook_spacing_${spacing}`,
+              eyebrow: `Spacing / ${spacing}`,
+              title: `${spacing[0].toUpperCase()}${spacing.slice(1)} editorial rhythm.`,
+              spacing,
+            },
+          }}
+          content={content}
+          key={spacing}
+          preview
+        />
+      ))}
+    </main>
+  ),
 };
 
 export const Media = {
@@ -64,6 +108,21 @@ export const Listing = {
 export const CallToAction = {
   args: {
     block: ctaBlock,
+    content,
+  },
+};
+
+export const GenericStorageEnvelope = {
+  name: 'Generic storage / approved renderer',
+  args: {
+    block: genericBlock('block_text', {
+      key: 'generic_storage_proof',
+      eyebrow: '25 / 25 capacity fix',
+      title: 'One validated store, the same approved component.',
+      dek: 'Directus stores a component key and declarative data. The application retains control of rendering and behaviour.',
+      body: ['This state proves the generic envelope resolves through the existing brand-safe renderer.'],
+      theme: 'paper-2',
+    }),
     content,
   },
 };

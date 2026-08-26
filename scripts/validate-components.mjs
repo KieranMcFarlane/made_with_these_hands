@@ -18,6 +18,21 @@ for (const component of COMPONENTS) {
   if (new Set(directusFieldNames).size !== directusFieldNames.length) {
     errors.push(`${component.collection} has duplicate Directus field contracts.`);
   }
+  const spacingField = component.directusFields.find(({ name }) => name === 'spacing');
+  if (JSON.stringify(component.spacingModes) !== JSON.stringify(['compact', 'standard', 'generous'])) {
+    errors.push(`${component.collection} must use the approved spacing modes.`);
+  }
+  if (spacingField?.type !== 'string' || spacingField.default !== 'standard') {
+    errors.push(`${component.collection}.spacing must be a standard-defaulting string choice.`);
+  }
+  if (JSON.stringify(spacingField?.choices?.map(([, value]) => value)) !== JSON.stringify(component.spacingModes)) {
+    errors.push(`${component.collection}.spacing choices differ from the brand contract.`);
+  }
+  for (const field of component.directusFields) {
+    if (/(?:^|_)(?:css|style|padding|margin|gap|inset)(?:$|_)/i.test(field.name)) {
+      errors.push(`${component.collection}.${field.name} bypasses approved presentation tokens.`);
+    }
+  }
 }
 
 const collections = COMPONENTS.map(({ collection }) => collection);
@@ -94,9 +109,13 @@ if (/#[0-9a-fA-F]{3,8}\b/.test(slideshowStyles)) {
 const brand = brandFromRecords();
 const approvedCssVariables = new Set([
   ...Object.keys(activePalette(brand).tokens).map((token) => `--${token.replaceAll('_', '-')}`),
+  ...Object.keys(brand.component_contract.spacing.scale_px).map((token) => `--${token.replaceAll('_', '-')}`),
   '--serif',
   '--sans',
   '--mono',
+  '--component-inline',
+  '--component-block',
+  '--component-gap',
 ]);
 for (const [, variable] of slideshowStyles.matchAll(/var\((--[a-z0-9-]+)\)/g)) {
   if (!approvedCssVariables.has(variable)) errors.push(`Slideshow uses unapproved CSS token ${variable}.`);

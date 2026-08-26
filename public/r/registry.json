@@ -155,6 +155,16 @@
           "path": "lib/slideshow.mjs",
           "type": "registry:lib",
           "target": "~/lib/slideshow.mjs"
+        },
+        {
+          "path": "component-system/components.mjs",
+          "type": "registry:lib",
+          "target": "~/component-system/components.mjs"
+        },
+        {
+          "path": "component-system/generic-page-block.mjs",
+          "type": "registry:lib",
+          "target": "~/component-system/generic-page-block.mjs"
         }
       ],
       "meta": {
@@ -220,6 +230,16 @@
           "target": "~/app/directus-page.module.css"
         },
         {
+          "path": "lib/brand-settings.mjs",
+          "type": "registry:lib",
+          "target": "~/lib/brand-settings.mjs"
+        },
+        {
+          "path": "component-system/components.mjs",
+          "type": "registry:lib",
+          "target": "~/component-system/components.mjs"
+        },
+        {
           "path": "lib/directus.js",
           "type": "registry:lib",
           "target": "~/lib/directus.js"
@@ -251,6 +271,16 @@
           "path": "component-system/components.mjs",
           "type": "registry:lib",
           "target": "~/component-system/components.mjs"
+        },
+        {
+          "path": "component-system/generic-page-block.mjs",
+          "type": "registry:lib",
+          "target": "~/component-system/generic-page-block.mjs"
+        },
+        {
+          "path": "lib/brand-settings.mjs",
+          "type": "registry:lib",
+          "target": "~/lib/brand-settings.mjs"
         },
         {
           "path": "component-system/schemas/brand-contract.schema.json",
@@ -288,6 +318,16 @@
           "target": "~/scripts/seed-component-registry.mjs"
         },
         {
+          "path": "scripts/migrate-directus-generic-blocks.mjs",
+          "type": "registry:file",
+          "target": "~/scripts/migrate-directus-generic-blocks.mjs"
+        },
+        {
+          "path": "scripts/migrate-directus-design-contract.mjs",
+          "type": "registry:file",
+          "target": "~/scripts/migrate-directus-design-contract.mjs"
+        },
+        {
           "path": "CLIENT_COMPONENT_SYSTEM_HANDOVER.md",
           "type": "registry:file",
           "target": "~/CLIENT_COMPONENT_SYSTEM_HANDOVER.md"
@@ -305,6 +345,16 @@
       "description": "The tenant-isolated MCP server, Docker/systemd deployment files, local provisioning scripts, and client connection template for governed component proposals.",
       "dependencies": ["@modelcontextprotocol/sdk", "zod"],
       "files": [
+        {
+          "path": "component-system/components.mjs",
+          "type": "registry:lib",
+          "target": "~/component-system/components.mjs"
+        },
+        {
+          "path": "lib/brand-settings.mjs",
+          "type": "registry:lib",
+          "target": "~/lib/brand-settings.mjs"
+        },
         {
           "path": "tools/component-factory-mcp/README.md",
           "type": "registry:file",

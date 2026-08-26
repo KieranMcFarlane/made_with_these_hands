@@ -6,6 +6,15 @@ import {
 
 const directusUrl = process.env.DIRECTUS_URL || 'http://127.0.0.1:8055';
 let token = process.env.DIRECTUS_ADMIN_TOKEN;
+const LEGACY_BLOCK_COLLECTIONS = new Set([
+  'block_hero',
+  'block_text',
+  'block_media',
+  'block_quote',
+  'block_listing',
+  'block_cta',
+  'block_slideshow',
+]);
 
 async function resolveAdminToken() {
   if (token) {
@@ -195,9 +204,9 @@ async function ensureTenant() {
       slug: 'made-with-these-hands',
       status: 'published',
       name: 'Made With These Hands',
-      site_url: process.env.NEXT_PUBLIC_SITE_URL || 'https://madewiththesehands.ie',
+      site_url: process.env.NEXT_PUBLIC_SITE_URL || 'https://madewiththesehands.com',
       description: 'A journal of heritage craft, makers, objects, podcast episodes, and workshop notes.',
-      email: 'studio@madewiththesehands.ie',
+      email: process.env.ENQUIRY_TO_EMAIL || 'hughmn@hotmail.com',
       location: 'Kilkenny, Ireland',
       footer_tagline: 'Heritage craft, recorded at the bench.',
     }),
@@ -402,7 +411,7 @@ function choiceField(choices, note) {
 }
 
 async function ensureBlockCollections() {
-  for (const component of APPROVED_COMPONENTS) {
+  for (const component of APPROVED_COMPONENTS.filter(({ collection }) => LEGACY_BLOCK_COLLECTIONS.has(collection))) {
     const fields = component.directusFields.map((field) => {
       const meta = {};
       if (field.choices) Object.assign(meta, choiceField(field.choices, field.note));
@@ -437,11 +446,13 @@ async function ensureBlockCollections() {
 }
 
 async function ensurePageBuilderField() {
+  const builderCollections = APPROVED_COMPONENT_COLLECTIONS
+    .filter((collection) => LEGACY_BLOCK_COLLECTIONS.has(collection));
   await ensureAliasField('site_pages', 'blocks', {
     interface: 'list-m2a',
     special: ['m2a'],
     options: {
-      collections: APPROVED_COMPONENT_COLLECTIONS,
+      collections: builderCollections,
     },
     display: 'related-values',
     display_options: {
@@ -478,7 +489,7 @@ async function ensurePageBuilderField() {
       one_collection: 'site_pages',
       one_field: 'blocks',
       one_collection_field: 'collection',
-      one_allowed_collections: APPROVED_COMPONENT_COLLECTIONS,
+      one_allowed_collections: builderCollections,
       junction_field: 'item',
       sort_field: 'sort',
       one_deselect_action: 'delete',
@@ -600,6 +611,11 @@ async function main() {
     ['tenant', 'string'],
     ['key', 'string', {}, { is_nullable: false, is_unique: true }],
     ['status', 'string'],
+    ['spacing', 'string', choiceField([
+      ['Compact', 'compact'],
+      ['Standard', 'standard'],
+      ['Generous', 'generous'],
+    ], 'Approved brand density. Raw CSS and numeric spacing are not accepted.'), { default_value: 'standard' }],
     ['label', 'string'],
     ['eyebrow', 'string'],
     ['title', 'text'],

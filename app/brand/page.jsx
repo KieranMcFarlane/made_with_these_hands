@@ -417,12 +417,69 @@ function BrandSection({
   }
 
   if (key === 'brand_components') {
+    const defaultContract = brandFromRecords().component_contract;
+    const spacing = {
+      ...defaultContract.spacing,
+      ...brand.component_contract?.spacing,
+      scale_px: brand.component_contract?.spacing?.scale_px || defaultContract.spacing.scale_px,
+      density_choices: brand.component_contract?.spacing?.density_choices || defaultContract.spacing.density_choices,
+      density_tokens: brand.component_contract?.spacing?.density_tokens || defaultContract.spacing.density_tokens,
+    };
+    const composition = brand.component_contract?.composition || defaultContract.composition;
     return (
       <section className={`${styles.section} ${styles.paperSection}`} id="components">
         <div className={styles.sectionLabel}>{eyebrow}</div>
         <div className={styles.sectionHeading}>
           <h2>{title}</h2>
           <p>{dek}</p>
+        </div>
+        <div className={styles.contractFoundation}>
+          <article>
+            <p className={styles.eyebrow}>Foundation / 4px scale</p>
+            <h3>One rhythm, named decisions.</h3>
+            <div className={styles.spacingScale}>
+              {Object.entries(spacing.scale_px).map(([token, pixels]) => (
+                <div key={token}>
+                  <span style={{ width: `${Math.max(4, pixels)}px` }} />
+                  <code>{token.replace('_', '-')}</code>
+                  <small>{pixels}px</small>
+                </div>
+              ))}
+            </div>
+          </article>
+          <article>
+            <p className={styles.eyebrow}>Directus / controlled composition</p>
+            <h3>Meaningful choices, no raw CSS.</h3>
+            <div className={styles.densityList}>
+              {spacing.density_choices.map((density) => (
+                <div key={density}>
+                  <strong>{density}</strong>
+                  <code>
+                    {Object.entries(spacing.density_tokens[density])
+                      .map(([role, token]) => `${role}:${token}`)
+                      .join(' / ')}
+                  </code>
+                </div>
+              ))}
+            </div>
+            <p className={styles.contractNote}>
+              Directus field <code>{composition.directus_spacing_field}</code> accepts only these
+              three values. Raw CSS and numeric spacing remain outside CMS content.
+            </p>
+          </article>
+          <article>
+            <p className={styles.eyebrow}>Factory / release proof</p>
+            <h3>Draft until every gate passes.</h3>
+            <RuleList items={[
+              'Brand contract and approved registry',
+              'Live Directus contract',
+              'Component behaviour tests',
+              'Storybook visual and accessibility states',
+              'Dependency audit and production build',
+              'Published-route smoke tests',
+            ]}
+            />
+          </article>
         </div>
         <div className={styles.catalogGrid}>
           {catalog.map((component) => {
@@ -439,6 +496,7 @@ function BrandSection({
               {component.variants.length > 0 && (
                 <p className={styles.cardMeta}>Variants: {component.variants.join(' / ')}</p>
               )}
+              <p className={styles.cardMeta}>Spacing: {component.spacingModes.join(' / ')}</p>
               <p className={styles.cardMeta}>Slots: {component.slots.join(' / ')}</p>
               {component.primitives?.length > 0 && (
                 <p className={styles.cardMeta}>Primitives: {component.primitives.join(' / ')}</p>

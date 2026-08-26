@@ -58,6 +58,17 @@ const trustedOpenSourcePackages = {
 
 const tenantSafeSlots = new Set(['main', 'before-content', 'after-content', 'related-content']);
 const tenantSafeFieldTypes = new Set(['string', 'text', 'json', 'uuid', 'boolean', 'integer', 'decimal', 'date', 'datetime']);
+const approvedSpacingModes = ['compact', 'standard', 'generous'];
+const rawPresentationField = /(?:^|_)(?:css|style|class_name|padding|margin|gap|inset)(?:$|_)/i;
+const requiredValidationGates = [
+  'contract',
+  'live_contract',
+  'behavior',
+  'storybook_accessibility',
+  'dependencies',
+  'production_build',
+  'route_smoke',
+];
 const platformReviewSignals = [
   { pattern: /<script|javascript:|eval\(|new Function/i, reason: 'Executable script content is not allowed in CMS component contracts.' },
   { pattern: /\b(delete|drop|truncate)\b.*\b(collection|schema|table|field|permission)\b/i, reason: 'Destructive schema or permission changes need platform review.' },
@@ -66,7 +77,7 @@ const platformReviewSignals = [
 ];
 
 const workflow = {
-  version: '1.0.0',
+  version: '1.1.0',
   componentManifestVersion: COMPONENT_MANIFEST_VERSION,
   policy: [
     'Tenant changes are permissionless when they stay inside approved guardrails.',
@@ -75,6 +86,9 @@ const workflow = {
     'A bespoke primitive requires a documented capability gap.',
     'Proposal tools write only inside component-system/proposals.',
     'CMS records never contain executable JavaScript or component paths.',
+    'CMS presentation fields use approved semantic tokens; raw CSS and numeric spacing are forbidden.',
+    'Every component exposes compact, standard, and generous spacing states in Storybook.',
+    'A proposal remains in testing until contract, live registry, behaviour, accessibility, Storybook, dependency, build, and route checks pass.',
     'Tenant releases require a passing guardrail check; platform releases require a human-approved Directus proposal.',
     'Production deployment remains a separate CI/release action.',
   ],
@@ -161,6 +175,16 @@ async function updateProposal(id, changes, directusChanges = changes) {
   return next;
 }
 
+function assertValidationProof(proposal) {
+  if (!proposal.validation_summary?.ok) {
+    throw new Error('Successful validation is required before release preparation.');
+  }
+  const missing = requiredValidationGates.filter((gate) => proposal.validation_summary?.gates?.[gate] !== true);
+  if (missing.length) {
+    throw new Error(`Validation proof is incomplete: ${missing.join(', ')}.`);
+  }
+}
+
 function normalizePackageName(value) {
   return String(value || '').trim().replace(/^npm:/, '').toLowerCase();
 }
@@ -193,7 +217,8 @@ function classifyGuardrails(input = {}) {
     const type = String(typeof field === 'string' ? 'string' : field?.type || '').toLowerCase();
     return !/^[a-z][a-z0-9_]*$/.test(String(name || ''))
       || !tenantSafeFieldTypes.has(type)
-      || /(^|_)renderer($|_)|component_path|(^|_)scripts?($|_)|(^|_)code($|_)/i.test(String(name || ''));
+      || /(^|_)renderer($|_)|component_path|(^|_)scripts?($|_)|(^|_)code($|_)/i.test(String(name || ''))
+      || rawPresentationField.test(String(name || ''));
   });
   checks.push({
     ok: invalidFields.length === 0,
@@ -203,6 +228,21 @@ function classifyGuardrails(input = {}) {
       : 'Fields are data-only and CMS-safe.',
   });
   if (invalidFields.length) risk = 'platform';
+
+  const spacingField = fields.find((field) => field?.name === 'spacing');
+  const spacingChoices = spacingField?.choices?.map((choice) => Array.isArray(choice) ? choice.at(-1) : choice);
+  const spacingIsValid = !spacingField || (
+    spacingField.type === 'string'
+    && JSON.stringify(spacingChoices) === JSON.stringify(approvedSpacingModes)
+  );
+  checks.push({
+    ok: spacingIsValid,
+    scope: 'composition',
+    reason: spacingIsValid
+      ? 'Composition uses the approved semantic spacing vocabulary.'
+      : 'The spacing field must expose compact, standard, and generous choices only.',
+  });
+  if (!spacingIsValid) risk = 'platform';
 
   const unknownPackages = trusted_packages.filter((pkg) => !trustedOpenSourcePackages[pkg]);
   checks.push({
@@ -450,6 +490,14 @@ server.registerTool(
     if (!primitives.length && !input.bespoke_gap) {
       throw new Error('A documented shadcn capability gap is required for bespoke interaction code.');
     }
+    const fields = input.fields.filter(({ name }) => name !== 'spacing');
+    fields.unshift({
+      name: 'spacing',
+      type: 'string',
+      default: 'standard',
+      choices: approvedSpacingModes.map((value) => [value[0].toUpperCase() + value.slice(1), value]),
+      note: 'Approved brand density. Raw CSS and numeric values are forbidden.',
+    });
     const definition = {
       collection: proposal.component_key,
       label: input.label,
@@ -461,7 +509,7 @@ server.registerTool(
       trustedOpenSource: guardrail.trusted_packages,
       variants: input.variants,
       slots: input.slots,
-      fields: input.fields,
+      fields,
       accessibility: input.accessibility,
       limits: input.limits,
       bespoke_gap: input.bespoke_gap || null,
@@ -494,33 +542,57 @@ server.registerTool(
     annotations: { destructiveHint: false, idempotentHint: true },
   },
   async ({ proposal_id }) => {
-    await localProposal(proposal_id);
+    const proposal = await localProposal(proposal_id);
+    let recordedApproval = null;
+    if (directusToken && proposal.directus_id) {
+      const directusProposal = await directusRequest(
+        `/items/component_proposals/${proposal.directus_id}?fields=status,approval`,
+      );
+      if (directusProposal.status === 'approved' && directusProposal.approval?.approved === true) {
+        recordedApproval = directusProposal.approval;
+      }
+    }
     const commands = [
-      ['npm', ['run', 'components:validate']],
-      ['npm', ['run', 'components:validate-live']],
-      ['npm', ['run', 'components:test']],
-      ['npm', ['audit', '--audit-level=high']],
-      ['npm', ['run', 'build']],
-      ['npm', ['run', 'components:smoke']],
+      { gate: 'contract', command: 'npm', args: ['run', 'components:validate'] },
+      { gate: 'live_contract', command: 'npm', args: ['run', 'components:validate-live'] },
+      { gate: 'behavior', command: 'npm', args: ['run', 'components:test'] },
+      { gate: 'storybook_accessibility', command: 'npm', args: ['run', 'storybook:verify'] },
+      { gate: 'dependencies', command: 'npm', args: ['audit', '--audit-level=high'] },
+      { gate: 'production_build', command: 'npm', args: ['run', 'build'] },
+      { gate: 'route_smoke', command: 'npm', args: ['run', 'components:smoke'] },
     ];
     const results = [];
-    for (const [command, args] of commands) {
+    for (const { gate, command, args } of commands) {
       try {
         const { stdout, stderr } = await execFileAsync(command, args, {
           cwd: root,
           timeout: 120000,
           windowsHide: true,
         });
-        results.push({ command: `${command} ${args.join(' ')}`, ok: true, output: `${stdout}${stderr}`.trim() });
+        results.push({ gate, command: `${command} ${args.join(' ')}`, ok: true, output: `${stdout}${stderr}`.trim() });
       } catch (error) {
-        results.push({ command: `${command} ${args.join(' ')}`, ok: false, output: `${error.stdout || ''}${error.stderr || error.message}`.trim() });
+        results.push({ gate, command: `${command} ${args.join(' ')}`, ok: false, output: `${error.stdout || ''}${error.stderr || error.message}`.trim() });
       }
     }
     const ok = results.every((result) => result.ok);
-    const updated = await updateProposal(proposal_id, {
-      status: ok ? 'awaiting_approval' : 'testing',
-      validation_summary: { ok, results, checked_at: new Date().toISOString() },
-    });
+    const gates = Object.fromEntries(results.map(({ gate, ok: passed }) => [gate, passed]));
+    const status = ok ? (recordedApproval ? 'approved' : 'awaiting_approval') : 'testing';
+    const brandContractVersion = (await liveBrandContract()).component_contract.version;
+    const validationSummary = { ok, gates, results, checked_at: new Date().toISOString() };
+    const updated = await updateProposal(
+      proposal_id,
+      {
+        status,
+        approval: recordedApproval || proposal.approval,
+        brand_contract_version: brandContractVersion,
+        validation_summary: validationSummary,
+      },
+      {
+        ...(!recordedApproval || !ok ? { status } : {}),
+        brand_contract_version: brandContractVersion,
+        validation_summary: validationSummary,
+      },
+    );
     return textResult(updated.validation_summary);
   },
 );
@@ -554,12 +626,19 @@ server.registerTool(
   },
   async ({ proposal_id }) => {
     const proposal = await localProposal(proposal_id);
-    if (!proposal.validation_summary?.ok) throw new Error('Successful validation is required before release preparation.');
+    assertValidationProof(proposal);
+    const approvalRecorded = proposal.status === 'approved' && proposal.approval?.approved === true;
     const release = {
       proposal_id,
       component_key: proposal.component_key,
-      status: 'awaiting_human_approval',
-      requiredGates: ['Directus approval', 'reviewed source change', 'production build', 'CI deployment'],
+      status: approvalRecorded ? 'approved_for_release' : 'awaiting_human_approval',
+      approval: approvalRecorded ? proposal.approval : null,
+      requiredGates: [
+        ...(approvalRecorded ? [] : ['Directus approval']),
+        'reviewed source change',
+        'production build',
+        'CI deployment',
+      ],
       prepared_at: new Date().toISOString(),
     };
     await writeJson(proposalPath(proposal_id, 'release.json'), release);
@@ -579,7 +658,7 @@ server.registerTool(
   },
   async ({ proposal_id }) => {
     const proposal = await localProposal(proposal_id);
-    if (!proposal.validation_summary?.ok) throw new Error('Successful validation is required before tenant release preparation.');
+    assertValidationProof(proposal);
     if (proposal.guardrail?.mode !== 'tenant' || proposal.guardrail?.allowed !== true) {
       throw new Error('Tenant release requires a passing tenant guardrail check.');
     }
@@ -618,6 +697,7 @@ server.registerTool(
   async ({ proposal_id }) => {
     if (!directusToken) throw new Error('Directus approval cannot be verified without component-factory credentials.');
     const local = await localProposal(proposal_id);
+    assertValidationProof(local);
     if (!local.directus_id) throw new Error('This proposal has no Directus approval record.');
     const proposal = await directusRequest(`/items/component_proposals/${local.directus_id}?fields=*`);
     if (proposal.status !== 'approved' || proposal.approval?.approved !== true) {

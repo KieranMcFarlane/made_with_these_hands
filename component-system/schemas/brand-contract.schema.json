@@ -140,6 +140,7 @@
       "required": [
         "version",
         "spacing",
+        "composition",
         "grids",
         "image_ratios",
         "motion",
@@ -155,11 +156,67 @@
         "spacing": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["section_inline", "section_block", "control_target_minimum"],
+          "required": [
+            "base_unit_px",
+            "scale_px",
+            "density_choices",
+            "density_tokens",
+            "section_inline",
+            "section_block",
+            "control_target_minimum"
+          ],
           "properties": {
+            "base_unit_px": { "const": 4 },
+            "scale_px": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["space_0", "space_1", "space_2", "space_3", "space_4", "space_5", "space_6", "space_7", "space_8", "space_9", "space_10"],
+              "properties": {
+                "space_0": { "const": 0 },
+                "space_1": { "const": 4 },
+                "space_2": { "const": 8 },
+                "space_3": { "const": 12 },
+                "space_4": { "const": 16 },
+                "space_5": { "const": 24 },
+                "space_6": { "const": 32 },
+                "space_7": { "const": 48 },
+                "space_8": { "const": 64 },
+                "space_9": { "const": 96 },
+                "space_10": { "const": 128 }
+              }
+            },
+            "density_choices": { "const": ["compact", "standard", "generous"] },
+            "density_tokens": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["compact", "standard", "generous"],
+              "properties": {
+                "compact": { "const": { "inline": "space_5", "block": "space_8", "gap": "space_4" } },
+                "standard": { "const": { "inline": "space_8", "block": "space_9", "gap": "space_6" } },
+                "generous": { "const": { "inline": "space_9", "block": "space_10", "gap": "space_7" } }
+              }
+            },
             "section_inline": { "$ref": "#/$defs/nonEmptyString" },
             "section_block": { "$ref": "#/$defs/nonEmptyString" },
             "control_target_minimum": { "type": "string", "pattern": "^[4-9][0-9]px$" }
+          }
+        },
+        "composition": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "directus_spacing_field",
+            "raw_css_in_cms",
+            "raw_numeric_spacing_in_cms",
+            "approved_grids_only",
+            "nested_cards"
+          ],
+          "properties": {
+            "directus_spacing_field": { "const": "spacing" },
+            "raw_css_in_cms": { "const": false },
+            "raw_numeric_spacing_in_cms": { "const": false },
+            "approved_grids_only": { "const": true },
+            "nested_cards": { "const": false }
           }
         },
         "grids": {

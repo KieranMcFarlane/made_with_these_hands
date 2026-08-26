@@ -94,6 +94,14 @@ export function block(collection, item, overrides = {}) {
   };
 }
 
+export function genericBlock(componentKey, data, overrides = {}) {
+  return block(componentKey, data, {
+    storageCollection: 'site_sections',
+    schemaVersion: 1,
+    ...overrides,
+  });
+}
+
 export const heroBlock = block(
   'block_hero',
   {

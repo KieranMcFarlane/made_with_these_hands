@@ -54,6 +54,11 @@ function variantOf(block, fallback) {
   return itemOf(block).variant || fallback;
 }
 
+function spacingOf(block) {
+  const spacing = itemOf(block).spacing;
+  return ['compact', 'standard', 'generous'].includes(spacing) ? spacing : 'standard';
+}
+
 function ActionLink({ href, label, secondary = false }) {
   if (!href || !label) return null;
   return (
@@ -328,7 +333,11 @@ export const BLOCK_COMPONENTS = {
 export function DirectusBlock({ block, content, preview = false }) {
   const Component = BLOCK_COMPONENTS[block.collection];
   if (!Component) return null;
-  return <Component block={block} content={content} preview={preview} />;
+  return (
+    <div className={styles.componentFrame} data-spacing={spacingOf(block)}>
+      <Component block={block} content={content} preview={preview} />
+    </div>
+  );
 }
 
 export function DirectusBlocks({ blocks, content, slot }) {

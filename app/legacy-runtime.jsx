@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
-import Babel from '@babel/standalone';
+import * as BabelStandalone from '@babel/standalone';
 
 const files = [
   '/mwth-data.jsx',
@@ -262,7 +262,10 @@ export default function LegacyRuntime() {
 
       if (cancelled) return;
 
-      const compiled = Babel.transform([...sources, appSource].join('\n\n'), {
+      const transform = BabelStandalone.transform || BabelStandalone.default?.transform;
+      if (!transform) throw new Error('The legacy JSX compiler is unavailable.');
+
+      const compiled = transform([...sources, appSource].join('\n\n'), {
         presets: ['react'],
       }).code;
 

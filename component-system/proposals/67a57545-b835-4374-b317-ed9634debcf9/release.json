@@ -1,0 +1,17 @@
+{
+  "proposal_id": "67a57545-b835-4374-b317-ed9634debcf9",
+  "component_key": "block_design_contract",
+  "status": "approved_for_release",
+  "approval": {
+    "approved": true,
+    "approved_by": "Workspace owner via Codex",
+    "approved_at": "2026-08-26T17:11:29.835Z",
+    "basis": "Explicit do next steps instruction"
+  },
+  "requiredGates": [
+    "reviewed source change",
+    "production build",
+    "CI deployment"
+  ],
+  "prepared_at": "2026-08-26T17:13:53.181Z"
+}

@@ -1,0 +1,76 @@
+{
+  "id": "67a57545-b835-4374-b317-ed9634debcf9",
+  "client_id": "local",
+  "request": "Encode the Made With These Hands 4px spacing scale, compact standard generous composition choices, Storybook proof states, and visual accessibility contract test gates across the shared brand contract and Directus component system.",
+  "component_key": "block_design_contract",
+  "requested_by": "Codex",
+  "guardrail_mode": "platform",
+  "status": "approved",
+  "brand_contract_version": "1.1.0",
+  "created_at": "2026-08-26T16:44:59.773Z",
+  "directus_id": 4,
+  "validation_summary": {
+    "ok": true,
+    "gates": {
+      "contract": true,
+      "live_contract": true,
+      "behavior": true,
+      "storybook_accessibility": true,
+      "dependencies": true,
+      "production_build": true,
+      "route_smoke": true
+    },
+    "results": [
+      {
+        "gate": "contract",
+        "command": "npm run components:validate",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 components:validate\n> npm run components:validate-brand && node scripts/validate-components.mjs\n\n\n> made-with-these-hands@0.1.0 components:validate-brand\n> node scripts/validate-brand-contract.mjs\n\nBrand contract 1.1.0 is valid.\nComponent manifest 1.1.0 is valid (8 components)."
+      },
+      {
+        "gate": "live_contract",
+        "command": "npm run components:validate-live",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 components:validate-live\n> node --env-file-if-exists=.env.local scripts/validate-directus-component-system.mjs\n\n{\n  \"ok\": true,\n  \"manifest\": \"1.1.0\",\n  \"deployed_components\": [\n    \"block_hero\",\n    \"block_text\",\n    \"block_media\",\n    \"block_quote\",\n    \"block_listing\",\n    \"block_cta\",\n    \"block_slideshow\"\n  ],\n  \"governed_pending_components\": [\n    \"block_podcast_player\"\n  ],\n  \"generic_storage_enabled\": true\n}"
+      },
+      {
+        "gate": "behavior",
+        "command": "npm run components:test",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 components:test\n> node --test component-system/tests/*.test.mjs\n\nTAP version 13\n# Subtest: brand contract fixes the 4px scale and semantic composition vocabulary\nok 1 - brand contract fixes the 4px scale and semantic composition vocabulary\n  ---\n  duration_ms: 5.381592\n  type: 'test'\n  ...\n# Subtest: approved collections are unique and resolvable\nok 2 - approved collections are unique and resolvable\n  ---\n  duration_ms: 0.420351\n  type: 'test'\n  ...\n# Subtest: every component exposes only approved semantic spacing choices\nok 3 - every component exposes only approved semantic spacing choices\n  ---\n  duration_ms: 0.544759\n  type: 'test'\n  ...\n# Subtest: slideshow contract enforces safe variants, slots, and limits\nok 4 - slideshow contract enforces safe variants, slots, and limits\n  ---\n  duration_ms: 6.390848\n  type: 'test'\n  ...\n# Subtest: podcast player contract uses trusted open source without CMS executable content\nok 5 - podcast player contract uses trusted open source without CMS executable content\n  ---\n  duration_ms: 0.417733\n  type: 'test'\n  ...\n# Subtest: CMS contracts never include executable source\nok 6 - CMS contracts never include executable source\n  ---\n  duration_ms: 0.332777\n  type: 'test'\n  ...\n# Subtest: generic storage resolves only approved declarative components\nok 7 - generic storage resolves only approved declarative components\n  ---\n  duration_ms: 3.115254\n  type: 'test'\n  ...\n# Subtest: component publication cannot advance before approval and only publishes the allowed transition\nok 8 - component publication cannot advance before approval and only publishes the allowed transition\n  ---\n  duration_ms: 439.857812\n  type: 'test'\n  ...\n# Subtest: tenant release advances without human approval when guardrails pass\nok 9 - tenant release advances without human approval when guardrails pass\n  ---\n  duration_ms: 245.75344\n  type: 'test'\n  ...\n# Subtest: remote component factory requires authentication and preserves client isolation context\nok 10 - remote component factory requires authentication and preserves client isolation context\n  ---\n  duration_ms: 144.413242\n  type: 'test'\n  ...\n# Subtest: component factory exposes the governed portable MCP contract\nok 11 - component factory exposes the governed portable MCP contract\n  ---\n  duration_ms: 291.670171\n  type: 'test'\n  ...\n# Subtest: slideshow normalization enforces the manifest limit and preserves accessible metadata\nok 12 - slideshow normalization enforces the manifest limit and preserves accessible metadata\n  ---\n  duration_ms: 3.290581\n  type: 'test'\n  ...\n# Subtest: slideshow autoplay never runs for reduced motion, paused playback, or one slide\nok 13 - slideshow autoplay never runs for reduced motion, paused playback, or one slide\n  ---\n  duration_ms: 0.381711\n  type: 'test'\n  ...\n# Subtest: slideshow interval and index helpers enforce safe boundaries\nok 14 - slideshow interval and index helpers enforce safe boundaries\n  ---\n  duration_ms: 0.206203\n  type: 'test'\n  ...\n# (node:45256) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/em9/repos/made_with_these_hands/app/component-inventory.js is not specified and it doesn't parse as CommonJS.\n# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.\n# To eliminate this warning, add \"type\": \"module\" to /home/em9/repos/made_with_these_hands/package.json.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: storybook recommended registry items have matching stories\nok 15 - storybook recommended registry items have matching stories\n  ---\n  duration_ms: 1.312784\n  type: 'test'\n  ...\n# Subtest: storybook kit registry item distributes all story files and config\nok 16 - storybook kit registry item distributes all story files and config\n  ---\n  duration_ms: 0.464137\n  type: 'test'\n  ...\n# Subtest: every approved Directus block is represented in Storybook data\nok 17 - every approved Directus block is represented in Storybook data\n  ---\n  duration_ms: 0.594504\n  type: 'test'\n  ...\n# Subtest: Storybook proves every approved spacing density\nok 18 - Storybook proves every approved spacing density\n  ---\n  duration_ms: 0.307318\n  type: 'test'\n  ...\n# Subtest: every component inventory entry links to a concrete proof instance\nok 19 - every component inventory entry links to a concrete proof instance\n  ---\n  duration_ms: 0.457908\n  type: 'test'\n  ...\n1..19\n# tests 19\n# suites 0\n# pass 19\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 981.295971"
+      },
+      {
+        "gate": "storybook_accessibility",
+        "command": "npm run storybook:verify",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 storybook:verify\n> npm run registry:validate && npm run registry:build && npm run storybook:build\n\n\n> made-with-these-hands@0.1.0 registry:validate\n> shadcn registry validate ./registry.json\n\n  - registry.json\n\n> made-with-these-hands@0.1.0 registry:build\n> shadcn build ./registry.json -o ./public/r\n\n\n> made-with-these-hands@0.1.0 storybook:build\n> storybook build\n\n\n┌  Building storybook v10.5.10\n│\n◇  Cleaning outputDir: storybook-static\n│\n◇  Loading presets\n│\n◇  Building manager..\n│\n●  Building open services..\n│\n●  Building preview..\n│\n●  Copying static files: public at storybook-static\n│  Vite vite v8.2.2 building client environment for production...\ntransforming...\n✓ 2097 modules transformed.\nrendering chunks...\ncomputing gzip size...\n│  Vite storybook-static/iframe.html\n│  19.16 kB │ gzip:   5.36 kB\n│  storybook-static/assets/mwth-story-data-DguW-RWF.css\n│  16.29 kB │ gzip:   3.31 kB\n│  storybook-static/assets/iframe-DkwztHWA.css\n│  35.14 kB │ gzip:   7.80 kB\n│  storybook-static/assets/iframe-BboQCuf7.js\n│  0.04 kB │ gzip:   0.06 kB\n│  storybook-static/assets/components-YqV1Z_vk.js\n│  0.21 kB │ gzip:   0.18 kB\n│  storybook-static/assets/chunk-242VQQM5-bHL6qIJq.js\n│  0.24 kB │ gzip:   0.20 kB\n│  storybook-static/assets/formatter-L2YTDE3Q-CRGuSxAF.js\n│  0.30 kB │ gzip:   0.24 kB\n│  storybook-static/assets/chunk-QQBDHPVZ-DC5n6Pix.js\n│  0.32 kB │ gzip:   0.20 kB\n│  storybook-static/assets/react-Buez9MJF.js\n│  0.58 kB │ gzip:   0.35 kB\n│  storybook-static/assets/rolldown-runtime-DkW27tQK.js\n│  1.19 kB │ gzip:   0.67 kB\n│  storybook-static/assets/preload-helper-wdlQj8DP.js\n│  1.31 kB │ gzip:   0.74 kB\n│  storybook-static/assets/PodcastPlayerBlock.stories-WoGOK2x9.js\n│  1.39 kB │ gzip:   0.61 kB\n│  storybook-static/assets/SlideshowBlock.stories-CUrGsJkJ.js\n│  1.46 kB │ gzip:   0.63 kB\n│  storybook-static/assets/chunk-IMSF75WX-CGYlPTyG.js\n│  1.67 kB │ gzip:   0.91 kB\n│  storybook-static/assets/chunk-DRQKCCAG-DvsmU7ha.js\n│  3.39 kB │ gzip:   1.41 kB\n│  storybook-static/assets/react-dom-BdcFeKZl.js\n│  3.58 kB │ gzip:   1.36 kB\n│  storybook-static/assets/chunk-5GYAEUAU-BGgO7bU4.js\n│  5.14 kB │ gzip:   1.93 kB\n│  storybook-static/assets/BrandBookInventory.stories-B8a3axqO.js\n│  12.39 kB │ gzip:   3.62 kB\n│  storybook-static/assets/DirectusBlocks.stories-AsZY5i0j.js\n│  21.81 kB │ gzip:   6.27 kB\n│  storybook-static/assets/chunk-W22LQPXL-DwAuIYva.js\n│  22.71 kB │ gzip:   7.59 kB\n│  storybook-static/assets/slideshow-block-Be79BqvL.js\n│  26.49 kB │ gzip:  10.28 kB\n│  storybook-static/vite-inject-mocker-entry.js\n│  27.84 kB │ gzip:   9.66 kB\n│  storybook-static/assets/matchers-JIUQ3HVY-C789_MAK.js\n│  28.79 kB │ gzip:   9.68 kB\n│  storybook-static/assets/Color-6AOWCN3U-DpQDgrLW.js\n│  30.38 kB │ gzip:  11.49 kB\n│  storybook-static/assets/WithTooltip-CDUNV5IS-DK6b9eP3.js\n│  32.78 kB │ gzip:  11.50 kB\n│  storybook-static/assets/mwth-story-data-BZjjhO6Q.js\n│  44.81 kB │ gzip:  15.57 kB\n│  storybook-static/assets/theming-9FnGg7BF.js\n│  55.41 kB │ gzip:  21.34 kB\n│  storybook-static/assets/syntaxhighlighter-QEQV7K2Y-zzJMyiAB.js\n│  75.92 kB │ gzip:  27.27 kB\n│  storybook-static/assets/react-18-DGPev6Vd.js\n│  179.10 kB │ gzip:  56.66 kB\n│  storybook-static/assets/podcast-player-block-PdbCk7Aa.js\n│  183.77 kB │ gzip:  44.20 kB\n│  storybook-static/assets/axe-_9eNhXQJ.js\n│  587.04 kB │ gzip: 160.26 kB\n│  storybook-static/assets/DocsRenderer-JROSPFPF-CTJdy22D.js\n│  758.52 kB │ gzip: 240.71 kB\n│  storybook-static/assets/iframe-Bm8rRihE.js\n│  1,139.34 kB │ gzip: 326.33 kB\n\n│\n▲  Vite [plugin builtin:vite-reporter]\n│  (!) Some chunks are larger than 500 kB after minification. Consider:\n│  - Using dynamic import() to code-split the application\n│  - Use build.rolldownOptions.output.codeSplitting to improve chunking:\n│  \u001b]8;;https://rolldown.rs/reference/OutputOptions.codeSplitting\u0007https://rolldown.rs/reference/OutputOptions.codeSplitting\u001b]8;;\u0007\n│  - Adjust chunk size limit for this warning via\n│  build.chunkSizeWarningLimit.\n│  Vite ✓ built in 3.95s\n│\n◇  Output directory:\n│  /home/em9/repos/made_with_these_hands/storybook-static\n│\n└  Storybook build completed successfully\n\n- Validating registry.\n✔ Registry is valid.\n✔ Checked 1 registry file and 9 items.\n- Building mwth-button...\n- Building mwth-carousel...\n- Building mwth-slideshow-block...\n- Building mwth-podcast-player...\n- Building mwth-directus-block-renderer...\n- Building mwth-brand-book...\n- Building mwth-component-guardrails...\n- Building mwth-component-factory-mcp...\n- Building mwth-storybook-kit...\n✔ Building registry."
+      },
+      {
+        "gate": "dependencies",
+        "command": "npm audit --audit-level=high",
+        "ok": true,
+        "output": "found 0 vulnerabilities"
+      },
+      {
+        "gate": "production_build",
+        "command": "npm run build",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 build\n> next build\n\n▲ Next.js 16.2.12 (Turbopack)\n- Environments: .env.local\n\n  Creating an optimized production build ...\n✓ Compiled successfully in 12.9s\n  Running TypeScript ...\n  Finished TypeScript in 242ms ...\n  Collecting page data using 7 workers ...\n  Generating static pages using 7 workers (0/6) ...\n  Generating static pages using 7 workers (1/6) \r\n  Generating static pages using 7 workers (2/6) \r\n  Generating static pages using 7 workers (4/6) \r\n✓ Generating static pages using 7 workers (6/6) in 793ms\n  Finalizing page optimization ...\n\nRoute (app)\n┌ ○ /\n├ ○ /_not-found\n├ ƒ /[...slug]\n├ ƒ /api/assets/[id]\n├ ƒ /api/comments\n├ ƒ /api/enquiries\n├ ƒ /api/mwth-data\n├ ƒ /brand\n├ ƒ /brand/proposals/[id]\n├ ○ /robots.txt\n├ ○ /shop\n└ ○ /sitemap.xml\n\n\n○  (Static)   prerendered as static content\nƒ  (Dynamic)  server-rendered on demand"
+      },
+      {
+        "gate": "route_smoke",
+        "command": "npm run components:smoke",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 components:smoke\n> node --env-file-if-exists=.env.local scripts/smoke-test-built-site.mjs\n\nProduction smoke test passed for 33 routes.\n200 /\n200 /about\n200 /brand\n200 /brand/demo\n200 /brand/proposals/4047964e-4f7c-42a0-95ca-9261420be37b\n200 /brand/proposals/67a57545-b835-4374-b317-ed9634debcf9\n200 /brand/proposals/798a588a-a69c-44e9-abae-f03a164856bb\n200 /brand/proposals/d435ec7c-7660-4c15-b8df-40bfb16a40db\n200 /contact\n200 /dashboard\n200 /journal\n200 /journal/the-object-archive\n200 /journal/why-we-record-the-tools\n200 /makers\n200 /makers/hugh-mcneill\n200 /makers/meabh-o-riada\n200 /makers/nuala-finn\n200 /makers/saoirse-doolan\n200 /makers/tomas-kelly\n200 /objects\n200 /objects/bog-oak-spoon\n200 /objects/engraved-decanter\n200 /objects/gathering-basket\n200 /objects/herb-trug\n200 /objects/lead-crystal-tumbler\n200 /objects/lobster-pot-small\n200 /objects/silver-cuff\n200 /podcast\n200 /podcast/042\n200 /podcast/043\n200 /podcast/045\n200 /podcast/046\n200 /podcast/047"
+      }
+    ],
+    "checked_at": "2026-08-26T17:13:12.524Z"
+  },
+  "updated_at": "2026-08-26T17:13:12.525Z",
+  "approval": {
+    "approved": true,
+    "approved_by": "Workspace owner via Codex",
+    "approved_at": "2026-08-26T17:11:29.835Z",
+    "basis": "Explicit do next steps instruction"
+  }
+}

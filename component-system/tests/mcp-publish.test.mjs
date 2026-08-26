@@ -7,6 +7,16 @@ import test from 'node:test';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 
+const passingGates = {
+  contract: true,
+  live_contract: true,
+  behavior: true,
+  storybook_accessibility: true,
+  dependencies: true,
+  production_build: true,
+  route_smoke: true,
+};
+
 test('component publication cannot advance before approval and only publishes the allowed transition', async () => {
   const root = process.cwd();
   const proposalId = `publish-gate-${crypto.randomUUID()}`;
@@ -26,7 +36,7 @@ test('component publication cannot advance before approval and only publishes th
     directus_id: 999,
     component_key: 'block_slideshow',
     status: 'awaiting_approval',
-    validation_summary: { ok: true },
+    validation_summary: { ok: true, gates: passingGates },
   }, null, 2)}\n`);
 
   const server = http.createServer(async (request, response) => {
@@ -115,7 +125,7 @@ test('tenant release advances without human approval when guardrails pass', asyn
     id: proposalId,
     component_key: 'block_podcast_player',
     status: 'awaiting_approval',
-    validation_summary: { ok: true },
+    validation_summary: { ok: true, gates: passingGates },
     guardrail: {
       mode: 'tenant',
       allowed: true,

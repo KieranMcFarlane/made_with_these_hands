@@ -26,6 +26,12 @@ async function request(pathname, options = {}) {
   return body;
 }
 
+const sectionFields = (await request('/fields/site_sections')).data;
+const genericStorageEnabled = ['component_key', 'schema_version', 'data'].every((required) => (
+  sectionFields.some(({ field }) => field === required)
+));
+const collectionNames = new Set((await request('/collections?limit=-1')).data.map(({ collection }) => collection));
+
 for (const component of APPROVED_COMPONENTS) {
   const query = new URLSearchParams({
     'filter[key][_eq]': component.collection,
@@ -33,11 +39,24 @@ for (const component of APPROVED_COMPONENTS) {
     fields: 'id',
   });
   const existing = (await request(`/items/component_registry?${query}`)).data?.[0];
+  if (!existing && !collectionNames.has(component.collection)) {
+    const proposalQuery = new URLSearchParams({
+      'filter[component_key][_eq]': component.collection,
+      'filter[status][_eq]': 'approved',
+      fields: 'id,approval',
+      limit: '1',
+    });
+    const proposal = (await request(`/items/component_proposals?${proposalQuery}`)).data?.[0];
+    if (proposal?.approval?.approved !== true) {
+      console.log(`skipped unapproved component registry entry: ${component.collection}`);
+      continue;
+    }
+  }
   const data = {
     key: component.collection,
     label: component.label,
     description: component.description,
-    block_collection: component.collection,
+    block_collection: genericStorageEnabled ? 'site_sections' : component.collection,
     status: component.status,
     version: component.version,
     variants: component.variants,

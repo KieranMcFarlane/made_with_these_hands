@@ -1,12 +1,18 @@
 # Content Readiness
 
-Verified against Directus 12.0.2 on 21 August 2026.
+Verified against Directus 12.0.2 on 25 August 2026.
 
 ## Available Now
 
 - All seven primary navigation pages exist and are published.
 - Five maker records, seven enquiry-enabled object records, five demo episode
   records, and two journal records drive the current design proof.
+- All five published maker records now have biographies, CMS media, SEO titles,
+  and SEO descriptions. All seven published objects have summaries,
+  descriptions, CMS media, SEO fields, and enquiry enabled. Both published
+  journal records have CMS media and SEO fields.
+- `npm run directus:content-complete` is idempotent: it fills only missing
+  published fields, reuses uploaded media, and refuses to modify draft records.
 - The real Made With These Hands Podbean RSS feed is connected. All 36 feed
   episodes were imported with stable GUIDs, canonical episode links, dates,
   descriptions, durations, audio URLs, and derived SEO metadata.
@@ -44,10 +50,23 @@ publication status.
 - Approve guest names, guest-to-maker relations, and craft categories for the
   36 imported podcast drafts.
 - Supply or approve transcripts. The RSS feed does not contain them.
-- Supply final maker portraits and object photography. Current local images are
-  design/demo assets and have not been promoted as approved CMS media.
+- Approve or replace the current maker portraits and object photography. The
+  design/demo assets are now present in CMS media so the published records are
+  technically complete, but they are not final owner-approved photography.
 - Confirm object descriptions, availability, prices, and enquiry wording.
 - Confirm the production enquiry recipient and provide the production Resend
   API/domain configuration through the server secret store.
 
 Run `npm run directus:content-audit` for the current machine-readable gap report.
+
+Guest review preparation is also dry-run by default:
+
+```bash
+npm run directus:guest-review
+DIRECTUS_ADMIN_TOKEN="<operator-secret>" npm run directus:guest-review:apply
+```
+
+The apply command uses the guest names stated in the RSS episode titles, creates
+draft maker records, and links blank episode fields. It never publishes records
+or overwrites an existing owner edit. Hugh must still approve spelling, craft,
+biography, portrait, and transcript content.
