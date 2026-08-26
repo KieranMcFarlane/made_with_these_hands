@@ -1,14 +1,20 @@
 const story = (id, label = 'Storybook') => ({
-  href: `/?path=/story/${id}`,
+  href: `?path=/story/${id}`,
   label,
   surface: 'storybook',
 });
 
 const site = (path, label = 'Live instance') => ({
-  href: `http://localhost:3038${path}`,
+  href: path,
   label,
   surface: 'site',
 });
+
+export function componentInstanceHref(instance, pathname = '/') {
+  if (instance.surface !== 'storybook') return instance.href;
+  const managerPath = pathname.startsWith('/storybook/') ? '/storybook/index.html' : '/';
+  return `${managerPath}${instance.href}`;
+}
 
 export const COMPONENT_INVENTORY_GROUPS = [
   {

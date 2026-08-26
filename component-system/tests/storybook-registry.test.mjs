@@ -3,7 +3,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
 import { APPROVED_COMPONENTS } from '../components.mjs';
-import { COMPONENT_INVENTORY_COUNT, COMPONENT_INVENTORY_GROUPS } from '../../app/component-inventory.js';
+import {
+  COMPONENT_INVENTORY_COUNT,
+  COMPONENT_INVENTORY_GROUPS,
+  componentInstanceHref,
+} from '../../app/component-inventory.js';
 
 const registry = JSON.parse(fs.readFileSync('registry.json', 'utf8'));
 
@@ -84,7 +88,19 @@ test('every component inventory entry links to a concrete proof instance', () =>
     assert.ok(component.instances?.length, `${component.name} should link to at least one proof instance`);
     for (const instance of component.instances) {
       assert.ok(['site', 'storybook'].includes(instance.surface), `${component.name} has an unknown proof surface`);
-      assert.match(instance.href, /^(http:\/\/localhost:3038|\/\?path=\/story\/)/, `${component.name} has an invalid proof link`);
+      assert.match(instance.href, /^(\/|\?path=\/story\/)/, `${component.name} has an invalid proof link`);
     }
   }
+});
+
+test('component proof links resolve for local and deployed Storybook', () => {
+  const storyInstance = { href: '?path=/story/mwth-directus-blocks--hero', surface: 'storybook' };
+  const siteInstance = { href: '/objects', surface: 'site' };
+
+  assert.equal(componentInstanceHref(storyInstance, '/iframe.html'), '/?path=/story/mwth-directus-blocks--hero');
+  assert.equal(
+    componentInstanceHref(storyInstance, '/storybook/iframe.html'),
+    '/storybook/index.html?path=/story/mwth-directus-blocks--hero',
+  );
+  assert.equal(componentInstanceHref(siteInstance, '/storybook/iframe.html'), '/objects');
 });
