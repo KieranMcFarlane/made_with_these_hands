@@ -5,6 +5,7 @@ storybook-static
 /public/storybook/
 .env*
 !.env.example
+!tools/component-factory-mcp/.env.client.example
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
