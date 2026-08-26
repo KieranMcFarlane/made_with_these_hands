@@ -1,0 +1,8 @@
+{
+  "imports": [
+    "shadcn:card"
+  ],
+  "sourceBoundary": "component-system/proposals/798a588a-a69c-44e9-abae-f03a164856bb",
+  "cmsExecutableContent": false,
+  "nextStep": "Implement and review the renderer inside this proposal workspace."
+}

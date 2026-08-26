@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { APPROVED_COMPONENT_COLLECTIONS } from '../component-system/components.mjs';
 
 const directusUrl = process.env.DIRECTUS_URL || 'http://127.0.0.1:8055';
 const adminToken = process.env.DIRECTUS_ADMIN_TOKEN;
@@ -242,6 +243,38 @@ async function main() {
       fields: ['*'],
     });
   }
+
+  await ensurePermission(policy.id, 'site_pages_blocks', 'read', {
+    permissions: {},
+    fields: ['*'],
+  });
+
+  for (const collection of APPROVED_COMPONENT_COLLECTIONS) {
+    await ensurePermission(policy.id, collection, 'read', {
+      permissions: tenantReadFilter(published),
+      fields: ['*'],
+    });
+  }
+
+  await ensurePermission(policy.id, 'component_registry', 'read', {
+    permissions: { status: { _eq: 'approved' } },
+    fields: [
+      'key',
+      'label',
+      'description',
+      'block_collection',
+      'status',
+      'version',
+      'variants',
+      'allowed_slots',
+      'field_contract',
+      'accessibility_contract',
+      'limits',
+      'trusted_open_source',
+      'preview_url',
+      'renderer_key',
+    ],
+  });
 
   for (const collection of ['makers', 'products', 'episodes', 'posts', 'site_sections']) {
     await ensurePermission(policy.id, collection, 'read', {

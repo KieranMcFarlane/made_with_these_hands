@@ -1,0 +1,10 @@
+.git
+.next
+.vercel
+node_modules
+.env
+.env.*
+!.env.example
+deploy/component-factory/.env.client
+npm-debug.log*
+component-system/proposals

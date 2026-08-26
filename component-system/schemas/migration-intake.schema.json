@@ -1,0 +1,231 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://made-with-these-hands.local/schemas/migration-intake.schema.json",
+  "title": "Client Migration Intake",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "client",
+    "source_material",
+    "routes",
+    "structured_content",
+    "component_mapping",
+    "brand_contract_notes",
+    "integrations",
+    "permissions",
+    "migration_batches",
+    "acceptance"
+  ],
+  "properties": {
+    "client": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "tenant_key", "primary_approver"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "tenant_key": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "current_domain": { "type": "string" },
+        "target_domain": { "type": "string" },
+        "directus_project": { "type": "string" },
+        "primary_approver": { "type": "string", "minLength": 1 },
+        "content_editors": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "technical_contact": { "type": "string" }
+      }
+    },
+    "source_material": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "location", "notes"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["existing_website", "claude_design", "brand_assets", "content_export", "media_library", "analytics", "other"]
+          },
+          "location": { "type": "string", "minLength": 1 },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "routes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "page_type", "current_source", "target", "reorderable"],
+        "properties": {
+          "path": { "type": "string", "pattern": "^/" },
+          "page_type": { "type": "string", "minLength": 1 },
+          "current_source": { "type": "string", "minLength": 1 },
+          "target": { "type": "string", "minLength": 1 },
+          "reorderable": { "type": "boolean" },
+          "seo_required": { "type": "boolean" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "structured_content": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["entity", "collection", "required_fields"],
+        "properties": {
+          "entity": { "type": "string", "minLength": 1 },
+          "collection": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "count": { "type": "integer", "minimum": 0 },
+          "required_fields": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "component_mapping": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_section", "approved_component", "new_proposal_needed"],
+        "properties": {
+          "source_section": { "type": "string", "minLength": 1 },
+          "current_location": { "type": "string" },
+          "approved_component": { "type": "string", "pattern": "^block_[a-z0-9_]+$" },
+          "variant": { "type": "string" },
+          "new_proposal_needed": { "type": "boolean" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "proposed_new_components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["need", "reason_existing_blocks_fail", "proposed_fields", "behaviour", "risk"],
+        "properties": {
+          "need": { "type": "string", "minLength": 1 },
+          "reason_existing_blocks_fail": { "type": "string", "minLength": 1 },
+          "proposed_fields": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "behaviour": { "type": "string" },
+          "risk": { "type": "string", "enum": ["low", "medium", "high"] }
+        }
+      }
+    },
+    "brand_contract_notes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["palette", "typography", "spacing", "image_ratios", "motion", "accessibility", "tone_of_voice"],
+      "properties": {
+        "palette": { "type": "string", "minLength": 1 },
+        "typography": { "type": "string", "minLength": 1 },
+        "spacing": { "type": "string", "minLength": 1 },
+        "image_ratios": { "type": "string", "minLength": 1 },
+        "motion": { "type": "string", "minLength": 1 },
+        "accessibility": { "type": "string", "minLength": 1 },
+        "tone_of_voice": { "type": "string", "minLength": 1 }
+      }
+    },
+    "integrations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "required", "owner", "auth_method"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "required": { "type": "boolean" },
+          "owner": { "type": "string" },
+          "auth_method": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "permissions": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "can_read", "can_create", "can_update", "can_delete", "can_publish"],
+        "properties": {
+          "role": { "type": "string", "minLength": 1 },
+          "can_read": { "type": "string" },
+          "can_create": { "type": "string" },
+          "can_update": { "type": "string" },
+          "can_delete": { "type": "string" },
+          "can_publish": { "type": "string" }
+        }
+      }
+    },
+    "migration_batches": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "routes_or_collections", "acceptance_check", "rollback"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "routes_or_collections": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "acceptance_check": { "type": "string", "minLength": 1 },
+          "rollback": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sitemap_captured",
+        "structured_entities_mapped",
+        "component_inventory_completed",
+        "design_output_mapped",
+        "directus_schema_plan_reviewed",
+        "brand_contract_recorded",
+        "tenant_roles_scoped",
+        "client_mcp_toml_generated",
+        "storybook_stories_added",
+        "no_executable_code_in_directus",
+        "components_test_passes",
+        "registry_validate_passes",
+        "build_passes",
+        "client_content_edit_tested",
+        "client_block_operation_tested"
+      ],
+      "properties": {
+        "sitemap_captured": { "type": "boolean" },
+        "structured_entities_mapped": { "type": "boolean" },
+        "component_inventory_completed": { "type": "boolean" },
+        "design_output_mapped": { "type": "boolean" },
+        "directus_schema_plan_reviewed": { "type": "boolean" },
+        "brand_contract_recorded": { "type": "boolean" },
+        "tenant_roles_scoped": { "type": "boolean" },
+        "client_mcp_toml_generated": { "type": "boolean" },
+        "storybook_stories_added": { "type": "boolean" },
+        "no_executable_code_in_directus": { "type": "boolean" },
+        "components_test_passes": { "type": "boolean" },
+        "registry_validate_passes": { "type": "boolean" },
+        "build_passes": { "type": "boolean" },
+        "client_content_edit_tested": { "type": "boolean" },
+        "client_block_operation_tested": { "type": "boolean" }
+      }
+    }
+  }
+}

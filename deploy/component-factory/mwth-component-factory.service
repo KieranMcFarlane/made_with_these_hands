@@ -1,0 +1,20 @@
+[Unit]
+Description=Made With These Hands isolated Component Factory MCP
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/em9/repos/made_with_these_hands
+EnvironmentFile=/home/em9/repos/made_with_these_hands/deploy/component-factory/.env.client
+ExecStart=/usr/bin/npm run component-factory:remote
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=15
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+WantedBy=default.target

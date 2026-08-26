@@ -1,0 +1,480 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "made-with-these-hands",
+  "homepage": "https://madewiththesehands.ie",
+  "items": [
+    {
+      "name": "mwth-button",
+      "type": "registry:ui",
+      "title": "MWTH Button",
+      "description": "The approved shadcn button primitive used by Made With These Hands actions.",
+      "files": [
+        {
+          "path": "components/ui/button.jsx",
+          "type": "registry:ui",
+          "target": "@ui/button.jsx"
+        }
+      ]
+    },
+    {
+      "name": "mwth-carousel",
+      "type": "registry:ui",
+      "title": "MWTH Carousel",
+      "description": "The approved carousel primitive used by editorial slideshow blocks.",
+      "dependencies": ["embla-carousel-react"],
+      "files": [
+        {
+          "path": "components/ui/carousel.jsx",
+          "type": "registry:ui",
+          "target": "@ui/carousel.jsx"
+        }
+      ]
+    },
+    {
+      "name": "mwth-slideshow-block",
+      "type": "registry:block",
+      "title": "MWTH Slideshow Block",
+      "description": "A governed Directus slideshow block with bounded slides, captions, reduced-motion handling, and shadcn carousel controls.",
+      "dependencies": ["embla-carousel-react", "lucide-react"],
+      "files": [
+        {
+          "path": "components/ui/carousel.jsx",
+          "type": "registry:ui",
+          "target": "@ui/carousel.jsx"
+        },
+        {
+          "path": "app/slideshow-block.jsx",
+          "type": "registry:component",
+          "target": "~/app/slideshow-block.jsx"
+        },
+        {
+          "path": "lib/slideshow.mjs",
+          "type": "registry:lib",
+          "target": "~/lib/slideshow.mjs"
+        },
+        {
+          "path": "app/directus-page.module.css",
+          "type": "registry:file",
+          "target": "~/app/directus-page.module.css"
+        }
+      ],
+      "meta": {
+        "directusCollection": "block_slideshow",
+        "guardrailMode": "tenant",
+        "storybookRecommended": true
+      }
+    },
+    {
+      "name": "mwth-podcast-player",
+      "type": "registry:block",
+      "title": "MWTH Podcast Player Block",
+      "description": "A governed Directus podcast player block using trusted open-source Media Chrome controls, transcript text, external podcast links, and related product references.",
+      "dependencies": ["media-chrome", "lucide-react"],
+      "files": [
+        {
+          "path": "components/ui/button.jsx",
+          "type": "registry:ui",
+          "target": "@ui/button.jsx"
+        },
+        {
+          "path": "app/podcast-player-block.jsx",
+          "type": "registry:component",
+          "target": "~/app/podcast-player-block.jsx"
+        },
+        {
+          "path": "app/directus-page.module.css",
+          "type": "registry:file",
+          "target": "~/app/directus-page.module.css"
+        }
+      ],
+      "meta": {
+        "directusCollection": "block_podcast_player",
+        "guardrailMode": "tenant",
+        "trustedOpenSource": ["media-chrome"],
+        "storybookRecommended": true
+      }
+    },
+    {
+      "name": "mwth-directus-block-renderer",
+      "type": "registry:block",
+      "title": "MWTH Directus Block Renderer",
+      "description": "The Next.js Directus rendering layer that maps approved page-builder blocks to safe React components.",
+      "dependencies": ["@directus/sdk", "media-chrome", "lucide-react", "embla-carousel-react"],
+      "files": [
+        {
+          "path": "components/ui/button.jsx",
+          "type": "registry:ui",
+          "target": "@ui/button.jsx"
+        },
+        {
+          "path": "components/ui/carousel.jsx",
+          "type": "registry:ui",
+          "target": "@ui/carousel.jsx"
+        },
+        {
+          "path": "app/directus-blocks.jsx",
+          "type": "registry:component",
+          "target": "~/app/directus-blocks.jsx"
+        },
+        {
+          "path": "app/directus-page.jsx",
+          "type": "registry:component",
+          "target": "~/app/directus-page.jsx"
+        },
+        {
+          "path": "app/directus-detail-template.jsx",
+          "type": "registry:component",
+          "target": "~/app/directus-detail-template.jsx"
+        },
+        {
+          "path": "app/template-slot-portals.jsx",
+          "type": "registry:component",
+          "target": "~/app/template-slot-portals.jsx"
+        },
+        {
+          "path": "app/directus-page.module.css",
+          "type": "registry:file",
+          "target": "~/app/directus-page.module.css"
+        },
+        {
+          "path": "app/podcast-player-block.jsx",
+          "type": "registry:component",
+          "target": "~/app/podcast-player-block.jsx"
+        },
+        {
+          "path": "app/slideshow-block.jsx",
+          "type": "registry:component",
+          "target": "~/app/slideshow-block.jsx"
+        },
+        {
+          "path": "lib/directus.js",
+          "type": "registry:lib",
+          "target": "~/lib/directus.js"
+        },
+        {
+          "path": "lib/slideshow.mjs",
+          "type": "registry:lib",
+          "target": "~/lib/slideshow.mjs"
+        },
+        {
+          "path": "component-system/components.mjs",
+          "type": "registry:lib",
+          "target": "~/component-system/components.mjs"
+        },
+        {
+          "path": "component-system/generic-page-block.mjs",
+          "type": "registry:lib",
+          "target": "~/component-system/generic-page-block.mjs"
+        }
+      ],
+      "meta": {
+        "directusCollections": ["site_pages", "site_pages_blocks", "component_registry"],
+        "guardrailMode": "tenant"
+      }
+    },
+    {
+      "name": "mwth-brand-book",
+      "type": "registry:block",
+      "title": "MWTH Brand Book",
+      "description": "The client-facing brand book and component inventory surface for approved components, usage, palette, voice, and guardrails.",
+      "dependencies": ["media-chrome", "lucide-react", "embla-carousel-react"],
+      "files": [
+        {
+          "path": "components/ui/button.jsx",
+          "type": "registry:ui",
+          "target": "@ui/button.jsx"
+        },
+        {
+          "path": "components/ui/carousel.jsx",
+          "type": "registry:ui",
+          "target": "@ui/carousel.jsx"
+        },
+        {
+          "path": "app/brand/page.jsx",
+          "type": "registry:page",
+          "target": "~/app/brand/page.jsx"
+        },
+        {
+          "path": "app/brand/brand-book.module.css",
+          "type": "registry:file",
+          "target": "~/app/brand/brand-book.module.css"
+        },
+        {
+          "path": "app/brand/proposals/[id]/page.jsx",
+          "type": "registry:page",
+          "target": "~/app/brand/proposals/[id]/page.jsx"
+        },
+        {
+          "path": "app/component-inventory.js",
+          "type": "registry:lib",
+          "target": "~/app/component-inventory.js"
+        },
+        {
+          "path": "app/directus-blocks.jsx",
+          "type": "registry:component",
+          "target": "~/app/directus-blocks.jsx"
+        },
+        {
+          "path": "app/podcast-player-block.jsx",
+          "type": "registry:component",
+          "target": "~/app/podcast-player-block.jsx"
+        },
+        {
+          "path": "app/slideshow-block.jsx",
+          "type": "registry:component",
+          "target": "~/app/slideshow-block.jsx"
+        },
+        {
+          "path": "app/directus-page.module.css",
+          "type": "registry:file",
+          "target": "~/app/directus-page.module.css"
+        },
+        {
+          "path": "lib/brand-settings.mjs",
+          "type": "registry:lib",
+          "target": "~/lib/brand-settings.mjs"
+        },
+        {
+          "path": "component-system/components.mjs",
+          "type": "registry:lib",
+          "target": "~/component-system/components.mjs"
+        },
+        {
+          "path": "lib/directus.js",
+          "type": "registry:lib",
+          "target": "~/lib/directus.js"
+        },
+        {
+          "path": "lib/slideshow.mjs",
+          "type": "registry:lib",
+          "target": "~/lib/slideshow.mjs"
+        }
+      ],
+      "meta": {
+        "demoRoutes": ["/brand", "/brand/proposals/[id]"],
+        "storybookRecommended": true
+      }
+    },
+    {
+      "name": "mwth-component-guardrails",
+      "type": "registry:item",
+      "title": "MWTH Component Guardrails",
+      "description": "The approved component manifest, schemas, tests, Directus bootstrapping scripts, and agent policy that keep tenant edits data-only and brand-safe.",
+      "dependencies": ["ajv"],
+      "files": [
+        {
+          "path": "AGENTS.md",
+          "type": "registry:file",
+          "target": "~/AGENTS.md"
+        },
+        {
+          "path": "component-system/components.mjs",
+          "type": "registry:lib",
+          "target": "~/component-system/components.mjs"
+        },
+        {
+          "path": "component-system/generic-page-block.mjs",
+          "type": "registry:lib",
+          "target": "~/component-system/generic-page-block.mjs"
+        },
+        {
+          "path": "lib/brand-settings.mjs",
+          "type": "registry:lib",
+          "target": "~/lib/brand-settings.mjs"
+        },
+        {
+          "path": "component-system/schemas/brand-contract.schema.json",
+          "type": "registry:file",
+          "target": "~/component-system/schemas/brand-contract.schema.json"
+        },
+        {
+          "path": "component-system/schemas/component.schema.json",
+          "type": "registry:file",
+          "target": "~/component-system/schemas/component.schema.json"
+        },
+        {
+          "path": "scripts/validate-brand-contract.mjs",
+          "type": "registry:file",
+          "target": "~/scripts/validate-brand-contract.mjs"
+        },
+        {
+          "path": "scripts/validate-components.mjs",
+          "type": "registry:file",
+          "target": "~/scripts/validate-components.mjs"
+        },
+        {
+          "path": "scripts/validate-directus-component-system.mjs",
+          "type": "registry:file",
+          "target": "~/scripts/validate-directus-component-system.mjs"
+        },
+        {
+          "path": "scripts/bootstrap-directus-mwth.mjs",
+          "type": "registry:file",
+          "target": "~/scripts/bootstrap-directus-mwth.mjs"
+        },
+        {
+          "path": "scripts/seed-component-registry.mjs",
+          "type": "registry:file",
+          "target": "~/scripts/seed-component-registry.mjs"
+        },
+        {
+          "path": "scripts/migrate-directus-generic-blocks.mjs",
+          "type": "registry:file",
+          "target": "~/scripts/migrate-directus-generic-blocks.mjs"
+        },
+        {
+          "path": "scripts/migrate-directus-design-contract.mjs",
+          "type": "registry:file",
+          "target": "~/scripts/migrate-directus-design-contract.mjs"
+        },
+        {
+          "path": "CLIENT_COMPONENT_SYSTEM_HANDOVER.md",
+          "type": "registry:file",
+          "target": "~/CLIENT_COMPONENT_SYSTEM_HANDOVER.md"
+        }
+      ],
+      "meta": {
+        "guardrailMode": "tenant",
+        "directusCollections": ["component_registry", "component_proposals"]
+      }
+    },
+    {
+      "name": "mwth-component-factory-mcp",
+      "type": "registry:item",
+      "title": "MWTH Component Factory MCP",
+      "description": "The tenant-isolated MCP server, Docker/systemd deployment files, local provisioning scripts, and client connection template for governed component proposals.",
+      "dependencies": ["@modelcontextprotocol/sdk", "zod"],
+      "files": [
+        {
+          "path": "component-system/components.mjs",
+          "type": "registry:lib",
+          "target": "~/component-system/components.mjs"
+        },
+        {
+          "path": "lib/brand-settings.mjs",
+          "type": "registry:lib",
+          "target": "~/lib/brand-settings.mjs"
+        },
+        {
+          "path": "tools/component-factory-mcp/README.md",
+          "type": "registry:file",
+          "target": "~/tools/component-factory-mcp/README.md"
+        },
+        {
+          "path": "tools/component-factory-mcp/index.mjs",
+          "type": "registry:file",
+          "target": "~/tools/component-factory-mcp/index.mjs"
+        },
+        {
+          "path": "tools/component-factory-mcp/remote.mjs",
+          "type": "registry:file",
+          "target": "~/tools/component-factory-mcp/remote.mjs"
+        },
+        {
+          "path": "tools/component-factory-mcp/provision-local-client.mjs",
+          "type": "registry:file",
+          "target": "~/tools/component-factory-mcp/provision-local-client.mjs"
+        },
+        {
+          "path": "tools/component-factory-mcp/verify-local-client.mjs",
+          "type": "registry:file",
+          "target": "~/tools/component-factory-mcp/verify-local-client.mjs"
+        },
+        {
+          "path": "tools/component-factory-mcp/generate-client-token.mjs",
+          "type": "registry:file",
+          "target": "~/tools/component-factory-mcp/generate-client-token.mjs"
+        },
+        {
+          "path": "tools/component-factory-mcp/.env.client.example",
+          "type": "registry:file",
+          "target": "~/tools/component-factory-mcp/.env.client.example"
+        },
+        {
+          "path": "tools/component-factory-mcp/Dockerfile",
+          "type": "registry:file",
+          "target": "~/tools/component-factory-mcp/Dockerfile"
+        },
+        {
+          "path": "deploy/component-factory/mwth-component-factory.service",
+          "type": "registry:file",
+          "target": "~/deploy/component-factory/mwth-component-factory.service"
+        }
+      ],
+      "meta": {
+        "remoteEndpoint": "https://factory.nakanodigital.com/mcp",
+        "healthEndpoint": "https://factory.nakanodigital.com/healthz",
+        "guardrailMode": "tenant"
+      }
+    },
+    {
+      "name": "mwth-storybook-kit",
+      "type": "registry:item",
+      "title": "MWTH Storybook Kit",
+      "description": "Storybook configuration, brand decorator, Next image mock, and Directus-shaped stories for the approved Made With These Hands component system.",
+      "devDependencies": [
+        "@storybook/addon-a11y",
+        "@storybook/addon-docs",
+        "@storybook/react-vite",
+        "storybook"
+      ],
+      "files": [
+        {
+          "path": ".storybook/main.mjs",
+          "type": "registry:file",
+          "target": "~/.storybook/main.mjs"
+        },
+        {
+          "path": ".storybook/preview.jsx",
+          "type": "registry:file",
+          "target": "~/.storybook/preview.jsx"
+        },
+        {
+          "path": ".storybook/next-image.jsx",
+          "type": "registry:file",
+          "target": "~/.storybook/next-image.jsx"
+        },
+        {
+          "path": "stories/mwth-story-data.js",
+          "type": "registry:file",
+          "target": "~/stories/mwth-story-data.js"
+        },
+        {
+          "path": "stories/DirectusBlocks.stories.jsx",
+          "type": "registry:file",
+          "target": "~/stories/DirectusBlocks.stories.jsx"
+        },
+        {
+          "path": "stories/PodcastPlayerBlock.stories.jsx",
+          "type": "registry:file",
+          "target": "~/stories/PodcastPlayerBlock.stories.jsx"
+        },
+        {
+          "path": "stories/SlideshowBlock.stories.jsx",
+          "type": "registry:file",
+          "target": "~/stories/SlideshowBlock.stories.jsx"
+        },
+        {
+          "path": "stories/BrandBookInventory.stories.jsx",
+          "type": "registry:file",
+          "target": "~/stories/BrandBookInventory.stories.jsx"
+        },
+        {
+          "path": "SHADCN_REGISTRY.md",
+          "type": "registry:file",
+          "target": "~/SHADCN_REGISTRY.md"
+        },
+        {
+          "path": "handover/nakano-mission-control-demo.md",
+          "type": "registry:file",
+          "target": "~/handover/nakano-mission-control-demo.md"
+        }
+      ],
+      "meta": {
+        "demoCommand": "npm run storybook",
+        "verifyCommand": "npm run storybook:verify",
+        "guardrailMode": "tenant"
+      }
+    }
+  ]
+}

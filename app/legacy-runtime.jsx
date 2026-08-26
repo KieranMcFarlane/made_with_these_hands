@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
-import Babel from '@babel/standalone';
+import * as BabelStandalone from '@babel/standalone';
 
 const files = [
   '/mwth-data.jsx',
@@ -17,7 +17,7 @@ const appSource = `
 const TWEAKS = {
   "hero": "A",
   "palette": "cream",
-  "masthead": "minimal"
+  "masthead": "editorial"
 };
 
 function routeFromLocation() {
@@ -37,7 +37,9 @@ function routeFromLocation() {
 
   const [section, slug] = parts;
   if (section === 'objects') return { ...route, page: slug ? 'product' : 'shop', product: slug || route.product };
-  if (section === 'makers' || section === 'guests') return { ...route, page: 'maker', maker: slug || route.maker };
+  if (section === 'makers' || section === 'guests') {
+    return { ...route, page: slug ? 'maker' : 'artists', maker: slug || route.maker };
+  }
   if (section === 'about' || section === 'bio' || section === 'hugh') return { ...route, page: 'hugh' };
   if (section === 'podcast') return { ...route, page: slug ? 'episode' : 'podcasts', episode: slug || route.episode, maker: slug || route.maker };
   if (section === 'journal' || section === 'blog') return { ...route, page: slug ? 'blog-post' : 'blog', post: slug || route.post };
@@ -137,12 +139,28 @@ function App() {
   }, [context]);
 
   React.useEffect(() => {
+    const elements = Array.from(document.querySelectorAll('.reveal'));
+    const revealVisible = () => {
+      elements.forEach((element) => {
+        const rect = element.getBoundingClientRect();
+        if (rect.top < window.innerHeight + 40 && rect.bottom > -40) {
+          element.classList.add('in');
+        }
+      });
+    };
+
+    revealVisible();
+    if (!('IntersectionObserver' in window)) {
+      elements.forEach((element) => element.classList.add('in'));
+      return undefined;
+    }
+
     const io = new IntersectionObserver((entries) => {
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
     }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    elements.forEach(el => io.observe(el));
     return () => io.disconnect();
-  }, [page, tweaks]);
+  }, [page, tweaks, dataVersion]);
 
   if (page === 'episode')  return <><window.EpisodePage episode={MWTH_BY_EPISODE(context.episode || context.maker)} /><window.EnquiryDrawer /></>;
   if (page === 'shop')     return <><window.ShopPage /><window.EnquiryDrawer /></>;
@@ -152,7 +170,7 @@ function App() {
   if (page === 'blog')     return <><window.BlogPage /><window.EnquiryDrawer /></>;
   if (page === 'blog-post') return <><window.BlogPostPage post={MWTH_BY_POST(context.post)} /><window.EnquiryDrawer /></>;
   if (page === 'artists')  return <><window.ArtistsPage /><window.EnquiryDrawer /></>;
-  if (page === 'podcasts') return <><window.PodcastArchivePage /><window.EnquiryDrawer /></>;
+  if (page === 'podcasts') return <><window.PodcastArchivePage mastheadMode={tweaks.masthead} /><window.EnquiryDrawer /></>;
   if (page === 'craft')    return <><window.CraftPage craft={MWTH_BY_CRAFT(context.craft)} /><window.EnquiryDrawer /></>;
   if (page === 'commissions') return <><window.CommissionsPage /><window.EnquiryDrawer /></>;
   void dataVersion;
@@ -244,7 +262,10 @@ export default function LegacyRuntime() {
 
       if (cancelled) return;
 
-      const compiled = Babel.transform([...sources, appSource].join('\n\n'), {
+      const transform = BabelStandalone.transform || BabelStandalone.default?.transform;
+      if (!transform) throw new Error('The legacy JSX compiler is unavailable.');
+
+      const compiled = transform([...sources, appSource].join('\n\n'), {
         presets: ['react'],
       }).code;
 

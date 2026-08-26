@@ -5,10 +5,8 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-User=ubuntu
-WorkingDirectory=/home/ubuntu/repos/made_with_these_hands
-EnvironmentFile=-/home/ubuntu/repos/made_with_these_hands/.env
-EnvironmentFile=-/home/ubuntu/repos/made_with_these_hands/.env.production
+WorkingDirectory=%h/apps/made-with-these-hands/current
+EnvironmentFile=-%h/.config/made-with-these-hands/production.env
 Environment=NODE_ENV=production
 Environment=HOSTNAME=127.0.0.1
 Environment=PORT=3009
@@ -19,4 +17,4 @@ TimeoutStopSec=30
 KillSignal=SIGTERM
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target

@@ -13,6 +13,7 @@ function CommissionsPage() {
   return (
     <>
       <MastheadMid mode="editorial" />
+      <TemplateSlot name="before-content" />
       <section className="section reveal" data-screen-label="Comm Hero" style={{ paddingBottom: 32 }}>
         <div className="wrap"><div className="smallcaps" style={{ marginBottom: 18 }}>{section.eyebrow}</div><RichText as="h1" html={section.title} className="hl-serif hl-xl" style={{ margin: 0, maxWidth: '14ch' }} /><p className="dek" style={{ margin: '24px 0 0', maxWidth: '46ch' }}>{section.dek}</p></div>
       </section>
@@ -29,6 +30,8 @@ function CommissionsPage() {
           <div style={{ display: 'flex', gap: 10, marginTop: 32, justifyContent: 'space-between' }}><button className="btn" onClick={() => setStep(s => Math.max(0, s-1))} disabled={step === 0} style={{ opacity: step === 0 ? 0.4 : 1 }}>Back</button>{step < 3 && <button className="btn btn--primary" onClick={() => setStep(s => s+1)}>Continue <span className="arrow">&rarr;</span></button>}{step === 3 && <button className="btn btn--primary">Send to the studio <span className="arrow">&rarr;</span></button>}</div>
         </div>
       </section>
+      <TemplateSlot name="after-content" />
+      <TemplateSlot name="related-content" />
       <FooterMid />
     </>
   );

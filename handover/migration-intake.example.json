@@ -1,0 +1,199 @@
+{
+  "client": {
+    "name": "Made With These Hands",
+    "tenant_key": "made-with-these-hands",
+    "current_domain": "localhost",
+    "target_domain": "made-with-these-hands.example",
+    "directus_project": "nakanodigital-directus",
+    "primary_approver": "Hugh McNeill",
+    "content_editors": ["Hugh McNeill"],
+    "technical_contact": "Nakano Digital"
+  },
+  "source_material": [
+    {
+      "type": "existing_website",
+      "location": "http://localhost:3038",
+      "notes": "Current editorial prototype and legacy runtime routes."
+    },
+    {
+      "type": "claude_design",
+      "location": "client-supplied Claude design export",
+      "notes": "Use as visual/reference material only; map sections to approved components."
+    }
+  ],
+  "routes": [
+    {
+      "path": "/",
+      "page_type": "Home",
+      "current_source": "legacy runtime",
+      "target": "site_pages",
+      "reorderable": true,
+      "seo_required": true,
+      "notes": "Hero, editorial sections, podcast feature, object CTA."
+    },
+    {
+      "path": "/podcast/[slug]",
+      "page_type": "Podcast episode",
+      "current_source": "structured template",
+      "target": "episodes plus optional site_pages slots",
+      "reorderable": false,
+      "seo_required": true,
+      "notes": "Episode body, comments, player, guest bio, related products."
+    },
+    {
+      "path": "/objects/[slug]",
+      "page_type": "Object detail",
+      "current_source": "structured template",
+      "target": "products plus optional site_pages slots",
+      "reorderable": false,
+      "seo_required": true,
+      "notes": "Enquiry-led object page, not checkout."
+    }
+  ],
+  "structured_content": [
+    {
+      "entity": "Pages",
+      "collection": "site_pages",
+      "count": 8,
+      "required_fields": ["title", "path", "status", "seo_title", "seo_description"],
+      "notes": "Composable pages and optional slots for structured templates."
+    },
+    {
+      "entity": "Products",
+      "collection": "products",
+      "count": 3,
+      "required_fields": ["name", "slug", "maker", "craft", "image", "enquiry_copy"],
+      "notes": "Objects are enquiry-led."
+    },
+    {
+      "entity": "Episodes",
+      "collection": "episodes",
+      "count": 2,
+      "required_fields": ["title", "slug", "guest", "audio_url", "transcript"],
+      "notes": "Podcast player uses approved frontend renderer."
+    }
+  ],
+  "component_mapping": [
+    {
+      "source_section": "Opening hero",
+      "current_location": "/",
+      "approved_component": "block_hero",
+      "variant": "split",
+      "new_proposal_needed": false,
+      "notes": "Matches approved hero vocabulary."
+    },
+    {
+      "source_section": "Podcast player",
+      "current_location": "/podcast/[slug]",
+      "approved_component": "block_podcast_player",
+      "variant": "feature",
+      "new_proposal_needed": false,
+      "notes": "Uses trusted Media Chrome controls."
+    },
+    {
+      "source_section": "Object shelf",
+      "current_location": "/objects",
+      "approved_component": "block_listing",
+      "variant": "grid",
+      "new_proposal_needed": false,
+      "notes": "Published products only."
+    }
+  ],
+  "proposed_new_components": [],
+  "brand_contract_notes": {
+    "palette": "Warm paper, ink, quiet accent colours only.",
+    "typography": "Editorial serif headlines with restrained mono uppercase labels.",
+    "spacing": "Large editorial sections, stable card rhythm, no nested cards.",
+    "image_ratios": "Use approved ratios from the brand contract.",
+    "motion": "Respect reduced motion; no uncontrolled autoplay.",
+    "accessibility": "Keyboard focus, alt text, semantic headings, sufficient contrast.",
+    "tone_of_voice": "Craft-led, personal, precise, enquiry-led."
+  },
+  "integrations": [
+    {
+      "name": "Resend",
+      "required": true,
+      "owner": "Nakano Digital",
+      "auth_method": "API key",
+      "notes": "Product and commission enquiries."
+    },
+    {
+      "name": "Podcast host",
+      "required": true,
+      "owner": "Client",
+      "auth_method": "Public audio/feed URL",
+      "notes": "Audio URL stored in episodes, rendered by approved player."
+    }
+  ],
+  "permissions": [
+    {
+      "role": "Site runtime",
+      "can_read": "Published tenant content and files",
+      "can_create": "No",
+      "can_update": "No",
+      "can_delete": "No",
+      "can_publish": "No"
+    },
+    {
+      "role": "Content editor",
+      "can_read": "Tenant content",
+      "can_create": "Drafts",
+      "can_update": "Own drafts",
+      "can_delete": "No",
+      "can_publish": "No"
+    },
+    {
+      "role": "Directus MCP user",
+      "can_read": "Tenant content",
+      "can_create": "Drafts and proposals",
+      "can_update": "Drafts and proposals",
+      "can_delete": "No",
+      "can_publish": "Controlled by approval workflow"
+    },
+    {
+      "role": "Factory service",
+      "can_read": "Brand, registry, proposals",
+      "can_create": "Component proposals",
+      "can_update": "Component proposals",
+      "can_delete": "No",
+      "can_publish": "Release records only"
+    }
+  ],
+  "migration_batches": [
+    {
+      "name": "Brand and navigation",
+      "routes_or_collections": ["brand_settings", "navigation_items"],
+      "acceptance_check": "Brand book renders and navigation matches the site.",
+      "rollback": "Restore previous brand settings export."
+    },
+    {
+      "name": "Structured content",
+      "routes_or_collections": ["products", "makers", "posts", "episodes"],
+      "acceptance_check": "Records resolve with media and SEO fields.",
+      "rollback": "Restore structured content export."
+    },
+    {
+      "name": "Composable pages",
+      "routes_or_collections": ["site_pages", "site_pages_blocks"],
+      "acceptance_check": "Page sequence renders through approved blocks.",
+      "rollback": "Use legacy route fallback."
+    }
+  ],
+  "acceptance": {
+    "sitemap_captured": true,
+    "structured_entities_mapped": true,
+    "component_inventory_completed": true,
+    "design_output_mapped": true,
+    "directus_schema_plan_reviewed": true,
+    "brand_contract_recorded": true,
+    "tenant_roles_scoped": true,
+    "client_mcp_toml_generated": true,
+    "storybook_stories_added": true,
+    "no_executable_code_in_directus": true,
+    "components_test_passes": true,
+    "registry_validate_passes": true,
+    "build_passes": true,
+    "client_content_edit_tested": true,
+    "client_block_operation_tested": true
+  }
+}

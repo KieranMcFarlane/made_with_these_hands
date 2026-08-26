@@ -1,0 +1,24 @@
+services:
+  component-factory:
+    build:
+      context: ../..
+      dockerfile: tools/component-factory-mcp/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env.client
+    ports:
+      - "127.0.0.1:8787:8787"
+    volumes:
+      - component_factory_proposals:/app/component-system/proposals
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /app/.next
+      - /root/.npm
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+volumes:
+  component_factory_proposals:

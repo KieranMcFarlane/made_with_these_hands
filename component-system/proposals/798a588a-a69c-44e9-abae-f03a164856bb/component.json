@@ -1,0 +1,77 @@
+{
+  "collection": "block_generic_page",
+  "label": "Generic page block storage",
+  "description": "A declarative Directus storage envelope that dispatches validated data to existing approved renderers without creating one collection per component.",
+  "status": "proposed",
+  "version": "0.1.0",
+  "renderer": "GenericpageblockstorageBlock",
+  "primitives": [
+    "shadcn:card"
+  ],
+  "trustedOpenSource": [],
+  "variants": [],
+  "slots": [
+    "main",
+    "before-content",
+    "after-content",
+    "related-content"
+  ],
+  "fields": [
+    {
+      "name": "component_key",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "schema_version",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "data",
+      "type": "json",
+      "required": true
+    },
+    {
+      "name": "source_block_collection",
+      "type": "string"
+    },
+    {
+      "name": "source_block_id",
+      "type": "string"
+    }
+  ],
+  "accessibility": [
+    "The selected approved renderer retains its accessibility contract.",
+    "Unknown component keys fail closed and do not render.",
+    "Migration preserves block order, slots, headings, media alternative text, and publication status."
+  ],
+  "limits": {
+    "cmsExecutableContent": false,
+    "unknownComponentKeys": false,
+    "maximumDataBytes": 65536
+  },
+  "bespoke_gap": "This is a storage and dispatch capability rather than a visual primitive; shadcn components remain selected by each approved renderer.",
+  "guardrail": {
+    "mode": "tenant",
+    "allowed": true,
+    "checks": [
+      {
+        "ok": true,
+        "scope": "slots",
+        "reason": "Slots are inside the tenant page-slot contract."
+      },
+      {
+        "ok": true,
+        "scope": "fields",
+        "reason": "Fields are data-only and CMS-safe."
+      },
+      {
+        "ok": true,
+        "scope": "open_source",
+        "reason": "No external open-source package requested."
+      }
+    ],
+    "trusted_packages": []
+  }
+}

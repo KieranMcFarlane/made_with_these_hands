@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://madewiththesehands.local/schemas/component.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "collection",
+    "label",
+    "description",
+    "status",
+    "version",
+    "renderer",
+    "variants",
+    "spacingModes",
+    "slots",
+    "fields",
+    "accessibility",
+    "limits",
+    "directusFields"
+  ],
+  "properties": {
+    "collection": { "type": "string", "pattern": "^block_[a-z0-9_]+$" },
+    "label": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["proposed", "testing", "approved", "deprecated"] },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "renderer": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9]+Block$" },
+    "primitives": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^shadcn:[a-z0-9-]+$" }
+    },
+    "trustedOpenSource": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["package", "source", "license", "purpose", "allowedFor"],
+        "properties": {
+          "package": { "type": "string", "minLength": 1 },
+          "source": { "type": "string", "minLength": 1 },
+          "license": { "type": "string", "minLength": 1 },
+          "purpose": { "type": "string", "minLength": 1 },
+          "allowedFor": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "icon": { "type": "string" },
+    "displayTemplate": { "type": "string" },
+    "variants": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+    "spacingModes": {
+      "type": "array",
+      "const": ["compact", "standard", "generous"]
+    },
+    "slots": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["main", "before-content", "after-content", "related-content"] }
+    },
+    "fields": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
+    "accessibility": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "limits": { "type": "object" },
+    "directusFields": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "type"],
+        "properties": {
+          "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "type": { "enum": ["string", "text", "json", "uuid", "boolean", "integer", "decimal"] },
+          "default": {},
+          "required": { "type": "boolean" },
+          "choices": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "prefixItems": [
+                { "type": "string", "minLength": 1 },
+                { "type": "string", "minLength": 1 }
+              ],
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "note": { "type": "string" },
+          "interface": { "type": "string" },
+          "listFields": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["field", "name", "type", "interface"],
+              "properties": {
+                "field": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+                "name": { "type": "string", "minLength": 1 },
+                "type": { "enum": ["string", "text", "uuid", "boolean", "integer", "decimal"] },
+                "interface": { "type": "string", "minLength": 1 },
+                "required": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

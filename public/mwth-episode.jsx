@@ -278,12 +278,13 @@ function EpisodePage() {
   );
 }
 
-function PodcastArchivePage() {
+function PodcastArchivePage({ mastheadMode = 'editorial' } = {}) {
   const section = MWTH_SECTION('podcast_index');
   const episodes = MWTH_DATA.episodes;
   return (
     <>
-      <MastheadMid mode="editorial" />
+      <MastheadMid mode={mastheadMode} />
+      <TemplateSlot name="before-content" />
       <section className="section reveal" data-screen-label="Podcast Archive Head" style={{ paddingBottom: 36 }}>
         <div className="wrap">
           <div className="smallcaps" style={{ marginBottom: 18 }}>{section.eyebrow}</div>
@@ -323,6 +324,8 @@ function PodcastArchivePage() {
           </div>
         </div>
       </section>
+      <TemplateSlot name="after-content" />
+      <TemplateSlot name="related-content" />
       <FooterMid />
     </>
   );
@@ -427,6 +430,7 @@ function DataEpisodePage({ episode = MWTH_DATA.episodes[0] }) {
   return (
     <>
       <MastheadMid mode="editorial" />
+      <TemplateSlot name="before-content" />
       <article>
         <section className="section reveal" data-screen-label="EP Title" style={{ paddingBottom: 40 }}>
           <div className="wrap-narrow">
@@ -495,6 +499,8 @@ function DataEpisodePage({ episode = MWTH_DATA.episodes[0] }) {
         )}
         <EpisodeComments episode={episode} />
       </article>
+      <TemplateSlot name="after-content" />
+      <TemplateSlot name="related-content" />
       <FooterMid />
     </>
   );

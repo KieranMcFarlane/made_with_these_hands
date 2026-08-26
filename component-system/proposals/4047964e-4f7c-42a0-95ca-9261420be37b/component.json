@@ -1,0 +1,172 @@
+{
+  "collection": "block_podcast_player",
+  "label": "Podcast Player",
+  "description": "A branded, accessible episode player for Hugh McNeill podcast audio, related maker context, external listen links, transcript prompts, and connected object shelves.",
+  "status": "proposed",
+  "version": "0.1.0",
+  "renderer": "PodcastPlayerBlock",
+  "primitives": [
+    "shadcn:button"
+  ],
+  "trustedOpenSource": [
+    {
+      "package": "media-chrome",
+      "source": "github:muxinc/media-chrome",
+      "license": "MIT",
+      "purpose": "Accessible, brandable native media controls for audio and video playback.",
+      "allowedFor": [
+        "audio-playback",
+        "video-playback",
+        "podcast-player"
+      ]
+    }
+  ],
+  "variants": [
+    "feature",
+    "compact",
+    "sticky-bar"
+  ],
+  "slots": [
+    "main",
+    "before-content",
+    "after-content",
+    "related-content"
+  ],
+  "fields": [
+    {
+      "name": "variant",
+      "type": "string",
+      "default": "feature",
+      "choices": [
+        [
+          "Feature",
+          "feature"
+        ],
+        [
+          "Compact",
+          "compact"
+        ],
+        [
+          "Sticky bar",
+          "sticky-bar"
+        ]
+      ],
+      "note": "Controlled podcast player layout."
+    },
+    {
+      "name": "episode",
+      "type": "string",
+      "required": true,
+      "note": "Episode slug, number, or Directus relation key."
+    },
+    {
+      "name": "episode_title",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "guest",
+      "type": "string"
+    },
+    {
+      "name": "audio_url",
+      "type": "string",
+      "required": true,
+      "note": "Direct audio URL from Podbean/RSS or uploaded Directus file URL. No embed JavaScript."
+    },
+    {
+      "name": "poster_image",
+      "type": "uuid"
+    },
+    {
+      "name": "duration",
+      "type": "string"
+    },
+    {
+      "name": "published_date",
+      "type": "date"
+    },
+    {
+      "name": "transcript",
+      "type": "text"
+    },
+    {
+      "name": "apple_url",
+      "type": "string"
+    },
+    {
+      "name": "spotify_url",
+      "type": "string"
+    },
+    {
+      "name": "podbean_url",
+      "type": "string"
+    },
+    {
+      "name": "related_maker",
+      "type": "string"
+    },
+    {
+      "name": "related_products",
+      "type": "json",
+      "note": "Array of product slugs; maximum 6."
+    }
+  ],
+  "accessibility": [
+    "Use native audio semantics and labelled controls.",
+    "All play, pause, seek, mute, and transcript controls must be keyboard operable.",
+    "Visible focus states are required for every control.",
+    "Do not autoplay audio.",
+    "Provide a text transcript or transcript link where available.",
+    "External listen links must be plain anchors with readable labels."
+  ],
+  "limits": {
+    "actions": 4,
+    "relatedProducts": 6,
+    "autoplay": false,
+    "cmsExecutableContent": false,
+    "externalLibraries": [
+      "media-chrome"
+    ]
+  },
+  "bespoke_gap": "shadcn provides buttons, cards, and layout primitives, but it does not provide accessible native audio playback controls, seek/progress controls, or media controller semantics. Media Chrome is the trusted MIT-licensed open-source media-control package for this gap; CMS content stores only data such as audio URLs, episode metadata, transcript text, and related content slugs.",
+  "guardrail": {
+    "mode": "tenant",
+    "allowed": true,
+    "checks": [
+      {
+        "ok": true,
+        "scope": "slots",
+        "reason": "Slots are inside the tenant page-slot contract."
+      },
+      {
+        "ok": true,
+        "scope": "fields",
+        "reason": "Fields are data-only and CMS-safe."
+      },
+      {
+        "ok": true,
+        "scope": "open_source",
+        "reason": "Trusted package allowlist matched: media-chrome"
+      },
+      {
+        "ok": true,
+        "scope": "media",
+        "reason": "Podcast/audio playback uses the trusted Media Chrome package rather than arbitrary embeds."
+      }
+    ],
+    "trusted_packages": [
+      {
+        "package": "media-chrome",
+        "source": "github:muxinc/media-chrome",
+        "license": "MIT",
+        "purpose": "Accessible, brandable native media controls for audio and video playback.",
+        "allowedFor": [
+          "audio-playback",
+          "video-playback",
+          "podcast-player"
+        ]
+      }
+    ]
+  }
+}

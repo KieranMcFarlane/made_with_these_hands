@@ -1,0 +1,64 @@
+name: Verify and deploy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: made-with-these-hands-production
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify website and component contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out release
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate component contract
+        run: npm run components:validate
+
+      - name: Run component tests
+        run: npm run components:test
+
+      - name: Validate and build registry
+        run: |
+          npm run registry:validate
+          npm run registry:build
+
+      - name: Build Storybook
+        run: npm run storybook:build
+
+      - name: Build website
+        run: npm run build
+
+  deploy:
+    name: Deploy production release
+    needs: verify
+    runs-on: [self-hosted, linux, x64, mwth-production]
+    timeout-minutes: 25
+    environment: production
+    steps:
+      - name: Check out verified release
+        uses: actions/checkout@v4
+
+      - name: Deploy website and Storybook
+        run: bash scripts/deploy-production.sh
+
+      - name: Verify public endpoints
+        run: |
+          curl --fail --silent --show-error --max-time 15 https://hands.nakanodigital.com/ >/dev/null
+          curl --fail --silent --show-error --max-time 15 https://hands.nakanodigital.com/storybook/index.html >/dev/null

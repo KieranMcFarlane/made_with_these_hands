@@ -1,0 +1,15 @@
+# Install as .codex/config.toml in Hugh's trusted Made With These Hands project.
+
+[mcp_servers.directus]
+url = "https://cms.nakanodigital.com/mcp"
+bearer_token_env_var = "DIRECTUS_MCP_TOKEN"
+required = true
+default_tools_approval_mode = "auto"
+tool_timeout_sec = 60
+
+[mcp_servers.component_factory]
+url = "https://factory.nakanodigital.com/mcp"
+bearer_token_env_var = "CLIENT_COMPONENT_FACTORY_TOKEN"
+required = true
+default_tools_approval_mode = "auto"
+tool_timeout_sec = 120

@@ -1,0 +1,9 @@
+{
+  "imports": [
+    "shadcn:button",
+    "npm:media-chrome"
+  ],
+  "sourceBoundary": "component-system/proposals/4047964e-4f7c-42a0-95ca-9261420be37b",
+  "cmsExecutableContent": false,
+  "nextStep": "Implement and review the renderer inside this proposal workspace."
+}

@@ -1,0 +1,149 @@
+{
+  "id": "798a588a-a69c-44e9-abae-f03a164856bb",
+  "client_id": "made-with-these-hands",
+  "request": "Consolidate Made With These Hands page components into a validated generic Directus block store using the existing site_sections collection, preserving published pages and legacy block collections during migration. Store only declarative component keys, schema versions, content data, and source references. Validate data against the approved registry, render through existing React components, add Storybook migration states, keep migrated acceptance content draft, and require platform approval before schema mutation or production release.",
+  "component_key": "block_generic_page",
+  "requested_by": "Workspace owner via Codex",
+  "guardrail_mode": "platform",
+  "status": "awaiting_approval",
+  "brand_contract_version": "1.0.0",
+  "created_at": "2026-08-21T14:56:55.641Z",
+  "directus_id": 3,
+  "proposal": {
+    "collection": "block_generic_page",
+    "label": "Generic page block storage",
+    "description": "A declarative Directus storage envelope that dispatches validated data to existing approved renderers without creating one collection per component.",
+    "status": "proposed",
+    "version": "0.1.0",
+    "renderer": "GenericpageblockstorageBlock",
+    "primitives": [
+      "shadcn:card"
+    ],
+    "trustedOpenSource": [],
+    "variants": [],
+    "slots": [
+      "main",
+      "before-content",
+      "after-content",
+      "related-content"
+    ],
+    "fields": [
+      {
+        "name": "component_key",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "schema_version",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "data",
+        "type": "json",
+        "required": true
+      },
+      {
+        "name": "source_block_collection",
+        "type": "string"
+      },
+      {
+        "name": "source_block_id",
+        "type": "string"
+      }
+    ],
+    "accessibility": [
+      "The selected approved renderer retains its accessibility contract.",
+      "Unknown component keys fail closed and do not render.",
+      "Migration preserves block order, slots, headings, media alternative text, and publication status."
+    ],
+    "limits": {
+      "cmsExecutableContent": false,
+      "unknownComponentKeys": false,
+      "maximumDataBytes": 65536
+    },
+    "bespoke_gap": "This is a storage and dispatch capability rather than a visual primitive; shadcn components remain selected by each approved renderer.",
+    "guardrail": {
+      "mode": "tenant",
+      "allowed": true,
+      "checks": [
+        {
+          "ok": true,
+          "scope": "slots",
+          "reason": "Slots are inside the tenant page-slot contract."
+        },
+        {
+          "ok": true,
+          "scope": "fields",
+          "reason": "Fields are data-only and CMS-safe."
+        },
+        {
+          "ok": true,
+          "scope": "open_source",
+          "reason": "No external open-source package requested."
+        }
+      ],
+      "trusted_packages": []
+    }
+  },
+  "guardrail": {
+    "mode": "tenant",
+    "allowed": true,
+    "checks": [
+      {
+        "ok": true,
+        "scope": "slots",
+        "reason": "Slots are inside the tenant page-slot contract."
+      },
+      {
+        "ok": true,
+        "scope": "fields",
+        "reason": "Fields are data-only and CMS-safe."
+      },
+      {
+        "ok": true,
+        "scope": "open_source",
+        "reason": "No external open-source package requested."
+      }
+    ],
+    "trusted_packages": []
+  },
+  "updated_at": "2026-08-21T15:10:20.652Z",
+  "validation_summary": {
+    "ok": true,
+    "results": [
+      {
+        "command": "npm run components:validate",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 components:validate\n> npm run components:validate-brand && node scripts/validate-components.mjs\n\n\n> made-with-these-hands@0.1.0 components:validate-brand\n> node scripts/validate-brand-contract.mjs\n\nBrand contract 1.0.0 is valid.\nComponent manifest 1.0.0 is valid (8 components)."
+      },
+      {
+        "command": "npm run components:validate-live",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 components:validate-live\n> node --env-file-if-exists=.env.local scripts/validate-directus-component-system.mjs\n\n{\n  \"ok\": true,\n  \"manifest\": \"1.0.0\",\n  \"deployed_components\": [\n    \"block_hero\",\n    \"block_text\",\n    \"block_media\",\n    \"block_quote\",\n    \"block_listing\",\n    \"block_cta\",\n    \"block_slideshow\"\n  ],\n  \"governed_pending_components\": [\n    \"block_podcast_player\"\n  ],\n  \"generic_storage_enabled\": false\n}"
+      },
+      {
+        "command": "npm run components:test",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 components:test\n> node --test component-system/tests/*.test.mjs\n\nTAP version 13\n# Subtest: approved collections are unique and resolvable\nok 1 - approved collections are unique and resolvable\n  ---\n  duration_ms: 1.778208\n  type: 'test'\n  ...\n# Subtest: slideshow contract enforces safe variants, slots, and limits\nok 2 - slideshow contract enforces safe variants, slots, and limits\n  ---\n  duration_ms: 1.493343\n  type: 'test'\n  ...\n# Subtest: podcast player contract uses trusted open source without CMS executable content\nok 3 - podcast player contract uses trusted open source without CMS executable content\n  ---\n  duration_ms: 2.557287\n  type: 'test'\n  ...\n# Subtest: CMS contracts never include executable source\nok 4 - CMS contracts never include executable source\n  ---\n  duration_ms: 0.360883\n  type: 'test'\n  ...\n# Subtest: generic storage resolves only approved declarative components\nok 5 - generic storage resolves only approved declarative components\n  ---\n  duration_ms: 2.404252\n  type: 'test'\n  ...\n# Subtest: component publication cannot advance before approval and only publishes the allowed transition\nok 6 - component publication cannot advance before approval and only publishes the allowed transition\n  ---\n  duration_ms: 465.8547\n  type: 'test'\n  ...\n# Subtest: tenant release advances without human approval when guardrails pass\nok 7 - tenant release advances without human approval when guardrails pass\n  ---\n  duration_ms: 278.849288\n  type: 'test'\n  ...\n# Subtest: remote component factory requires authentication and preserves client isolation context\nok 8 - remote component factory requires authentication and preserves client isolation context\n  ---\n  duration_ms: 157.077545\n  type: 'test'\n  ...\n# Subtest: component factory exposes the governed portable MCP contract\nok 9 - component factory exposes the governed portable MCP contract\n  ---\n  duration_ms: 324.495562\n  type: 'test'\n  ...\n# Subtest: slideshow normalization enforces the manifest limit and preserves accessible metadata\nok 10 - slideshow normalization enforces the manifest limit and preserves accessible metadata\n  ---\n  duration_ms: 2.13719\n  type: 'test'\n  ...\n# Subtest: slideshow autoplay never runs for reduced motion, paused playback, or one slide\nok 11 - slideshow autoplay never runs for reduced motion, paused playback, or one slide\n  ---\n  duration_ms: 0.38909\n  type: 'test'\n  ...\n# Subtest: slideshow interval and index helpers enforce safe boundaries\nok 12 - slideshow interval and index helpers enforce safe boundaries\n  ---\n  duration_ms: 0.21975\n  type: 'test'\n  ...\n# Subtest: storybook recommended registry items have matching stories\nok 13 - storybook recommended registry items have matching stories\n  ---\n  duration_ms: 1.532152\n  type: 'test'\n  ...\n# Subtest: storybook kit registry item distributes all story files and config\nok 14 - storybook kit registry item distributes all story files and config\n  ---\n  duration_ms: 0.541925\n  type: 'test'\n  ...\n# Subtest: every approved Directus block is represented in Storybook data\nok 15 - every approved Directus block is represented in Storybook data\n  ---\n  duration_ms: 0.816488\n  type: 'test'\n  ...\n1..15\n# tests 15\n# suites 0\n# pass 15\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1054.606301"
+      },
+      {
+        "command": "npm audit --audit-level=high",
+        "ok": true,
+        "output": "found 0 vulnerabilities"
+      },
+      {
+        "command": "npm run build",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 build\n> next build\n\n▲ Next.js 16.2.12 (Turbopack)\n- Environments: .env.local\n\n  Creating an optimized production build ...\n✓ Compiled successfully in 13.0s\n  Running TypeScript ...\n  Finished TypeScript in 244ms ...\n  Collecting page data using 7 workers ...\n  Generating static pages using 7 workers (0/5) ...\n  Generating static pages using 7 workers (1/5) \r\n  Generating static pages using 7 workers (2/5) \r\n  Generating static pages using 7 workers (3/5) \r\n✓ Generating static pages using 7 workers (5/5) in 682ms\n  Finalizing page optimization ...\n\nRoute (app)\n┌ ○ /\n├ ○ /_not-found\n├ ƒ /[...slug]\n├ ƒ /api/assets/[id]\n├ ƒ /api/comments\n├ ƒ /api/enquiries\n├ ƒ /api/mwth-data\n├ ƒ /brand\n├ ƒ /brand/proposals/[id]\n├ ○ /robots.txt\n└ ○ /sitemap.xml\n\n\n○  (Static)   prerendered as static content\nƒ  (Dynamic)  server-rendered on demand"
+      },
+      {
+        "command": "npm run components:smoke",
+        "ok": true,
+        "output": "> made-with-these-hands@0.1.0 components:smoke\n> node --env-file-if-exists=.env.local scripts/smoke-test-built-site.mjs\n\nProduction smoke test passed for 32 routes.\n200 /\n200 /about\n200 /brand\n200 /brand/demo\n200 /brand/proposals/4047964e-4f7c-42a0-95ca-9261420be37b\n200 /brand/proposals/798a588a-a69c-44e9-abae-f03a164856bb\n200 /brand/proposals/d435ec7c-7660-4c15-b8df-40bfb16a40db\n200 /contact\n200 /dashboard\n200 /journal\n200 /journal/the-object-archive\n200 /journal/why-we-record-the-tools\n200 /makers\n200 /makers/hugh-mcneill\n200 /makers/meabh-o-riada\n200 /makers/nuala-finn\n200 /makers/saoirse-doolan\n200 /makers/tomas-kelly\n200 /objects\n200 /objects/bog-oak-spoon\n200 /objects/engraved-decanter\n200 /objects/gathering-basket\n200 /objects/herb-trug\n200 /objects/lead-crystal-tumbler\n200 /objects/lobster-pot-small\n200 /objects/silver-cuff\n200 /podcast\n200 /podcast/042\n200 /podcast/043\n200 /podcast/045\n200 /podcast/046\n200 /podcast/047"
+      }
+    ],
+    "checked_at": "2026-08-21T15:10:20.650Z"
+  },
+  "preview_url": "https://hands.nakanodigital.com/brand/proposals/798a588a-a69c-44e9-abae-f03a164856bb"
+}

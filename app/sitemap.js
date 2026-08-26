@@ -1,3 +1,5 @@
+import { getMwthSitemapPages } from '../lib/directus';
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://madewiththesehands.ie';
 
 const routes = [
@@ -19,11 +21,21 @@ const routes = [
   '/craft/glass-engraving',
 ];
 
-export default function sitemap() {
-  return routes.map((route) => ({
-    url: `${siteUrl}${route}`,
-    lastModified: new Date(),
+export default async function sitemap() {
+  const directusPages = await getMwthSitemapPages();
+  const fallbackPages = routes.map((route) => ({
+    path: route || '/',
     changeFrequency: route === '' ? 'weekly' : 'monthly',
     priority: route === '' ? 1 : 0.7,
+  }));
+  const pagesByPath = new Map(
+    [...fallbackPages, ...directusPages].map((page) => [page.path, page]),
+  );
+
+  return [...pagesByPath.values()].map((page) => ({
+    url: `${siteUrl}${page.path === '/' ? '' : page.path}`,
+    lastModified: page.lastModified || new Date(),
+    changeFrequency: page.changeFrequency,
+    priority: page.priority,
   }));
 }

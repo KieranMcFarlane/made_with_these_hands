@@ -1,0 +1,19 @@
+# Made With These Hands Codex MCP template
+#
+# Copy these blocks into the client's Codex MCP configuration.
+# Keep the tokens in the client's shell, OS keychain, or Codex secret store.
+# Do not paste token values into this file.
+
+[mcp_servers.directus]
+url = "https://cms.nakanodigital.com/mcp"
+bearer_token_env_var = "DIRECTUS_MCP_TOKEN"
+required = true
+default_tools_approval_mode = "auto"
+tool_timeout_sec = 60
+
+[mcp_servers.component_factory]
+url = "https://factory.nakanodigital.com/mcp"
+bearer_token_env_var = "CLIENT_COMPONENT_FACTORY_TOKEN"
+required = true
+default_tools_approval_mode = "auto"
+tool_timeout_sec = 120

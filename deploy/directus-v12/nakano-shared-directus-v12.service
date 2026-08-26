@@ -1,0 +1,16 @@
+[Unit]
+Description=Nakano shared Directus v12 CMS
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/home/em9/repos/made_with_these_hands
+ExecStart=/home/em9/repos/made_with_these_hands/deploy/directus-v12/start-directus-v12.sh
+ExecStop=/home/em9/repos/made_with_these_hands/deploy/directus-v12/stop-directus-v12.sh
+TimeoutStartSec=10min
+TimeoutStopSec=90
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,12 @@
+{
+  "proposal_id": "d435ec7c-7660-4c15-b8df-40bfb16a40db",
+  "component_key": "block_slideshow",
+  "status": "awaiting_human_approval",
+  "requiredGates": [
+    "Directus approval",
+    "reviewed source change",
+    "production build",
+    "CI deployment"
+  ],
+  "prepared_at": "2026-07-27T15:29:23.111Z"
+}
