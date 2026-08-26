@@ -1,4 +1,8 @@
-import { COMPONENT_INVENTORY_COUNT, COMPONENT_INVENTORY_GROUPS } from '../app/component-inventory';
+import {
+  COMPONENT_INVENTORY_COUNT,
+  COMPONENT_INVENTORY_GROUPS,
+  componentInstanceHref,
+} from '../app/component-inventory';
 
 const meta = {
   title: 'MWTH/Brand Book/Component Inventory',
@@ -145,7 +149,7 @@ function InventorySurface() {
                       <a
                         aria-label={`${instance.label}: ${component.name}`}
                         data-surface={instance.surface}
-                        href={instance.href}
+                        href={componentInstanceHref(instance, window.location.pathname)}
                         key={`${component.name}-${instance.label}`}
                         rel={instance.surface === 'site' ? 'noreferrer' : undefined}
                         target={instance.surface === 'storybook' ? '_top' : '_blank'}
