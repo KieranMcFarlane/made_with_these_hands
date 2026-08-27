@@ -6,6 +6,7 @@ import { APPROVED_COMPONENTS } from '../components.mjs';
 import {
   COMPONENT_INVENTORY_COUNT,
   COMPONENT_INVENTORY_GROUPS,
+  componentInstanceExternalHref,
   componentInstanceHref,
 } from '../../app/component-inventory.js';
 
@@ -103,4 +104,13 @@ test('component proof links resolve for local and deployed Storybook', () => {
     '/storybook/index.html?path=/story/mwth-directus-blocks--hero',
   );
   assert.equal(componentInstanceHref(siteInstance, '/storybook/iframe.html'), '/objects');
+});
+
+test('component proof links resolve from the Brand Book to local or hosted Storybook', () => {
+  const storyInstance = { href: '?path=/story/mwth-directus-blocks--hero-cover', surface: 'storybook' };
+
+  assert.equal(
+    componentInstanceExternalHref(storyInstance, 'http://localhost:3038'),
+    'http://127.0.0.1:6006?path=/story/mwth-directus-blocks--hero-cover',
+  );
 });

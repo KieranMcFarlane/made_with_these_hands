@@ -38,7 +38,7 @@
 .pageHeader h1,
 .hero h1 {
   max-width: 12ch;
-  margin: 12px 0 0;
+  margin: var(--space-3, 12px) 0 0;
   font-family: var(--serif);
   font-size: clamp(64px, 9vw, 132px);
   font-weight: 400;
@@ -47,7 +47,7 @@
 }
 
 .eyebrow {
-  margin: 0 0 14px;
+  margin: 0 0 var(--space-4, 16px);
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.14em;
@@ -56,7 +56,7 @@
 
 .dek {
   max-width: 48ch;
-  margin: 22px 0 0;
+  margin: var(--space-5, 24px) 0 0;
   color: var(--ink-60);
   font-size: clamp(17px, 2vw, 21px);
   line-height: 1.6;
@@ -143,13 +143,13 @@
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 32px;
+  gap: var(--space-3, 12px);
+  margin-top: var(--space-6, 32px);
 }
 
 .primaryAction,
 .secondaryAction {
-  padding: 14px 18px;
+  padding: var(--space-4, 16px) var(--space-5, 24px);
   border: 1px solid currentColor;
   color: inherit;
   font-family: var(--mono);
@@ -225,17 +225,17 @@
 }
 
 .bodyList li {
-  padding: 16px 0;
+  padding: var(--space-4, 16px) 0;
   border-bottom: 1px solid color-mix(in srgb, currentColor 24%, transparent);
 }
 
 .bodyStack {
   display: grid;
-  gap: 28px;
+  gap: var(--space-6, 32px);
 }
 
 .bodyStack article {
-  padding-top: 22px;
+  padding-top: var(--space-5, 24px);
   border-top: 1px solid var(--rule);
 }
 
@@ -247,7 +247,7 @@
 }
 
 .bodyStack p {
-  margin: 12px 0 0;
+  margin: var(--space-3, 12px) 0 0;
 }
 
 .definitionList {
@@ -257,8 +257,8 @@
 .definitionList > div {
   display: grid;
   grid-template-columns: 160px 1fr;
-  gap: 24px;
-  padding: 14px 0;
+  gap: var(--space-5, 24px);
+  padding: var(--space-4, 16px) 0;
   border-bottom: 1px solid var(--rule);
 }
 
@@ -309,7 +309,7 @@
 
 .mediaFigure figcaption {
   max-width: 64ch;
-  margin-top: 12px;
+  margin-top: var(--space-3, 12px);
   color: var(--ink-60);
   font-family: var(--mono);
   font-size: 10px;
@@ -321,8 +321,8 @@
 .galleryGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
-  margin-top: 24px;
+  gap: var(--space-5, 24px);
+  margin-top: var(--space-5, 24px);
 }
 
 .galleryGrid figure {
@@ -341,7 +341,7 @@
 }
 
 .galleryGrid figcaption {
-  margin-top: 10px;
+  margin-top: var(--space-3, 12px);
   color: var(--ink-60);
   font-size: 12px;
   line-height: 1.5;
@@ -349,7 +349,7 @@
 
 .quoteBlock blockquote {
   max-width: 18ch;
-  margin: 64px 0 22px;
+  margin: var(--space-8, 64px) 0 var(--space-5, 24px);
   font-family: var(--serif);
   font-size: clamp(48px, 7vw, 100px);
   font-style: italic;
@@ -390,13 +390,13 @@
 }
 
 .listingBlock[data-variant='archive'] .card {
-  padding: 20px 0;
+  padding: var(--space-5, 24px) 0;
 }
 
 .listingBlock[data-variant='archive'] .cardLink {
   display: grid;
   grid-template-columns: minmax(120px, 0.35fr) minmax(0, 1fr);
-  gap: 24px;
+  gap: var(--space-5, 24px);
   align-items: baseline;
 }
 
@@ -406,7 +406,7 @@
 }
 
 .card {
-  padding-top: 22px;
+  padding-top: var(--space-5, 24px);
   border-top: 1px solid currentColor;
 }
 
@@ -418,13 +418,13 @@
 .cardImage {
   position: relative;
   aspect-ratio: 4 / 3;
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5, 24px);
   overflow: hidden;
   background: var(--paper-2);
 }
 
 .card h3 {
-  margin: 12px 0 0;
+  margin: var(--space-3, 12px) 0 0;
   font-family: var(--serif);
   font-size: 30px;
   font-weight: 500;
@@ -432,7 +432,7 @@
 }
 
 .cardLink > p:not(.eyebrow) {
-  margin: 12px 0 0;
+  margin: var(--space-3, 12px) 0 0;
   color: var(--ink-60);
   line-height: 1.55;
 }
@@ -461,7 +461,7 @@
 .ctaBlock[data-variant='band'] {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 32px;
+  gap: var(--space-6, 32px);
   align-items: center;
   padding-block: clamp(40px, 5vw, 72px);
   text-align: left;
@@ -531,7 +531,7 @@
 .slideshowBlock[data-variant='editorial'] .slideshowControls,
 .slideshowBlock[data-variant='editorial'] .slideshowCaptionFrame {
   grid-column: 2;
-  padding-left: 28px;
+  padding-left: var(--space-6, 32px);
 }
 
 .slideshowBlock[data-variant='full-width'] {
@@ -554,10 +554,10 @@
 
 .slideshowControls {
   display: flex;
-  gap: 18px;
+  gap: var(--space-4, 16px);
   align-items: center;
   justify-content: space-between;
-  padding-top: 18px;
+  padding-top: var(--space-4, 16px);
 }
 
 .slideshowControls button,
@@ -571,7 +571,7 @@
 .slideshowControls button {
   min-width: 44px;
   min-height: 44px;
-  margin-right: 8px;
+  margin-right: var(--space-2, 8px);
   font-size: 18px;
 }
 
@@ -592,11 +592,11 @@
 }
 
 .slideshowPlayback {
-  padding: 8px 12px;
+  padding: var(--space-2, 8px) var(--space-3, 12px);
 }
 
 .slideshowCaption {
-  margin: 12px 0 0;
+  margin: var(--space-3, 12px) 0 0;
   color: var(--ink-60);
 }
 
@@ -614,11 +614,11 @@
 
 .slideshowThumbnails {
   display: flex;
-  gap: 10px;
+  gap: var(--space-3, 12px);
   max-width: 1280px;
-  margin: 18px auto 0;
+  margin: var(--space-4, 16px) auto 0;
   overflow-x: auto;
-  padding: 3px;
+  padding: var(--space-1, 4px);
 }
 
 .slideshowThumbnails button {
@@ -661,7 +661,7 @@
 }
 
 .podcastMeta {
-  margin: 16px 0 0;
+  margin: var(--space-4, 16px) 0 0;
   color: var(--ink-60);
   font-family: var(--mono);
   font-size: 10px;
@@ -672,9 +672,9 @@
 
 .podcastPlayerShell {
   display: grid;
-  gap: 16px;
+  gap: var(--space-4, 16px);
   align-items: stretch;
-  padding: 22px;
+  padding: var(--space-5, 24px);
   border: 1px solid currentColor;
   background: var(--paper-2);
 }
@@ -713,12 +713,12 @@
 .podcastPlayerActions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--space-3, 12px);
   justify-content: flex-end;
 }
 
 .podcastPlayerActions a {
-  gap: 7px;
+  gap: var(--space-2, 8px);
   border-color: currentColor;
   background: var(--paper);
   color: var(--ink);
@@ -731,7 +731,7 @@
 .podcastTranscript {
   max-width: 78ch;
   border-top: 1px solid var(--rule);
-  padding-top: 16px;
+  padding-top: var(--space-4, 16px);
   color: var(--ink-80);
   line-height: 1.7;
 }
@@ -753,9 +753,9 @@
 .podcastRelated {
   display: grid;
   grid-template-columns: minmax(180px, 0.28fr) minmax(0, 1fr);
-  gap: 20px;
+  gap: var(--space-5, 24px);
   border-top: 1px solid var(--rule);
-  padding-top: 18px;
+  padding-top: var(--space-4, 16px);
 }
 
 .podcastRelated > div {
@@ -766,8 +766,8 @@
 .podcastRelated a {
   display: flex;
   justify-content: space-between;
-  gap: 20px;
-  padding: 14px 0;
+  gap: var(--space-5, 24px);
+  padding: var(--space-4, 16px) 0;
   border-bottom: 1px solid var(--rule);
   color: inherit;
   text-decoration: none;
@@ -800,7 +800,7 @@
   position: sticky;
   bottom: 0;
   z-index: 20;
-  padding-block: 20px;
+  padding-block: var(--space-5, 24px);
 }
 
 .podcastPlayerBlock[data-variant='sticky-bar'] .podcastPlayerShell {
@@ -840,7 +840,7 @@
 
   .ctaBlock[data-variant='band'] .actions {
     justify-content: flex-start;
-    margin-top: 32px;
+    margin-top: var(--space-6, 32px);
   }
 
   .slideshowBlock[data-variant='editorial'] .slideshowStage {
@@ -877,7 +877,7 @@
 
   .listingBlock[data-variant='archive'] .cardLink {
     grid-template-columns: 1fr;
-    gap: 4px;
+    gap: var(--space-1, 4px);
   }
 
   .galleryGrid {
@@ -886,6 +886,6 @@
 
   .definitionList > div {
     grid-template-columns: 1fr;
-    gap: 6px;
+    gap: var(--space-2, 8px);
   }
 }

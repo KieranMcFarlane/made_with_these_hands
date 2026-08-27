@@ -29,7 +29,7 @@
     "directus:mcp-user": "node scripts/create-directus-mcp-user.mjs",
     "components:validate-brand": "node scripts/validate-brand-contract.mjs",
     "migration:validate": "node scripts/validate-migration-intake.mjs",
-    "components:validate": "npm run components:validate-brand && node scripts/validate-components.mjs",
+    "components:validate": "npm run components:validate-brand && node scripts/validate-spacing-scale.mjs && node scripts/validate-components.mjs",
     "components:validate-live": "node --env-file-if-exists=.env.local scripts/validate-directus-component-system.mjs",
     "components:validate-policy": "node --env-file-if-exists=.env.local scripts/validate-directus-mcp-policy.mjs",
     "components:test": "node --test component-system/tests/*.test.mjs",

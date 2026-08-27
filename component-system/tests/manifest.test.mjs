@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import test from 'node:test';
 import {
   APPROVED_COMPONENT_COLLECTIONS,
@@ -17,6 +18,12 @@ test('brand contract fixes the 4px scale and semantic composition vocabulary', (
   assert.equal(contract.composition.directus_spacing_field, 'spacing');
   assert.equal(contract.composition.raw_css_in_cms, false);
   assert.equal(contract.composition.raw_numeric_spacing_in_cms, false);
+});
+
+test('governed presentation spacing is checked against the 4px grid', () => {
+  assert.doesNotThrow(() => {
+    execFileSync(process.execPath, ['scripts/validate-spacing-scale.mjs'], { stdio: 'pipe' });
+  });
 });
 
 test('approved collections are unique and resolvable', () => {

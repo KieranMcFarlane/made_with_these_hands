@@ -16,6 +16,15 @@ export function componentInstanceHref(instance, pathname = '/') {
   return `${managerPath}${instance.href}`;
 }
 
+export function componentInstanceExternalHref(instance, siteUrl = 'http://localhost:3038') {
+  if (instance.surface !== 'storybook') return instance.href;
+  const normalizedSiteUrl = siteUrl.replace(/\/$/, '');
+  const isLocalSite = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(normalizedSiteUrl);
+  const storybookUrl = process.env.NEXT_PUBLIC_STORYBOOK_URL
+    || (isLocalSite ? 'http://127.0.0.1:6006' : `${normalizedSiteUrl}/storybook/index.html`);
+  return `${storybookUrl}${instance.href}`;
+}
+
 export const COMPONENT_INVENTORY_GROUPS = [
   {
     key: 'site-chrome',

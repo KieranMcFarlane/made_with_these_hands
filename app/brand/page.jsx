@@ -6,7 +6,11 @@ import {
   getMwthComponentUsage,
   getMwthPage,
 } from '../../lib/directus';
-import { COMPONENT_INVENTORY_COUNT, COMPONENT_INVENTORY_GROUPS } from '../component-inventory';
+import {
+  COMPONENT_INVENTORY_COUNT,
+  COMPONENT_INVENTORY_GROUPS,
+  componentInstanceExternalHref,
+} from '../component-inventory';
 import { BLOCK_CATALOG, DirectusBlock } from '../directus-blocks';
 import styles from './brand-book.module.css';
 
@@ -578,7 +582,22 @@ function BrandSection({
                       <span>{component.source}</span>
                     </div>
                     <code>{component.directus}</code>
-                    <span className={styles.statusBadge}>{component.status}</span>
+                    <div className={styles.inventoryProofs}>
+                      <span className={styles.statusBadge}>{component.status}</span>
+                      {component.instances.map((instance) => (
+                        <a
+                          href={componentInstanceExternalHref(
+                            instance,
+                            process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3038',
+                          )}
+                          key={`${component.name}-${instance.label}`}
+                          rel="noreferrer"
+                          target="_blank"
+                        >
+                          {instance.label}
+                        </a>
+                      ))}
+                    </div>
                   </article>
                 ))}
               </div>
