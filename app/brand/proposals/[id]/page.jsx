@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import PodcastPlayerBlock from '../../../podcast-player-block';
 import SlideshowBlock from '../../../slideshow-block';
+import ArchivePortraitsPreview from '../../../../component-system/proposals/5adebafe-35e3-46f6-942f-2069fd47ac60/preview';
 
 export const dynamic = 'force-dynamic';
 
@@ -68,6 +69,22 @@ function PodcastPlayerPreview() {
   );
 }
 
+function ProposalBody({ componentKey }) {
+  if (componentKey === 'block_slideshow') return <SlideshowPreview />;
+  if (componentKey === 'block_podcast_player') return <PodcastPlayerPreview />;
+  if (componentKey === 'block_listing_archive_portraits') return <ArchivePortraitsPreview />;
+  return null;
+}
+
+function proposalTitle(proposal) {
+  if (proposal.proposal?.label) return proposal.proposal.label;
+  return proposal.component_key
+    .replace(/^block_/, '')
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 export default async function ComponentProposalPreview({ params }) {
   const { id } = await params;
   const proposal = await readProposal(id);
@@ -85,11 +102,14 @@ export default async function ComponentProposalPreview({ params }) {
       <header style={{ padding: '48px clamp(24px, 6vw, 88px)', borderBottom: '1px solid var(--rule)' }}>
         <p style={{ fontFamily: 'var(--mono)', textTransform: 'uppercase' }}>Proposal / {proposal.status}</p>
         <h1 style={{ maxWidth: '16ch', margin: '12px 0', fontFamily: 'var(--serif)', fontSize: 'clamp(48px, 7vw, 96px)', fontWeight: 400 }}>
-          {proposal.component_key}
+          {proposalTitle(proposal)}
         </h1>
+        <p style={{ margin: '0 0 20px', fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ink-60)' }}>
+          Component reference: {proposal.component_key}
+        </p>
         <p>{proposal.request}</p>
       </header>
-      {proposal.component_key === 'block_slideshow' ? <SlideshowPreview /> : proposal.component_key === 'block_podcast_player' ? <PodcastPlayerPreview /> : (
+      {ProposalBody({ componentKey: proposal.component_key }) || (
         <section style={{ padding: '64px clamp(24px, 6vw, 88px)' }}>
           <h2>Declarative proposal</h2>
           <pre style={{ overflow: 'auto', whiteSpace: 'pre-wrap' }}>{JSON.stringify(proposal.proposal || proposal, null, 2)}</pre>

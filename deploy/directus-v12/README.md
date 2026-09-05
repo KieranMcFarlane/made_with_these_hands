@@ -18,7 +18,8 @@ Verify:
 ```bash
 docker inspect --format '{{.State.Health.Status}}' nakano-directus
 curl --fail https://cms.nakanodigital.com/server/health
-curl --head https://cms.nakanodigital.com/mcp
+curl --fail https://mcp.nakanodigital.com/healthz
+curl --head https://cms.nakanodigital.com/mcp # expected 404 after gateway cutover
 ```
 
 The service is intentionally narrow. It does not start the legacy Nakano estate.

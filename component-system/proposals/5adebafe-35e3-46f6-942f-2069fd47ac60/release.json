@@ -1,0 +1,13 @@
+{
+  "proposal_id": "5adebafe-35e3-46f6-942f-2069fd47ac60",
+  "component_key": "block_listing_archive_portraits",
+  "status": "awaiting_human_approval",
+  "approval": null,
+  "requiredGates": [
+    "Directus approval",
+    "reviewed source change",
+    "production build",
+    "CI deployment"
+  ],
+  "prepared_at": "2026-09-05T00:51:27.020Z"
+}

@@ -1,0 +1,22 @@
+{
+  "job_id": "c4242e84-3a15-4299-8ae4-4737885a9897",
+  "proposal_id": "11c1a9f7-ede2-478b-9db1-5f0ab7daea72",
+  "status": "completed",
+  "started_at": "2026-08-28T17:14:48.407Z",
+  "updated_at": "2026-08-28T17:15:30.792Z",
+  "completed_at": "2026-08-28T17:15:30.792Z",
+  "validation_summary": {
+    "ok": false,
+    "gates": {
+      "contract": true,
+      "live_contract": false,
+      "behavior": true,
+      "storybook_accessibility": true,
+      "dependencies": true,
+      "production_build": true,
+      "route_smoke": true
+    },
+    "checked_at": "2026-08-28T17:15:30.557Z"
+  },
+  "error": null
+}

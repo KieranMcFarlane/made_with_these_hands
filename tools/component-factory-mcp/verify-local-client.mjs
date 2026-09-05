@@ -22,7 +22,7 @@ function parseEnvironment(source) {
 }
 
 const access = parseEnvironment(await fs.readFile(accessPath, 'utf8'));
-const endpoint = new URL(access.COMPONENT_FACTORY_MCP_URL);
+const endpoint = new URL(process.env.COMPONENT_FACTORY_VERIFY_URL || access.COMPONENT_FACTORY_MCP_URL);
 const token = access.CLIENT_COMPONENT_FACTORY_TOKEN;
 if (!token) throw new Error('The local client access file does not contain a bearer token.');
 
@@ -45,6 +45,12 @@ try {
     arguments: {},
   });
   const workflow = JSON.parse(workflowResult.content[0].text);
+  const toolNames = new Set(tools.tools.map(({ name }) => name));
+  const requiredTools = ['start_component_validation', 'get_component_validation'];
+  const missingTools = requiredTools.filter((name) => !toolNames.has(name));
+  if (missingTools.length) {
+    throw new Error(`Component Factory is missing required tools: ${missingTools.join(', ')}`);
+  }
 
   console.log(JSON.stringify({
     ok: true,
@@ -53,6 +59,7 @@ try {
     client_id: workflow.deployment.client_id,
     isolation: workflow.deployment.isolation,
     brand_contract_readable: !brandResult.isError,
+    async_validation_tools: requiredTools,
     secrets_printed: false,
   }, null, 2));
 } finally {

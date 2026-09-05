@@ -57,6 +57,15 @@ test('storybook kit registry item distributes all story files and config', () =>
   }
 });
 
+test('component factory registry item includes its validation job runtime', () => {
+  const factory = registry.items.find((item) => item.name === 'mwth-component-factory-mcp');
+  assert.ok(factory, 'Missing mwth-component-factory-mcp registry item');
+  const files = new Set(factory.files.map((file) => file.path));
+  assert.ok(files.has('tools/component-factory-mcp/validation-jobs.mjs'));
+  assert.ok(files.has('tools/component-factory-mcp/semantics.mjs'));
+  assert.ok(files.has('scripts/validate-component-proposal.mjs'));
+});
+
 test('every approved Directus block is represented in Storybook data', () => {
   const storySources = [
     fs.readFileSync('stories/DirectusBlocks.stories.jsx', 'utf8'),
@@ -83,7 +92,7 @@ test('Storybook proves every approved spacing density', () => {
 test('every component inventory entry links to a concrete proof instance', () => {
   const entries = COMPONENT_INVENTORY_GROUPS.flatMap((group) => group.components);
   assert.equal(entries.length, COMPONENT_INVENTORY_COUNT);
-  assert.equal(COMPONENT_INVENTORY_COUNT, 39);
+  assert.equal(COMPONENT_INVENTORY_COUNT, 40);
 
   for (const component of entries) {
     assert.ok(component.instances?.length, `${component.name} should link to at least one proof instance`);

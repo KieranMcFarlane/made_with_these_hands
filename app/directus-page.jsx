@@ -1,4 +1,5 @@
 import { getMwthDirectusData } from '../lib/directus';
+import BuilderMasthead from './builder-masthead';
 import { DirectusBlocks } from './directus-blocks';
 import styles from './directus-page.module.css';
 
@@ -14,20 +15,24 @@ export default async function DirectusPage({ page }) {
     .flatMap((slot) => blocksBySlot[slot])
     .at(0);
   const hasHero = firstVisibleBlock?.collection === 'block_hero';
+  const hasCoverFadeHero = hasHero && firstVisibleBlock?.item?.variant === 'cover-fade';
 
   return (
-    <main className={styles.page} data-template={page.type || 'page'}>
-      <DirectusBlocks blocks={blocksBySlot['before-content']} content={content} slot="before-content" />
-      {!hasHero && (
-        <header className={styles.pageHeader}>
-          <p className={styles.eyebrow}>{page.type || 'Page'}</p>
-          <h1>{page.title}</h1>
-          {page.description && <p className={styles.dek}>{page.description}</p>}
-        </header>
-      )}
-      <DirectusBlocks blocks={blocksBySlot.main} content={content} slot="main" />
-      <DirectusBlocks blocks={blocksBySlot['after-content']} content={content} slot="after-content" />
-      <DirectusBlocks blocks={blocksBySlot['related-content']} content={content} slot="related-content" />
-    </main>
+    <>
+      <BuilderMasthead inverseOnHero={hasCoverFadeHero} />
+      <main className={styles.page} data-template={page.type || 'page'}>
+        <DirectusBlocks blocks={blocksBySlot['before-content']} content={content} slot="before-content" />
+        {!hasHero && (
+          <header className={styles.pageHeader}>
+            <p className={styles.eyebrow}>{page.type || 'Page'}</p>
+            <h1>{page.title}</h1>
+            {page.description && <p className={styles.dek}>{page.description}</p>}
+          </header>
+        )}
+        <DirectusBlocks blocks={blocksBySlot.main} content={content} slot="main" />
+        <DirectusBlocks blocks={blocksBySlot['after-content']} content={content} slot="after-content" />
+        <DirectusBlocks blocks={blocksBySlot['related-content']} content={content} slot="related-content" />
+      </main>
+    </>
   );
 }

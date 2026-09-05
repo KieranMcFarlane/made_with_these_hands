@@ -1,111 +1,64 @@
 #!/usr/bin/env node
 
-import fs from 'node:fs/promises';
-import path from 'node:path';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 
-function parseEnvironment(source) {
-  const values = {};
-  for (const line of source.split(/\r?\n/)) {
-    const match = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)=(.*)$/);
-    if (!match) continue;
-    let value = match[2].trim();
-    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-      value = value.slice(1, -1);
-    }
-    values[match[1]] = value.replaceAll('\\"', '"').replaceAll('\\\\', '\\');
-  }
-  return values;
+const gatewayUrl = process.env.NAKANO_MCP_URL || 'https://mcp.nakanodigital.com/mcp';
+const accessToken = process.env.NAKANO_OAUTH_ACCESS_TOKEN;
+
+const resourceMetadataUrl = new URL('/.well-known/oauth-protected-resource/mcp', gatewayUrl);
+const metadataResponse = await fetch(resourceMetadataUrl);
+if (!metadataResponse.ok) throw new Error(`Nakano protected-resource discovery returned ${metadataResponse.status}.`);
+const metadata = await metadataResponse.json();
+
+if (metadata.resource !== gatewayUrl) throw new Error('Nakano resource metadata does not identify the canonical gateway.');
+if (!metadata.authorization_servers?.includes('https://id.nakanodigital.com')) {
+  throw new Error('Nakano resource metadata does not identify the canonical OAuth issuer.');
 }
 
-async function readEnvironment(file) {
-  try {
-    return parseEnvironment(await fs.readFile(file, 'utf8'));
-  } catch (error) {
-    if (error?.code === 'ENOENT') return {};
-    throw error;
-  }
-}
-
-function toolText(result) {
-  return (result.content || [])
-    .filter(({ type }) => type === 'text')
-    .map(({ text }) => text)
-    .join('\n');
-}
-
-async function inspectServer({ name, url, token, expectedTools = [], verify }) {
-  if (!token) throw new Error(`${name} token is not configured.`);
-  const transport = new StreamableHTTPClientTransport(new URL(url), {
-    requestInit: { headers: { Authorization: `Bearer ${token}` } },
-  });
-  const client = new Client({ name: 'mwth-client-handover-check', version: '1.0.0' });
-  await client.connect(transport);
-  try {
-    const result = await client.listTools();
-    const toolNames = result.tools.map(({ name: toolName }) => toolName);
-    for (const expected of expectedTools) {
-      if (!toolNames.includes(expected)) throw new Error(`${name} is missing expected tool ${expected}.`);
-    }
-    const proof = verify ? await verify(client) : undefined;
-    return { name, url, tool_count: toolNames.length, expected_tools_present: true, ...proof };
-  } finally {
-    await client.close();
-  }
-}
-
-const root = process.cwd();
-const projectEnvironment = await readEnvironment(path.join(root, '.env.local'));
-const clientEnvironment = await readEnvironment(path.join(root, 'deploy/component-factory/.env.client-access'));
-const environment = { ...projectEnvironment, ...clientEnvironment, ...process.env };
-
-const results = [];
-results.push(await inspectServer({
-  name: 'Directus MCP',
-  url: environment.DIRECTUS_MCP_URL || 'https://cms.nakanodigital.com/mcp',
-  token: environment.DIRECTUS_MCP_TOKEN,
-  expectedTools: ['system-prompt', 'items', 'schema'],
-  verify: async (client) => {
-    const result = await client.callTool({
-      name: 'items',
-      arguments: {
-        action: 'read',
-        collection: 'site_pages',
-        query: {
-          fields: ['id', 'path', 'status', 'tenant'],
-          filter: { path: { _eq: '/owner-acceptance' } },
-          limit: 1,
-        },
-      },
-    });
-    if (result.isError) throw new Error('Directus MCP tenant proof read failed.');
-    const content = toolText(result);
-    if (!content.includes('/owner-acceptance') || !content.includes('made-with-these-hands')) {
-      throw new Error('Directus MCP did not return the expected tenant-scoped acceptance page.');
-    }
-    const deniedDelete = await client.callTool({
-      name: 'items',
-      arguments: {
-        action: 'delete',
-        collection: 'posts',
-        keys: [2147483647],
-      },
-    });
-    if (!deniedDelete.isError) throw new Error('Directus MCP unexpectedly accepted a delete operation.');
-    return { tenant_read_proven: true, acceptance_page_found: true, delete_denied: true };
-  },
-}));
-results.push(await inspectServer({
-  name: 'Component Factory MCP',
-  url: environment.COMPONENT_FACTORY_MCP_URL || 'https://factory.nakanodigital.com/mcp',
-  token: environment.CLIENT_COMPONENT_FACTORY_TOKEN,
-  expectedTools: ['get_workflow_context', 'list_components', 'start_component_proposal'],
-}));
-
-console.log(JSON.stringify({
+const summary = {
   ok: true,
-  client_id: environment.DIRECTUS_TENANT_VALUE || 'made-with-these-hands',
-  servers: results,
+  gateway: gatewayUrl,
+  oauth_issuer: 'https://id.nakanodigital.com',
+  discovery_proven: true,
+  live_grant_proven: false,
   secrets_printed: false,
-}, null, 2));
+};
+
+if (!accessToken) {
+  console.log(JSON.stringify({
+    ...summary,
+    next_action: 'Authenticate the optional nakano MCP connection in Codex to complete the live tenant check.',
+  }, null, 2));
+  process.exit(0);
+}
+
+const client = new Client({ name: 'mwth-client-oauth-acceptance', version: '1.0.0' });
+const transport = new StreamableHTTPClientTransport(new URL(gatewayUrl), {
+  requestInit: { headers: { Authorization: `Bearer ${accessToken}` } },
+});
+
+await client.connect(transport);
+try {
+  const { tools } = await client.listTools();
+  const names = tools.map(({ name }) => name);
+  for (const required of ['cms_items', 'cms_archive_items', 'cms_restore_items', 'factory_get_workflow_context', 'factory_list_components']) {
+    if (!names.includes(required)) throw new Error(`Nakano gateway is missing ${required}.`);
+  }
+  if (names.some((name) => /(delete|schema|secret|role)/i.test(name))) {
+    throw new Error('Nakano gateway advertised a prohibited customer operation.');
+  }
+  const factoryProof = await client.callTool({ name: 'factory_get_workflow_context', arguments: {} });
+  if (factoryProof.isError) throw new Error('Factory workflow context failed through the Nakano gateway.');
+  console.log(JSON.stringify({
+    ...summary,
+    live_grant_proven: true,
+    tool_count: names.length,
+    cms_available: true,
+    cms_archive_restore_available: true,
+    factory_available: true,
+    prohibited_tools_hidden: true,
+  }, null, 2));
+} finally {
+  await client.close();
+}

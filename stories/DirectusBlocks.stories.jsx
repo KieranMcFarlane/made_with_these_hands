@@ -1,4 +1,5 @@
 import { DirectusBlock, DirectusBlocks } from '../app/directus-blocks';
+import BuilderMasthead from '../app/builder-masthead';
 import {
   block,
   content,
@@ -48,6 +49,44 @@ export const HeroCover = {
       },
     },
     content,
+  },
+};
+
+export const HeroCoverFade = {
+  name: 'Hero / cover fade',
+  render: () => {
+    const coverFade = {
+      ...heroBlock,
+      item: {
+        ...heroBlock.item,
+        key: 'storybook_hero_cover_fade',
+        variant: 'cover-fade',
+        eyebrow: 'The maker / Woodwork / Co. Galway',
+        title: 'The grain remembers every hand.',
+        dek: 'Meet the makers keeping inherited skills alive.',
+        cta_label: 'Meet the maker',
+        cta_href: '/makers',
+        secondary_cta_label: '',
+        secondary_cta_href: '',
+        content_position: 'bottom-left',
+        overlay_strength: 'standard',
+      },
+      section: {
+        image: '/images/mwth-cover-fade-concept.png',
+        imageAlt: 'A woodworker shaping timber with hand tools at a workshop bench',
+      },
+    };
+
+    return (
+      <main>
+        <BuilderMasthead inverseOnHero />
+        <DirectusBlock block={coverFade} content={content} />
+        <section style={{ minHeight: '32vh', padding: '64px', background: 'var(--paper)', color: 'var(--ink)' }}>
+          <p className="eyebrow">Next section</p>
+          <h2 style={{ margin: 0, fontFamily: 'var(--serif)', fontSize: '48px', fontWeight: 400 }}>Rooted in place.</h2>
+        </section>
+      </main>
+    );
   },
 };
 

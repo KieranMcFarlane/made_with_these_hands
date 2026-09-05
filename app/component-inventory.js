@@ -43,6 +43,7 @@ export const COMPONENT_INVENTORY_GROUPS = [
     components: [
       { name: 'Split opening', source: 'HeroA', directus: 'block_hero', status: 'Mapped', instances: [story('mwth-directus-blocks--hero', 'Block proof'), site('/', 'Homepage instance')] },
       { name: 'Cover opening', source: 'HeroB', directus: 'block_hero', status: 'Mapped', instances: [story('mwth-directus-blocks--hero-cover', 'Cover proof'), site('/', 'Homepage control')] },
+      { name: 'Cover fade opening', source: 'HeroBlock', directus: 'block_hero: cover-fade', status: 'Proposed', instances: [story('mwth-directus-blocks--hero-cover-fade', 'Cover fade proof')] },
       { name: 'Mission statement', source: 'Mission', directus: 'block_text', status: 'Mapped', instances: [story('mwth-directus-blocks--text', 'Block proof'), site('/#about', 'Homepage instance')] },
       { name: 'Craft feature', source: 'Craft', directus: 'block_text + block_listing', status: 'Mapped', instances: [story('mwth-directus-blocks--page-sequence', 'Composition proof'), site('/#craft', 'Homepage instance')] },
       { name: 'Founder story', source: 'HughStory', directus: 'block_media + block_text + block_cta', status: 'Mapped', instances: [story('mwth-directus-blocks--media', 'Media proof'), site('/#stories', 'Homepage instance')] },

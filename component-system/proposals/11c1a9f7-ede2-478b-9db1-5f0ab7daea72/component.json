@@ -1,0 +1,226 @@
+{
+  "collection": "block_hero",
+  "label": "Hero",
+  "description": "Declarative extension of the approved block_hero and its existing HeroBlock renderer. cover-fade presents a full-bleed documentary image beneath an approved transparent-to-ink scrim and places eyebrow, editorial title, dek, and up to two existing hero CTA actions over the dark zone. If it is the first visible block, the layout derives the global masthead's inverse transparent white-text state, returning on scroll to the existing paper-and-ink compact sticky state. Masthead state is derived behavior and is never CMS content.",
+  "status": "proposed",
+  "version": "0.1.0",
+  "renderer": "HeroBlock",
+  "primitives": [
+    "shadcn:button"
+  ],
+  "trustedOpenSource": [],
+  "variants": [
+    "split",
+    "cover",
+    "minimal",
+    "cover-fade"
+  ],
+  "slots": [
+    "main",
+    "before-content",
+    "after-content",
+    "related-content"
+  ],
+  "fields": [
+    {
+      "name": "spacing",
+      "type": "string",
+      "default": "standard",
+      "choices": [
+        [
+          "Compact",
+          "compact"
+        ],
+        [
+          "Standard",
+          "standard"
+        ],
+        [
+          "Generous",
+          "generous"
+        ]
+      ],
+      "note": "Approved brand density. Raw CSS and numeric values are forbidden."
+    },
+    {
+      "name": "variant",
+      "label": "Hero variant",
+      "type": "string",
+      "default": "split",
+      "choices": [
+        [
+          "Split",
+          "split"
+        ],
+        [
+          "Cover",
+          "cover"
+        ],
+        [
+          "Minimal",
+          "minimal"
+        ],
+        [
+          "Cover fade",
+          "cover-fade"
+        ]
+      ],
+      "note": "Controlled block_hero layout. cover-fade extends the existing hero renderer."
+    },
+    {
+      "name": "eyebrow",
+      "label": "Eyebrow",
+      "type": "string"
+    },
+    {
+      "name": "title",
+      "label": "Title",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "dek",
+      "label": "Dek",
+      "type": "text"
+    },
+    {
+      "name": "image",
+      "label": "Background image",
+      "type": "uuid",
+      "required_for": [
+        "cover-fade"
+      ],
+      "interface": "file-image"
+    },
+    {
+      "name": "image_alt",
+      "label": "Alternative text",
+      "type": "string",
+      "note": "Required for meaningful imagery; use an empty value only when the image is genuinely decorative."
+    },
+    {
+      "name": "cta_label",
+      "label": "Primary CTA label",
+      "type": "string"
+    },
+    {
+      "name": "cta_href",
+      "label": "Primary CTA destination",
+      "type": "string"
+    },
+    {
+      "name": "secondary_cta_label",
+      "label": "Secondary CTA label",
+      "type": "string"
+    },
+    {
+      "name": "secondary_cta_href",
+      "label": "Secondary CTA destination",
+      "type": "string"
+    },
+    {
+      "name": "content_position",
+      "label": "Content position",
+      "type": "string",
+      "default": "bottom-left",
+      "choices": [
+        [
+          "Bottom left",
+          "bottom-left"
+        ],
+        [
+          "Bottom centre",
+          "bottom-centre"
+        ]
+      ],
+      "applies_to": [
+        "cover-fade"
+      ],
+      "note": "Semantic placement over the scrim dark zone; no class names or CSS."
+    },
+    {
+      "name": "overlay_strength",
+      "label": "Overlay strength",
+      "type": "string",
+      "default": "standard",
+      "choices": [
+        [
+          "Soft",
+          "soft"
+        ],
+        [
+          "Standard",
+          "standard"
+        ],
+        [
+          "Strong",
+          "strong"
+        ]
+      ],
+      "applies_to": [
+        "cover-fade"
+      ],
+      "note": "Selects an approved transparent-to-ink readability scrim token; no raw colours, opacity values, gradients, or CSS."
+    }
+  ],
+  "accessibility": [
+    "Use a semantic page heading in document order; the hero must not create a duplicate or skipped heading level.",
+    "Provide alternative text for meaningful documentary imagery; permit empty alternative text only when the image is genuinely decorative and the adjacent copy conveys all essential information.",
+    "Every cover-fade text and control state must meet WCAG contrast requirements against the composited image; each soft, standard, and strong scrim token must remain contrast-safe across supported crops.",
+    "Keep eyebrow, title, dek, and CTA inside the scrim dark zone at every supported viewport and content-position setting.",
+    "CTA controls must use descriptive accessible names, be keyboard operable, and preserve a clearly visible focus indicator with sufficient contrast.",
+    "Do not communicate state or meaning by colour alone.",
+    "When cover-fade is the first visible block, the masthead must derive its inverse transparent white-text state automatically without a CMS field; masthead text, controls, logos, and focus indicators must retain sufficient contrast.",
+    "After scrolling, the masthead must return to the existing paper-and-ink compact sticky state without obscuring focused content or causing disruptive layout movement.",
+    "Any masthead or scrim transition must respect prefers-reduced-motion.",
+    "Use responsive images with stable media dimensions and preserve the editorial focal subject under full-bleed cropping."
+  ],
+  "limits": {
+    "actions": 2,
+    "extension_of": "block_hero",
+    "new_renderer": false,
+    "documentary_image_required_for_cover_fade": true,
+    "scrim_source": "approved transparent-to-ink readability tokens",
+    "masthead_state_source": "derived from first-visible-block composition and scroll state",
+    "cms_masthead_state": false,
+    "cms_executable_content": false,
+    "cms_renderer_paths": false,
+    "cms_class_names": false,
+    "cms_css": false,
+    "cms_raw_numeric_spacing": false,
+    "validation_requested": false,
+    "release_requested": false,
+    "publish_requested": false,
+    "deploy_requested": false,
+    "production_source_changes": false,
+    "schema_changes": false
+  },
+  "bespoke_gap": null,
+  "guardrail": {
+    "mode": "tenant",
+    "allowed": true,
+    "checks": [
+      {
+        "ok": true,
+        "scope": "slots",
+        "reason": "Slots are inside the tenant page-slot contract."
+      },
+      {
+        "ok": true,
+        "scope": "fields",
+        "reason": "Fields are data-only and CMS-safe."
+      },
+      {
+        "ok": true,
+        "scope": "composition",
+        "reason": "Composition uses the approved semantic spacing vocabulary."
+      },
+      {
+        "ok": true,
+        "scope": "open_source",
+        "reason": "No external open-source package requested."
+      }
+    ],
+    "trusted_packages": []
+  }
+}

@@ -122,6 +122,16 @@
           "target": "~/app/directus-page.jsx"
         },
         {
+          "path": "app/builder-masthead.jsx",
+          "type": "registry:component",
+          "target": "~/app/builder-masthead.jsx"
+        },
+        {
+          "path": "app/builder-masthead.module.css",
+          "type": "registry:file",
+          "target": "~/app/builder-masthead.module.css"
+        },
+        {
           "path": "app/directus-detail-template.jsx",
           "type": "registry:component",
           "target": "~/app/directus-detail-template.jsx"
@@ -366,6 +376,21 @@
           "target": "~/tools/component-factory-mcp/index.mjs"
         },
         {
+          "path": "tools/component-factory-mcp/validation-jobs.mjs",
+          "type": "registry:file",
+          "target": "~/tools/component-factory-mcp/validation-jobs.mjs"
+        },
+        {
+          "path": "tools/component-factory-mcp/semantics.mjs",
+          "type": "registry:file",
+          "target": "~/tools/component-factory-mcp/semantics.mjs"
+        },
+        {
+          "path": "scripts/validate-component-proposal.mjs",
+          "type": "registry:file",
+          "target": "~/scripts/validate-component-proposal.mjs"
+        },
+        {
           "path": "tools/component-factory-mcp/remote.mjs",
           "type": "registry:file",
           "target": "~/tools/component-factory-mcp/remote.mjs"
@@ -402,8 +427,8 @@
         }
       ],
       "meta": {
-        "remoteEndpoint": "https://factory.nakanodigital.com/mcp",
-        "healthEndpoint": "https://factory.nakanodigital.com/healthz",
+        "remoteEndpoint": "https://mcp.nakanodigital.com/mcp",
+        "healthEndpoint": "https://mcp.nakanodigital.com/healthz",
         "guardrailMode": "tenant"
       }
     },

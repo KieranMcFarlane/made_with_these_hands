@@ -48,7 +48,9 @@ function MastheadMid({ mode = 'editorial', collapseOnScroll = true }) {
             <span>{masthead.eyebrow}</span>
             <span>{masthead.dek}</span>
           </div>
-          <h1 className="title">{masthead.title}</h1>
+          <h1 className="title">
+            <a href="/" data-page="home">{masthead.title}</a>
+          </h1>
           <nav className="nav">
             <a href="/?page=craft&craft=glass-engraving" data-page="craft" data-craft="glass-engraving">Craft</a>
             <a href="/?page=blog" data-page="blog">Blog</a>
@@ -60,7 +62,9 @@ function MastheadMid({ mode = 'editorial', collapseOnScroll = true }) {
       </div>
       <div className="masthead-layer masthead-layer--compact" aria-hidden={isCollapsed ? 'false' : 'true'}>
         <div className="masthead-layer-inner">
-          <h1 className="title">{masthead.title}</h1>
+          <h1 className="title">
+            <a href="/" data-page="home">{masthead.title}</a>
+          </h1>
           <nav className="nav">
             <a href="/?page=craft&craft=glass-engraving" data-page="craft" data-craft="glass-engraving">Craft</a>
             <a href="/?page=blog" data-page="blog">Blog</a>

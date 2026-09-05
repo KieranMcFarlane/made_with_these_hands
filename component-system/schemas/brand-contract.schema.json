@@ -139,6 +139,7 @@
       "additionalProperties": false,
       "required": [
         "version",
+        "presentation",
         "spacing",
         "composition",
         "grids",
@@ -153,6 +154,34 @@
       ],
       "properties": {
         "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "presentation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["fields", "natural_language"],
+          "properties": {
+            "fields": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["surface", "tone", "contrast", "image_focus", "spacing"],
+              "properties": {
+                "surface": { "const": { "default": "paper", "choices": ["paper", "muted", "ink"] } },
+                "tone": { "const": { "default": "editorial", "choices": ["editorial", "feature", "restrained"] } },
+                "contrast": { "const": { "default": "standard", "choices": ["standard", "high"] } },
+                "image_focus": { "const": { "default": "center", "choices": ["center", "top"] } },
+                "spacing": { "const": { "default": "standard", "choices": ["compact", "standard", "generous"] } }
+              }
+            },
+            "natural_language": {
+              "type": "object",
+              "minProperties": 1,
+              "additionalProperties": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": { "type": "string" }
+              }
+            }
+          }
+        },
         "spacing": {
           "type": "object",
           "additionalProperties": false,

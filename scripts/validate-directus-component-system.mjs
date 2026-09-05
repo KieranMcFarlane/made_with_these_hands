@@ -73,11 +73,16 @@ const commonBlockFields = ['tenant', 'status', 'key', 'eyebrow', 'title', 'dek',
 for (const component of deployedComponents) {
   const fields = await request(`/fields/${component.collection}`);
   const fieldsByName = new Map(fields.map((field) => [field.field, field]));
-  for (const field of [...commonBlockFields, ...component.directusFields.map(({ name }) => name)]) {
+  const storageFields = genericStorageEnabled
+    ? commonBlockFields
+    : [...commonBlockFields, ...component.directusFields.map(({ name }) => name)];
+  for (const field of storageFields) {
     assert.ok(fieldsByName.has(field), `${component.collection}.${field} is missing in Directus`);
   }
-  for (const expected of component.directusFields) {
-    assertDirectusFieldType(fieldsByName.get(expected.name), expected, `${component.collection}.${expected.name}`);
+  if (!genericStorageEnabled) {
+    for (const expected of component.directusFields) {
+      assertDirectusFieldType(fieldsByName.get(expected.name), expected, `${component.collection}.${expected.name}`);
+    }
   }
 }
 

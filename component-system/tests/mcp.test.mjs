@@ -26,10 +26,16 @@ test('component factory exposes the governed portable MCP contract', async () =>
       'read_brand_contract',
       'list_components',
       'get_guardrail_policy',
+      'resolve_semantic_intent',
       'check_component_guardrails',
       'start_component_proposal',
       'scaffold_component',
       'validate_component',
+      'start_component_validation',
+      'get_component_validation',
+      'get_proposal_context',
+      'record_proposal_decision',
+      'preview_semantic_change',
       'create_preview',
       'prepare_component_release',
       'prepare_tenant_release',
@@ -78,6 +84,21 @@ test('component factory exposes the governed portable MCP contract', async () =>
     const rejected = JSON.parse(rawSpacing.content[0].text);
     assert.equal(rejected.allowed, false);
     assert.equal(rejected.mode, 'platform');
+
+    const negatedRisk = await client.callTool({
+      name: 'check_component_guardrails',
+      arguments: {
+        request: 'Add portrait images, pagination, and internal links. No audio playback, embeds, scripts, iframes, packages, or schema changes.',
+        component_key: 'block_listing_archive_portraits',
+        slots: ['main'],
+        fields: [{ name: 'items_limit', type: 'integer' }],
+      },
+    });
+    const negated = JSON.parse(negatedRisk.content[0].text);
+    assert.equal(negated.mode, 'tenant');
+    assert.equal(negated.allowed, true);
+    assert.ok(negated.intent.explicitly_forbidden.includes('audio_playback'));
+    assert.ok(negated.intent.requested_capabilities.includes('pagination'));
   } finally {
     await client.close();
   }

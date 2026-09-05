@@ -47,6 +47,8 @@
     "component-factory:provision-local": "node tools/component-factory-mcp/provision-local-client.mjs",
     "component-factory:verify-local": "node tools/component-factory-mcp/verify-local-client.mjs",
     "client-access:verify": "node scripts/verify-client-codex-access.mjs",
+    "client-handover:verify": "node scripts/verify-client-handover-bundle.mjs",
+    "nakano:oauth:verify-public": "node scripts/verify-nakano-oauth-public.mjs",
     "client-access:rotate": "node --env-file-if-exists=.env.local scripts/rotate-client-access-tokens.mjs"
   },
   "dependencies": {

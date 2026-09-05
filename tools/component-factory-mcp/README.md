@@ -63,10 +63,14 @@ get_workflow_context
 read_brand_contract
 list_components
 get_guardrail_policy
+resolve_semantic_intent
 check_component_guardrails
 start_component_proposal
 scaffold_component
-validate_component
+start_component_validation
+get_component_validation until complete
+get_proposal_context
+record_proposal_decision
 create_preview
 prepare_tenant_release OR prepare_component_release
 human approval in Directus when platform risk is present
@@ -79,19 +83,70 @@ The same complete gate can be run outside an MCP client:
 npm run components:verify
 ```
 
-`validate_component` reports seven named gates: contract, live contract, behaviour,
-Storybook/accessibility, dependencies, production build, and route smoke. Any
-failure keeps the proposal in `testing`; only a complete proof set moves it to
-`awaiting_approval`.
+`start_component_validation` returns immediately with a durable job id. Poll
+`get_component_validation` with that job id until it reports `completed`,
+`failed`, or `interrupted`. This keeps a complete validation run independent of
+the MCP request timeout. Jobs survive as records under the proposal; a job that
+was running when the Factory process restarted is marked `interrupted` and can
+be started again. The legacy synchronous `validate_component` tool remains for
+older clients.
+
+Validation reports eight named gates: contract, live contract, behaviour,
+the concrete proposal artifact, Storybook/accessibility, dependencies,
+production build, and route smoke. Any
+gate failure keeps the proposal in `testing`; only a complete proof set moves it
+to `awaiting_approval`.
+
+## Semantic intent and safe retries
+
+`resolve_semantic_intent` separates requested capabilities from explicit
+prohibitions before guardrail evaluation. Phrases such as “no scripts” and
+“without audio playback” therefore reduce risk instead of triggering a false
+platform classification. The envelope also records the active target,
+draft/publish/deploy intent, presentation decisions, and confidence.
+
+Proposal mutations accept dry-run inputs and return field-level semantic diffs.
+Creation and decision-recording tools accept idempotency keys so a retried
+conversation cannot create duplicate work. `get_proposal_context` returns the
+human-readable label, durable decision ledger, preview state, allowed next
+actions, and actions blocked by validation, approval, or lifecycle intent.
+
+Preview creation has three distinct facts: URL assigned, artifact verified,
+and HTTP reachable. `create_preview` checks all three and never reports an
+unreachable or “proposal not found” page as a successful preview. It remains a
+verification operation and does not deploy the site.
+
+For every new component, the reachable preview is the client-facing visual
+expectation. Codex must show that preview to the client and collect review
+feedback before requesting human approval. A component contract, raw key, or
+written description alone is not approval evidence. Release preparation and
+publication reject proposals that do not contain verified visual preview proof.
 
 Directus composition fields expose semantic decisions such as:
 
 ```text
 spacing: compact | standard | generous
+surface: paper | muted | ink
+tone: editorial | feature | restrained
+contrast: standard | high
+image_focus: center | top
 ```
 
-The renderer resolves those values through the versioned 4px brand scale. Raw
-padding, margin, gap, class names, and CSS remain outside CMS content.
+The semantic resolver translates phrases such as “make it darker,” “give it
+more breathing room,” and “keep faces visible” into these closed values. The
+renderer resolves them through the brand palette, type hierarchy, crop rules,
+and versioned 4px scale. Raw colours, padding, margin, gap, class names, and CSS
+remain outside CMS content.
+
+## Client connection explanations
+
+Do not treat every missing Nakano tool as expired authentication. Tell the
+client which layer failed: OAuth grant, public gateway, OAuth metadata, tool
+discovery, or the current Codex task's cached MCP startup. Confirm whether any
+content changed and whether reauthentication is actually required. When the
+grant and metadata remain healthy but the task cached a transient startup error,
+the recovery instruction is to reopen the task so it performs fresh discovery
+and reuses the existing OAuth grant.
 
 ## Guardrail Model
 

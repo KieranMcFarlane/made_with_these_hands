@@ -49,35 +49,27 @@ systemctl --user disable --now mwth-component-factory.service
    docker compose -f deploy/component-factory/docker-compose.client.yml up -d --build
    ```
 
-The Made With These Hands public endpoint is `https://factory.nakanodigital.com/mcp`. The unauthenticated
-health endpoint is `/healthz` and returns no client or credential details.
+The Made With These Hands Factory is private at `127.0.0.1:8787`. Human clients
+reach it only through `https://mcp.nakanodigital.com/mcp`; the former public
+Factory hostname is intentionally disabled.
 
 ## Client Codex configuration
 
-Keep the bearer token in the client's environment rather than writing it into
-`config.toml`:
+Configure the unified OAuth gateway. No Factory bearer token is distributed to
+the client:
 
 ```toml
-[mcp_servers.component_factory]
-url = "https://factory.nakanodigital.com/mcp"
-bearer_token_env_var = "CLIENT_COMPONENT_FACTORY_TOKEN"
-required = true
-enabled_tools = [
-  "get_workflow_context",
-  "read_brand_contract",
-  "list_components",
-  "start_component_proposal",
-  "scaffold_component",
-  "validate_component",
-  "create_preview",
-  "prepare_component_release",
-  "publish_approved_component",
-]
-default_tools_approval_mode = "writes"
+[mcp_servers.nakano]
+url = "https://mcp.nakanodigital.com/mcp"
+auth = "oauth"
+oauth_resource = "https://mcp.nakanodigital.com/mcp"
+required = false
+default_tools_approval_mode = "auto"
+tool_timeout_sec = 120
 ```
 
-The client also configures their tenant-scoped Directus MCP separately. Do not
-give the client the Factory's Directus service token, image, volume, repository,
+The OAuth grant covers both tenant-scoped CMS and Factory capabilities. Do not
+give the client either downstream service credential, image, volume, repository,
 or deployment credentials.
 
 Use the client-facing install pack in

@@ -11,7 +11,11 @@ import { brandFromRecords } from '../../lib/brand-settings.mjs';
 
 test('brand contract fixes the 4px scale and semantic composition vocabulary', () => {
   const contract = brandFromRecords().component_contract;
-  assert.equal(contract.version, '1.1.0');
+  assert.equal(contract.version, '1.2.0');
+  assert.deepEqual(contract.presentation.fields.surface, { default: 'paper', choices: ['paper', 'muted', 'ink'] });
+  assert.deepEqual(contract.presentation.fields.tone, { default: 'editorial', choices: ['editorial', 'feature', 'restrained'] });
+  assert.deepEqual(contract.presentation.fields.contrast, { default: 'standard', choices: ['standard', 'high'] });
+  assert.deepEqual(contract.presentation.fields.image_focus, { default: 'center', choices: ['center', 'top'] });
   assert.equal(contract.spacing.base_unit_px, 4);
   assert.deepEqual(Object.values(contract.spacing.scale_px), [0, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128]);
   assert.deepEqual(contract.spacing.density_choices, ['compact', 'standard', 'generous']);
@@ -87,6 +91,10 @@ test('generic storage resolves only approved declarative components', () => {
     component_key: 'block_text',
     data: { title: 'Compact content', spacing: 'compact' },
   }).item.spacing, 'compact');
+  assert.equal(materializeGenericPageBlock({
+    component_key: 'block_text',
+    data: { title: 'Dark feature', surface: 'ink', tone: 'feature', contrast: 'high', image_focus: 'top' },
+  }).item.surface, 'ink');
   assert.throws(() => materializeGenericPageBlock({ component_key: 'unknown', data: {} }), /approved registry/);
   assert.throws(() => materializeGenericPageBlock({
     component_key: 'block_text',
@@ -104,4 +112,8 @@ test('generic storage resolves only approved declarative components', () => {
     component_key: 'block_text',
     data: { padding: '72px' },
   }), /approved presentation tokens/);
+  assert.throws(() => materializeGenericPageBlock({
+    component_key: 'block_text',
+    data: { surface: '#000000' },
+  }), /data.surface must be one of/);
 });

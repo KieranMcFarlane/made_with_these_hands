@@ -3,20 +3,22 @@
 ## Purpose
 
 This document explains how the current site became a client-composable Directus
-system, what must be adapted for another website, and how to install the two MCP
-connections for each client.
+system and what must be adapted for another website. Client access now uses one
+OAuth connection at `https://mcp.nakanodigital.com/mcp`; older two-connection
+bearer examples later in this historical implementation record are superseded
+by `handover/client-codex-install.md`.
 
-The system has two distinct MCP services:
+The gateway aggregates two private MCP services:
 
 | Service | Responsibility |
 | --- | --- |
 | Directus MCP | Edit content, compose pages, select approved variants, reorder blocks, upload media, and publish records |
 | Component Factory MCP | Govern requests for component types or behaviours that do not yet exist |
 
-The client does not need the private frontend repository. They receive access to
-their Directus project and their isolated Component Factory endpoint. The source
-owner retains the frontend implementation, Factory deployment, validation gate,
-and production release pipeline.
+The client does not need the private frontend repository or either downstream
+service credential. Nakano OAuth binds one grant to the user, tenant, role and
+approved capabilities. The source owner retains the frontend implementation,
+Factory deployment, validation gate, and production release pipeline.
 
 ## Does Every Existing Site Need Converting?
 
@@ -230,14 +232,14 @@ Do not reuse an administrator token.
 | Identity | Used by | Typical access |
 | --- | --- | --- |
 | Site runtime | Public frontend | Read published content and files only |
-| Directus MCP user | Client's Codex or Claude | Tenant-scoped read/create/update; no delete |
+| Directus MCP user | Client's Codex or Claude | Tenant-scoped read/create/update; raw delete disabled, governed archive/restore available through Nakano |
 | Factory service user | Private Factory deployment | Brand/registry read and proposal workflow access |
 | Human approver | Directus application | Review and approve proposals |
 
 For the Directus MCP policy:
 
 - keep admin access disabled;
-- keep Directus MCP “Allow Deletes” disabled;
+- keep Directus MCP “Allow Deletes” disabled; Nakano provides recoverable archive/restore instead;
 - remove delete permissions at the policy level as a second safeguard;
 - restrict records by tenant where the installation is shared;
 - limit writable fields on junctions and proposals;
@@ -454,6 +456,24 @@ Is this a content or ordering change?
 Once a component is tenant-installed or platform-approved, implemented,
 registered, and released, the client can reuse it across pages without another
 code change.
+
+### Conversation semantics contract
+
+The client and gateway exchange structured intent rather than applying safety
+policy directly to raw conversation text. The durable proposal context records:
+
+- stable page, block, proposal, and preview identifiers;
+- requested capabilities separately from explicit prohibitions;
+- draft, publish, and deploy lifecycle intent;
+- semantic presentation choices and owner decisions;
+- idempotency keys and optimistic revision checks;
+- field-level dry-run diffs;
+- human-readable labels, next allowed actions, and blocked actions;
+- preview URL assignment, artifact verification, and reachability as separate states.
+
+Validation must include the proposal artifact and route wiring itself. A valid
+repository build is not sufficient proof that a particular proposal has a
+renderable review surface.
 
 ## Ownership After Handover
 

@@ -1,126 +1,39 @@
-# Client Codex Install
+# Made With These Hands: connect Codex
 
-This is the client-safe install path for Made With These Hands. The client gets scoped MCP access, not server admin credentials.
+The client connects to one OAuth-protected Nakano MCP resource:
 
-## What The Client Installs
-
-The client configures two remote MCP servers in Codex:
-
-| MCP server | Purpose | Credential |
+| Connection | Purpose | Credential handling |
 | --- | --- | --- |
-| Directus MCP | Edit content, pages, navigation, media, blocks, comments, and enquiries | `DIRECTUS_MCP_TOKEN` |
-| Component Factory MCP | Request, validate, preview, and approval-gate new component types | `CLIENT_COMPONENT_FACTORY_TOKEN` |
+| Nakano MCP Gateway | Directus content and governed Component Factory operations | OAuth grant stored by Codex |
 
-## Required URLs
+## Install
 
-Replace these with the real hosted endpoints:
+1. Open this trusted Made With These Hands project in Codex.
+2. Add the configuration from `handover/client/config.toml` to the project MCP configuration.
+3. Select **Authenticate** for `nakano`.
+4. Sign in to Nakano Control.
+5. Choose **Made With These Hands**.
+6. Review and approve the tenant-scoped capabilities.
 
-```text
-DIRECTUS_MCP_URL=https://cms.nakanodigital.com/mcp
-COMPONENT_FACTORY_MCP_URL=https://factory.nakanodigital.com/mcp
-SITE_URL=https://hands.nakanodigital.com
-```
-
-For the current local proof:
-
-```text
-DIRECTUS_MCP_URL=http://127.0.0.1:8055/mcp
-COMPONENT_FACTORY_MCP_URL=http://127.0.0.1:8787/mcp
-SITE_URL=http://localhost:3038
-```
-
-## Codex TOML
-
-Use [client/config.toml](./client/config.toml) as the project-scoped template.
-The same server blocks are also available in
-[codex-mcp.example.toml](./codex-mcp.example.toml).
-
-The client machine should provide the token values as environment variables:
+Before asking a client to authenticate, verify that the public OAuth routes are
+live from the deployment environment:
 
 ```bash
-export DIRECTUS_MCP_TOKEN="provided-through-secret-manager"
-export CLIENT_COMPONENT_FACTORY_TOKEN="provided-through-secret-manager"
+npm run nakano:oauth:verify-public
 ```
 
-## Permission Model
+The command verifies protected-resource discovery, authorization-server
+discovery, canonical resource binding, and the recoverable `cms:archive` and
+`cms:restore` scopes. It does not need a credential and must pass before the
+Codex OAuth connection can start.
 
-The current Directus 12.0.2 Core database is dedicated to Made With These Hands.
-The MCP identity is collection-scoped and has no delete or administration
-rights. Core does not provide the custom row filters required for secure shared
-database multitenancy, so do not add another client tenant to this database.
+Codex receives namespaced tools such as `cms_*` and `factory_*`. Nakano checks the
+user, tenant membership, role, package entitlements and granted scopes on every
+request. Revoke the grant from **Control > AI Connections**.
 
-Allowed:
+Directus and Component Factory bearer tokens are internal gateway credentials.
+They must not be added to the client's shell, repository or Codex configuration.
 
-- read schema and approved registry;
-- create/update pages;
-- create/update page blocks;
-- reorder `site_pages.blocks`;
-- create/update makers, products, podcast episodes, posts, and navigation;
-- read and moderate tenant-owned comments and enquiries created by the public site;
-- upload/read media where needed.
-
-Denied:
-
-- admin access;
-- delete actions;
-- arbitrary schema changes by default;
-- approval of unsafe components by the same agent;
-- executable JavaScript, renderer paths, or source code in Directus content.
-
-## Install Test
-
-After the client adds both MCP servers, ask Codex:
-
-```text
-List the Directus collections available for Made With These Hands, then list the approved component registry. Do not edit anything.
-```
-
-Expected result:
-
-- Codex can see `site_pages`, `site_pages_blocks`, approved `block_*` collections, makers, products, episodes, posts, comments, enquiries, navigation, brand settings, and component registry.
-- Codex cannot delete records.
-- Codex cannot administer Directus users, roles, policies, or server settings.
-
-Then test composition:
-
-```text
-Create a draft page called MCP Test Page using only an approved Text block. Put it after the main content slot. Do not publish it.
-```
-
-Then test the guardrail:
-
-```text
-I want a new component type for an audio chapter player. Start a component proposal and explain what approval is needed before it can be published.
-```
-
-Expected result:
-
-- Codex uses the Component Factory MCP.
-- It creates/updates a proposal, not production frontend code.
-- It explains the brand and approval checks.
-
-The server operator can verify both remote transports without printing either
-credential:
-
-```bash
-npm run client-access:verify
-```
-
-## Handover Checklist
-
-- Directus is reachable over HTTPS.
-- Directus MCP is enabled in Directus settings.
-- Directus MCP user has collection-scoped read/create/update permissions in the
-  dedicated MWTH database.
-- Directus MCP user has no delete permissions.
-- Site token is separate from MCP token.
-- Component Factory is hosted on HTTPS.
-- Component Factory `/healthz` responds.
-- Unauthenticated `/mcp` requests are rejected.
-- Authenticated Component Factory MCP discovery works.
-- `npm run components:validate-live` passes before handover.
-- The server-side `scripts/validate-directus-mcp-policy.mjs` check passes without
-  exposing its admin verification credential to the client.
-- Client Codex can read approved components and create a draft test page.
-- `npm run client-access:verify` proves a real native-MCP tenant read without
-  printing either bearer token.
+The connection is optional at startup. If authentication expires or Nakano is
+temporarily unavailable, Codex remains resumable and reports the unavailable
+tenant tools at task level.

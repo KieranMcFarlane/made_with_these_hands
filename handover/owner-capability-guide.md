@@ -17,6 +17,7 @@ The owner can ask Codex to:
 - create or edit a blog post;
 - update contact page copy;
 - update SEO titles, descriptions, slugs, and image alt text.
+- archive a page, maker, object, episode, or journal post and restore it later.
 
 ## Pages
 
@@ -100,7 +101,7 @@ Check whether the homepage uses any unapproved component types.
 
 Codex should not:
 
-- delete live content without explicit human approval;
+- permanently delete content; use the recoverable archive and restore tools;
 - use admin Directus credentials;
 - bypass tenant filters;
 - store JavaScript or renderer paths inside Directus content;
@@ -109,3 +110,13 @@ Codex should not:
 - make broad CSS/source changes when an approved Directus setting or component proposal is the right route.
 
 The point is not to lock the owner out. The point is to make the site editable without letting it drift into a pile of one-off sections.
+
+## Archive And Restore
+
+When the owner asks to delete a content record, Codex uses Nakano's archive
+workflow rather than Directus raw delete. The archive operation records the
+tenant, user, reason, target record, prior status, snapshot identifier, and
+outcome in Nakano audit. The record is removed from public use with status
+`archived` and can be restored to its prior status. Bulk archive requires a
+recent Directus recovery point. Permanent deletion is not available to tenant
+clients.

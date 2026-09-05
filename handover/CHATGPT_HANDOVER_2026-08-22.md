@@ -4,6 +4,12 @@ Updated: 22 August 2026
 Primary application: `/home/em9/repos/made_with_these_hands`
 Nakano control plane: `/home/em9/repos/nakano-rebuild`
 
+> **OAuth cutover note, 28 August 2026:** Client MCP access is now unified at
+> `https://mcp.nakanodigital.com/mcp` through the Nakano OAuth issuer at
+> `https://id.nakanodigital.com`. Any bearer-token or public Directus/Factory MCP
+> instructions below are historical. Directus Studio remains public; both
+> downstream MCP services are private implementation details.
+
 ## Read This First
 
 Made With These Hands (MWTH) is the canonical working NakanoOS tenant on this

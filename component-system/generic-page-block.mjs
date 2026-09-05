@@ -8,6 +8,12 @@ const EXECUTABLE_KEY = /(?:^|_)(?:component_path|renderer|renderer_path|script|s
 const EXECUTABLE_VALUE = /<script\b|javascript\s*:|data\s*:\s*text\/html/i;
 const RAW_PRESENTATION_KEY = /(?:^|_)(?:css|style|class_name|padding|margin|gap|inset)(?:$|_)/i;
 const APPROVED_SPACING = new Set(['compact', 'standard', 'generous']);
+const APPROVED_PRESENTATION = {
+  surface: new Set(['paper', 'muted', 'ink']),
+  tone: new Set(['editorial', 'feature', 'restrained']),
+  contrast: new Set(['standard', 'high']),
+  image_focus: new Set(['center', 'top']),
+};
 
 function assertDeclarative(value, path = 'data') {
   if (typeof value === 'string' && EXECUTABLE_VALUE.test(value)) {
@@ -44,6 +50,11 @@ export function validateGenericPageBlock(record) {
   assertDeclarative(data);
   if (data.spacing !== undefined && !APPROVED_SPACING.has(data.spacing)) {
     throw new Error('data.spacing must be compact, standard, or generous.');
+  }
+  for (const [field, choices] of Object.entries(APPROVED_PRESENTATION)) {
+    if (data[field] !== undefined && !choices.has(data[field])) {
+      throw new Error(`data.${field} must be one of: ${[...choices].join(', ')}.`);
+    }
   }
   if (Buffer.byteLength(JSON.stringify(data), 'utf8') > GENERIC_BLOCK_MAX_BYTES) {
     throw new Error(`Generic page block data exceeds ${GENERIC_BLOCK_MAX_BYTES} bytes.`);

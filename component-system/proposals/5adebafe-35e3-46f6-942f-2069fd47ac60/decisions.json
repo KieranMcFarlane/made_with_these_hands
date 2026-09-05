@@ -1,0 +1,51 @@
+[
+  {
+    "id": "conversation-human-label",
+    "recorded_at": "2026-09-05T01:00:00.000Z",
+    "type": "presentation",
+    "source": "owner",
+    "summary": "Use a human-readable proposal title for the client while retaining the namespaced component key as secondary technical metadata.",
+    "value": {
+      "label": "Episode archive with portraits",
+      "technical_reference": "block_listing_archive_portraits"
+    }
+  },
+  {
+    "id": "conversation-image-crop",
+    "recorded_at": "2026-09-05T01:01:00.000Z",
+    "type": "presentation",
+    "source": "owner",
+    "summary": "Crop landscape and square images from the center; crop portrait images from the top center.",
+    "value": {
+      "portrait": "center top",
+      "landscape": "center center",
+      "square": "center center",
+      "orientation_source": "intrinsic image dimensions"
+    }
+  },
+  {
+    "id": "conversation-pagination",
+    "recorded_at": "2026-09-05T01:02:00.000Z",
+    "type": "presentation",
+    "source": "owner",
+    "summary": "Paginate the episode archive only when it contains more than five episodes.",
+    "value": {
+      "page_size": 5,
+      "order": "newest-first",
+      "controls": ["previous", "numbered-pages", "next"],
+      "announce_current_page": true
+    }
+  },
+  {
+    "id": "conversation-lifecycle",
+    "recorded_at": "2026-09-05T01:03:00.000Z",
+    "type": "lifecycle",
+    "source": "conversation",
+    "summary": "Keep the component and target page in draft; do not publish or deploy without the required governed approval.",
+    "value": {
+      "content_status": "draft",
+      "publish": false,
+      "deploy": false
+    }
+  }
+]

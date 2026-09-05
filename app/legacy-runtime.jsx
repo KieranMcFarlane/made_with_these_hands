@@ -48,6 +48,12 @@ function routeFromLocation() {
   return route;
 }
 
+function scrollToPageTop() {
+  window.requestAnimationFrame(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  });
+}
+
 function App() {
   const [tweaks, setTweaks] = React.useState(TWEAKS);
   const [dataVersion, setDataVersion] = React.useState(0);
@@ -85,6 +91,7 @@ function App() {
       if (mergedContext.post) url.searchParams.set('post', mergedContext.post);
       if (mergedContext.episode) url.searchParams.set('episode', mergedContext.episode);
       window.history.pushState({ page: nextPage }, '', url);
+      scrollToPageTop();
     };
   }, [context]);
 
@@ -121,12 +128,14 @@ function App() {
       setContext(nextContext);
       localStorage.setItem('mwth-page', nextPage);
       window.history.pushState({ page: nextPage }, '', '/?page=' + nextPage + '&maker=' + nextContext.maker + '&product=' + nextContext.product + '&craft=' + nextContext.craft + '&post=' + nextContext.post + '&episode=' + (nextContext.episode || ''));
+      scrollToPageTop();
     };
 
     const onPopState = () => {
       const nextRoute = routeFromLocation();
       setPage(nextRoute.page);
       setContext(nextRoute);
+      scrollToPageTop();
     };
 
     document.addEventListener('click', onClick);

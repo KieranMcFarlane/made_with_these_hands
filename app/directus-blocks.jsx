@@ -59,6 +59,23 @@ function spacingOf(block) {
   return ['compact', 'standard', 'generous'].includes(spacing) ? spacing : 'standard';
 }
 
+function presentationOf(block, field, choices, fallback) {
+  const value = itemOf(block)[field];
+  return choices.includes(value) ? value : fallback;
+}
+
+function contentPositionOf(item) {
+  return ['bottom-left', 'bottom-centre'].includes(item.content_position)
+    ? item.content_position
+    : 'bottom-left';
+}
+
+function overlayStrengthOf(item) {
+  return ['soft', 'standard', 'strong'].includes(item.overlay_strength)
+    ? item.overlay_strength
+    : 'standard';
+}
+
 function ActionLink({ href, label, secondary = false }) {
   if (!href || !label) return null;
   return (
@@ -139,6 +156,8 @@ function HeroBlock({ block, preview = false }) {
       className={`${styles.block} ${styles.hero}`}
       data-theme={themeOf(block)}
       data-variant={variantOf(block, 'split')}
+      data-content-position={contentPositionOf(item)}
+      data-overlay-strength={overlayStrengthOf(item)}
     >
       <div className={styles.heroCopy}>
         {item.eyebrow && <p className={styles.eyebrow}>{item.eyebrow}</p>}
@@ -148,7 +167,13 @@ function HeroBlock({ block, preview = false }) {
       </div>
       {image && (
         <div className={styles.heroImage}>
-          <Image src={image} alt={altOf(block)} fill priority sizes="(max-width: 900px) 100vw, 50vw" />
+          <Image
+            src={image}
+            alt={altOf(block)}
+            fill
+            priority
+            sizes={variantOf(block, 'split') === 'cover-fade' ? '100vw' : '(max-width: 900px) 100vw, 50vw'}
+          />
         </div>
       )}
     </section>
@@ -334,7 +359,14 @@ export function DirectusBlock({ block, content, preview = false }) {
   const Component = BLOCK_COMPONENTS[block.collection];
   if (!Component) return null;
   return (
-    <div className={styles.componentFrame} data-spacing={spacingOf(block)}>
+    <div
+      className={styles.componentFrame}
+      data-spacing={spacingOf(block)}
+      data-surface={presentationOf(block, 'surface', ['paper', 'muted', 'ink'], 'paper')}
+      data-tone={presentationOf(block, 'tone', ['editorial', 'feature', 'restrained'], 'editorial')}
+      data-contrast={presentationOf(block, 'contrast', ['standard', 'high'], 'standard')}
+      data-image-focus={presentationOf(block, 'image_focus', ['center', 'top'], 'center')}
+    >
       <Component block={block} content={content} preview={preview} />
     </div>
   );

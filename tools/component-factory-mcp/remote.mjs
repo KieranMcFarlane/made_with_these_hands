@@ -111,7 +111,7 @@ export function createComponentFactoryHttpApp(config) {
     res.json({
       ok: true,
       service: 'component-factory-mcp',
-      version: '1.1.0',
+      version: '1.3.0',
       transport: 'streamable-http',
     });
   });

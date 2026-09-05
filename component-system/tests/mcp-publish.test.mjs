@@ -11,6 +11,7 @@ const passingGates = {
   contract: true,
   live_contract: true,
   behavior: true,
+  proposal_artifact: true,
   storybook_accessibility: true,
   dependencies: true,
   production_build: true,
@@ -37,6 +38,8 @@ test('component publication cannot advance before approval and only publishes th
     component_key: 'block_slideshow',
     status: 'awaiting_approval',
     validation_summary: { ok: true, gates: passingGates },
+    preview_url: 'http://localhost:3000/brand/proposals/example',
+    preview: { artifact_verified: true, reachable: true },
   }, null, 2)}\n`);
 
   const server = http.createServer(async (request, response) => {
@@ -148,6 +151,20 @@ test('tenant release advances without human approval when guardrails pass', asyn
 
   try {
     await client.connect(transport);
+    const blockedWithoutPreview = await client.callTool({
+      name: 'prepare_tenant_release',
+      arguments: { proposal_id: proposalId },
+    });
+    assert.equal(blockedWithoutPreview.isError, true);
+    assert.match(blockedWithoutPreview.content[0].text, /visual preview/i);
+
+    const proposal = JSON.parse(await fs.readFile(proposalPath, 'utf8'));
+    await fs.writeFile(proposalPath, `${JSON.stringify({
+      ...proposal,
+      preview_url: 'http://localhost:3000/brand/proposals/example',
+      preview: { artifact_verified: true, reachable: true },
+    }, null, 2)}\n`);
+
     const released = await client.callTool({
       name: 'prepare_tenant_release',
       arguments: { proposal_id: proposalId },

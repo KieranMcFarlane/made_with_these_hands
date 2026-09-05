@@ -14,19 +14,17 @@ For the client-facing Codex install pack, use
 
 ## Directus Setup
 
-Enable MCP in Directus:
+Directus Studio remains available at `https://cms.nakanodigital.com`, but its
+MCP route is private. Client tools connect through the tenant-aware Nakano
+gateway:
 
 ```text
-Settings > AI > Model Context Protocol
+https://mcp.nakanodigital.com/mcp
 ```
 
-Use the Directus remote MCP endpoint:
-
-```text
-https://cms.nakanodigital.com/mcp
-```
-
-Prefer OAuth where available. If using a static token, create a dedicated MCP user and role; do not use an admin token.
+Authentication uses Nakano OAuth 2.1 with PKCE. Directus service credentials are
+encrypted gateway implementation details and must never be placed on a client
+device.
 
 ## Recommended MCP Role
 
@@ -77,7 +75,13 @@ block_cta
 block_slideshow
 ```
 
-Keep destructive actions restricted. Avoid delete permissions unless a human specifically approves archival/cleanup work.
+Directus raw delete, schema administration, roles and secrets are not exposed
+through the customer gateway. Nakano exposes `cms_archive_items` and
+`cms_restore_items` instead: an explicit archive captures a tenant-scoped
+snapshot, records an audit event, changes the item to `archived`, and can be
+restored to its prior status. Bulk archive requires a Directus recovery point
+from the last 24 hours. Permanent deletion remains a break-glass platform
+operation outside the tenant OAuth grant.
 
 The MCP policy must keep `admin_access` disabled. In Directus, keep
 `Settings > AI > Model Context Protocol > Allow Deletes` disabled. Also remove
@@ -90,30 +94,36 @@ comments: read/update status only, if moderation through MCP is wanted
 enquiries: read/update status only
 ```
 
-## Claude Code Example
-
-```bash
-claude mcp add --transport http directus https://your-directus.example.com/mcp
-```
-
 ## Codex / Local MCP Example
 
-Use a project or user MCP config with placeholders only:
+Use the single optional Nakano connection. Authentication is completed in the
+browser and does not require token environment variables:
 
-```json
-{
-  "mcpServers": {
-    "directus": {
-      "url": "https://cms.nakanodigital.com/mcp",
-      "headers": {
-        "Authorization": "Bearer ${DIRECTUS_MCP_TOKEN}"
-      }
-    }
-  }
-}
+```toml
+[mcp_servers.nakano]
+url = "https://mcp.nakanodigital.com/mcp"
+auth = "oauth"
+oauth_resource = "https://mcp.nakanodigital.com/mcp"
+required = false
+default_tools_approval_mode = "auto"
+tool_timeout_sec = 120
 ```
 
-If your MCP client only supports command-based servers, run a small bridge or use the client-supported remote HTTP format. Keep `DIRECTUS_MCP_TOKEN` in local environment or the client secret store, never in git.
+CMS tools are exposed with the `cms_` prefix and are filtered by tenant, role,
+package and consented scope. Factory tools use the `factory_` prefix.
+
+Before policy evaluation, clients should resolve conversation language into a
+semantic intent envelope containing the operation, stable target identifiers,
+requested capabilities, explicit prohibitions, lifecycle intent, presentation
+decisions, and confidence. Policy must never classify negated text such as “no
+audio playback” as a requested capability. Mutations should carry idempotency
+keys, support dry-run semantic diffs, and return human labels plus
+`next_allowed_actions` and `blocking_actions`.
+
+Preview state is not a single URL. The gateway and Factory distinguish
+`url_assigned`, `artifact_verified`, and `reachable`, and verify that the target
+does not render “Component proposal not found” before presenting it for human
+review.
 
 ## Agent Workflow
 

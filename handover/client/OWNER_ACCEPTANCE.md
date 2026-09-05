@@ -11,6 +11,12 @@ has completed the prompts.
 
 Run these prompts in order after both MCP servers show as connected.
 
+For the client-facing five-minute walkthrough that also covers media changes,
+new draft pages, and journal posts, use
+[LIVE_OWNER_DEMO.md](LIVE_OWNER_DEMO.md). Keep those demonstrations separate
+from this acceptance record, which is intentionally limited to the first safe
+content edit and reorder proof.
+
 ## 1. Read-only context
 
 ```text
@@ -51,6 +57,15 @@ or change the Directus schema.
 Acceptance passes when Codex can complete the tenant-owned draft operations,
 cannot delete or access another tenant, and routes new behaviour through the
 Factory rather than inserting executable content into Directus.
+
+Before acceptance, the Nakano operator must also run:
+
+```bash
+npm run client:isolation:verify -- --email CLIENT_EMAIL --tenant made-with-these-hands
+```
+
+Acceptance fails if the identity is a platform administrator, has more than one
+active tenant membership, or has a consent or live token for another tenant.
 
 ## Hermes Owner Workspace
 

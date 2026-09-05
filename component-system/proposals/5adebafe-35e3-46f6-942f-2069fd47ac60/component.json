@@ -1,0 +1,136 @@
+{
+  "collection": "block_listing_archive_portraits",
+  "label": "Episode archive with portraits",
+  "description": "A portrait-led chronological listing for podcast episode records. Each row combines a related maker image, compact episode metadata, editorial title, guest name, one-line summary, and an internal episode link.",
+  "status": "proposed",
+  "version": "0.1.0",
+  "renderer": "EpisodearchivewithportraitsBlock",
+  "primitives": [
+    "shadcn:button"
+  ],
+  "trustedOpenSource": [],
+  "variants": [
+    "archive-portraits"
+  ],
+  "slots": [
+    "main"
+  ],
+  "fields": [
+    {
+      "name": "spacing",
+      "type": "string",
+      "default": "standard",
+      "choices": [
+        [
+          "Compact",
+          "compact"
+        ],
+        [
+          "Standard",
+          "standard"
+        ],
+        [
+          "Generous",
+          "generous"
+        ]
+      ],
+      "note": "Approved brand density. Raw CSS and numeric values are forbidden."
+    },
+    {
+      "name": "variant",
+      "type": "string",
+      "required": true,
+      "default": "archive-portraits",
+      "choices": [
+        "archive-portraits"
+      ]
+    },
+    {
+      "name": "listing_type",
+      "type": "string",
+      "required": true,
+      "default": "episodes",
+      "choices": [
+        "episodes"
+      ]
+    },
+    {
+      "name": "portrait_source",
+      "type": "string",
+      "required": true,
+      "default": "related-maker-image",
+      "choices": [
+        "related-maker-image"
+      ]
+    },
+    {
+      "name": "show_summary",
+      "type": "boolean",
+      "required": false,
+      "default": true
+    },
+    {
+      "name": "items_limit",
+      "type": "integer",
+      "required": false,
+      "default": 24,
+      "minimum": 1,
+      "maximum": 24
+    }
+  ],
+  "accessibility": [
+    "Use semantic section, heading, list, and article structure in document order.",
+    "Provide meaningful alternative text for maker portraits; omit the image element when no meaningful image is available.",
+    "Make the complete episode row a single, clearly named internal link without nested interactive controls.",
+    "Render the approved button primitive as a non-nested visual action label within that link.",
+    "Preserve a high-contrast visible focus indicator with shape or outline, not colour alone.",
+    "Keep episode metadata and action labels readable at supported breakpoints.",
+    "Reserve stable 4:3 media dimensions to prevent layout shift.",
+    "Do not introduce audio playback, autoplay, scripts, iframes, or embedded media."
+  ],
+  "limits": {
+    "items": 24,
+    "summary_lines": 2,
+    "image_ratio": "4 / 3",
+    "actions_per_row": 1,
+    "cms_executable_content": false
+  },
+  "bespoke_gap": "The approved archive variant intentionally hides images and summaries, while grid and featured variants are too card-like for fast chronological scanning. No approved variant combines compact archive scanning with maker recognition, summary context, and an explicit row action.",
+  "guardrail": {
+    "mode": "platform",
+    "allowed": false,
+    "checks": [
+      {
+        "ok": false,
+        "scope": "request",
+        "reason": "Embeds and third-party scripts need platform review unless explicitly allowlisted."
+      },
+      {
+        "ok": true,
+        "scope": "slots",
+        "reason": "Slots are inside the tenant page-slot contract."
+      },
+      {
+        "ok": true,
+        "scope": "fields",
+        "reason": "Fields are data-only and CMS-safe."
+      },
+      {
+        "ok": true,
+        "scope": "composition",
+        "reason": "Composition uses the approved semantic spacing vocabulary."
+      },
+      {
+        "ok": true,
+        "scope": "open_source",
+        "reason": "No external open-source package requested."
+      },
+      {
+        "ok": false,
+        "scope": "media",
+        "reason": "Podcast/audio playback needs a trusted media-control package or platform review."
+      }
+    ],
+    "trusted_packages": []
+  }
+}

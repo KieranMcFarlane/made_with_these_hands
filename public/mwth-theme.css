@@ -146,6 +146,14 @@ img { max-width: 100%; display: block; }
   margin: 10px 0 12px;
   line-height: 1;
 }
+.masthead .title a {
+  color: inherit;
+  text-decoration: none;
+}
+.masthead .title a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
 .masthead .nav {
   display: flex; justify-content: center; gap: 32px;
   font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;

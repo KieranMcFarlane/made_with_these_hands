@@ -1,19 +1,10 @@
-# Made With These Hands Codex MCP template
-#
-# Copy these blocks into the client's Codex MCP configuration.
-# Keep the tokens in the client's shell, OS keychain, or Codex secret store.
-# Do not paste token values into this file.
+# Made With These Hands Codex MCP template. Codex stores the OAuth grant in its
+# credential store; the client never receives Directus or Factory service keys.
 
-[mcp_servers.directus]
-url = "https://cms.nakanodigital.com/mcp"
-bearer_token_env_var = "DIRECTUS_MCP_TOKEN"
-required = true
-default_tools_approval_mode = "auto"
-tool_timeout_sec = 60
-
-[mcp_servers.component_factory]
-url = "https://factory.nakanodigital.com/mcp"
-bearer_token_env_var = "CLIENT_COMPONENT_FACTORY_TOKEN"
-required = true
+[mcp_servers.nakano]
+url = "https://mcp.nakanodigital.com/mcp"
+auth = "oauth"
+oauth_resource = "https://mcp.nakanodigital.com/mcp"
+required = false
 default_tools_approval_mode = "auto"
 tool_timeout_sec = 120
