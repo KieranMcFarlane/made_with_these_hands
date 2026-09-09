@@ -9,7 +9,9 @@ has completed the prompts.
 | --- | --- | --- | --- |
 | Hugh McNeill | Awaiting owner action | - | - |
 
-Run these prompts in order after both MCP servers show as connected.
+Run these prompts in order after the single Nakano MCP connection shows as
+connected. Directus and Component Factory credentials remain internal to
+Nakano.
 
 For the client-facing five-minute walkthrough that also covers media changes,
 new draft pages, and journal posts, use
@@ -28,22 +30,24 @@ anything.
 ## 2. Inspect the prepared draft
 
 ```text
-Open the Directus draft page at /owner-acceptance. Explain its SEO metadata,
-ordered blocks, slots, and variants. Do not publish it.
+Use the owner-friendly site tools to open the draft page at /owner-acceptance.
+Explain its SEO metadata, ordered blocks, slots, and variants. Do not publish it.
 ```
 
 ## 3. Safe content edit
 
 ```text
 Change only the body copy in the Text block on /owner-acceptance so it says this
-draft was reviewed by Hugh. Keep it a draft and preserve the block order.
+draft was reviewed by Hugh. Keep it a draft, preserve the block order, and
+return the Nakano change receipt and preview link.
 ```
 
 ## 4. Safe composition
 
 ```text
 Move the Call to Action after the Text block on /owner-acceptance. Use only the
-existing approved records. Keep the page unpublished and report the final order.
+existing approved records. Keep the page unpublished and report the final order,
+operation ID, and undo availability.
 ```
 
 ## 5. Component guardrail
@@ -55,8 +59,17 @@ or change the Directus schema.
 ```
 
 Acceptance passes when Codex can complete the tenant-owned draft operations,
-cannot delete or access another tenant, and routes new behaviour through the
-Factory rather than inserting executable content into Directus.
+can archive and restore but cannot permanently delete or access another tenant,
+and routes new behaviour through the Factory rather than inserting executable
+content into Directus.
+
+After acceptance, return the permanent sandbox to its known state:
+
+```text
+Reset the permanent Owner acceptance demonstration page to its canonical draft
+content and block order. I confirm the reset. Return the receipt and verify it
+remains unpublished.
+```
 
 Before acceptance, the Nakano operator must also run:
 

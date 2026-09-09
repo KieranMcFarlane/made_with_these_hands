@@ -14,10 +14,12 @@ It contains no credentials.
 6. Confirm the consent screen names Made With These Hands, then approve only the
    required scopes.
 7. Use `/mcp` to confirm the optional gateway is connected.
-8. Run the prompts in `OWNER_ACCEPTANCE.md` in order.
+8. Open Nakano Control at `/tenant/start`; use its Owner actions for normal site
+   work and its proof links for previews, Brand Book, Storybook, and Directus.
+9. Run the prompts in `OWNER_ACCEPTANCE.md` in order.
 
-The hosted CMS remains Directus 12.0.2 and its database is dedicated to Made
-With These Hands. Directus and Component Factory credentials stay inside Nakano;
+The hosted CMS remains Directus 12+ and its database is dedicated to Made With
+These Hands. Directus and Component Factory credentials stay inside Nakano;
 Hugh receives a revocable OAuth grant bound to his user and this tenant.
 
 Before delivery, the Nakano operator must run the read-only isolation gate from

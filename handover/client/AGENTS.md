@@ -9,6 +9,9 @@ If the optional connection is unavailable, keep the task resumable and clearly
 identify which tenant operation is waiting for authentication.
 
 - Work only in tenant `made-with-these-hands`.
+- Prefer the owner-friendly `site_*` tools for page, block, media, preview,
+  archive, restore, and undo operations. Use raw CMS tools only where no semantic
+  owner operation exists.
 - Prefer existing approved components and variants.
 - New component types go through the Component Factory workflow.
 - Keep executable JavaScript, renderer paths, arbitrary CSS, and secrets out of
@@ -17,9 +20,11 @@ identify which tenant operation is waiting for authentication.
 - Reordering approved blocks and editing tenant-owned content is permissionless.
 - Do not request administrator credentials or attempt schema, role, policy,
   billing, deployment, or cross-tenant changes.
-- Never delete records. Archive or unpublish only when Hugh explicitly asks.
+- Never permanently delete records. Archive or unpublish only when Hugh
+  explicitly asks; explain the available restore path.
 - Before a substantial change, state which records and page paths will change.
-- After a change, report the resulting draft/public URL and validation outcome.
+- After a change, report the operation ID, snapshot/undo availability, resulting
+  draft/public URL, and validation outcome.
 - If Nakano tools disappear, distinguish an invalid OAuth grant from a transient
   gateway, metadata, discovery, or task-cache failure. Explain the evidence and
   minimum recovery step; do not request reauthentication unless Nakano returns
