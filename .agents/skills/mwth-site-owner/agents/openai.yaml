@@ -1,0 +1,13 @@
+interface:
+  display_name: "Made With These Hands Owner"
+  short_description: "Manage the MWTH site in plain language"
+  default_prompt: "Use $mwth-site-owner to help me update my Made With These Hands website."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "nakano"
+      description: "Tenant-safe website and component operations"
+      transport: "streamable_http"
+      url: "https://mcp.nakanodigital.com/mcp"
+policy:
+  allow_implicit_invocation: true
