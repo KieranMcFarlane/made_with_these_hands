@@ -205,6 +205,11 @@
           "target": "~/app/brand/page.jsx"
         },
         {
+          "path": "app/brand/component-inventory-browser.jsx",
+          "type": "registry:component",
+          "target": "~/app/brand/component-inventory-browser.jsx"
+        },
+        {
           "path": "app/brand/brand-book.module.css",
           "type": "registry:file",
           "target": "~/app/brand/brand-book.module.css"

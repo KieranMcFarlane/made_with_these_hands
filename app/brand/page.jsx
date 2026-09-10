@@ -13,6 +13,7 @@ import {
 } from '../component-inventory';
 import { BLOCK_CATALOG, DirectusBlock } from '../directus-blocks';
 import styles from './brand-book.module.css';
+import ComponentInventoryBrowser from './component-inventory-browser';
 
 export const metadata = {
   title: 'Brand Book',
@@ -197,12 +198,12 @@ function jsonValue(value, fallback) {
 
 function catalogFromRegistry(records = []) {
   if (!records.length) return BLOCK_CATALOG;
-  const compileTimeCatalog = new Map(BLOCK_CATALOG.map((component) => [component.collection, component]));
+  const liveRegistry = new Map(records.map((record) => [record.block_collection || record.key, record]));
 
-  return records.map((record) => {
-    const collection = record.block_collection || record.key;
-    const compiled = compileTimeCatalog.get(collection);
-    if (!compiled) return null;
+  return BLOCK_CATALOG.map((compiled) => {
+    const record = liveRegistry.get(compiled.collection);
+    if (!record) return compiled;
+    const collection = compiled.collection;
     const fieldContract = jsonValue(record.field_contract, []);
     const variants = jsonValue(record.variants, compiled.variants);
     const slots = jsonValue(record.allowed_slots, compiled.slots);
@@ -217,18 +218,18 @@ function catalogFromRegistry(records = []) {
       collection,
       label: record.label || compiled.label,
       description: record.description || compiled.description,
-      status: record.status,
-      version: record.version,
+      status: record.status || compiled.status,
+      version: record.version || compiled.version,
       variants,
       slots,
       fields: fieldNames.length ? fieldNames : compiled.fields,
       accessibility,
       limits,
       trustedOpenSource,
-      preview_url: record.preview_url,
+      preview_url: record.preview_url || compiled.preview_url,
       renderer: record.renderer_key || compiled.renderer,
     };
-  }).filter(Boolean);
+  });
 }
 
 function fallbackBlocks(brand) {
@@ -430,6 +431,17 @@ function BrandSection({
       density_tokens: brand.component_contract?.spacing?.density_tokens || defaultContract.spacing.density_tokens,
     };
     const composition = brand.component_contract?.composition || defaultContract.composition;
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3038';
+    const inventoryGroups = COMPONENT_INVENTORY_GROUPS.map((group) => ({
+      ...group,
+      components: group.components.map((component) => ({
+        ...component,
+        instances: component.instances.map((instance) => ({
+          ...instance,
+          href: componentInstanceExternalHref(instance, siteUrl),
+        })),
+      })),
+    }));
     return (
       <section className={`${styles.section} ${styles.paperSection}`} id="components">
         <div className={styles.sectionLabel}>{eyebrow}</div>
@@ -485,79 +497,119 @@ function BrandSection({
             />
           </article>
         </div>
-        <div className={styles.catalogGrid}>
-          {catalog.map((component) => {
-            const usage = componentUsage[component.collection] || [];
-            return (
-            <article className={styles.catalogCard} id={`component-${component.collection}`} key={component.collection}>
-              <p className={styles.eyebrow}>{component.collection}</p>
-              <h3>{component.label}</h3>
-              <p>{component.description}</p>
-              <p className={styles.cardMeta}>Status {component.status} / v{component.version}</p>
-              <ul className={styles.fieldList}>
-                {component.fields.map((field) => <li key={field}>{field}</li>)}
-              </ul>
-              {component.variants.length > 0 && (
-                <p className={styles.cardMeta}>Variants: {component.variants.join(' / ')}</p>
-              )}
-              <p className={styles.cardMeta}>Spacing: {component.spacingModes.join(' / ')}</p>
-              <p className={styles.cardMeta}>Slots: {component.slots.join(' / ')}</p>
-              {component.primitives?.length > 0 && (
-                <p className={styles.cardMeta}>Primitives: {component.primitives.join(' / ')}</p>
-              )}
-              {component.trustedOpenSource?.length > 0 && (
-                <p className={styles.cardMeta}>
-                  Trusted source:{' '}
-                  {component.trustedOpenSource.map((entry) => `${entry.package} (${entry.license})`).join(' / ')}
-                </p>
-              )}
-              <p className={styles.cardMeta}>
-                Where used:{' '}
-                {usage.length
-      ? usage.map(({ path, slot }) => `${path} (${slot})`).join(' / ')
-                  : ['block_slideshow', 'block_podcast_player'].includes(component.collection)
-                    ? 'Brand Book live example'
-                    : 'No published page'}
-              </p>
-              <a className={styles.previewLink} href={`#live-example-${component.collection}`}>
-                View live rendered example
+        <div className={styles.componentCatalogArea}>
+          <div className={styles.componentDirectory}>
+            <div>
+              <p className={styles.eyebrow}>Approved page blocks</p>
+              <h2>{catalog.length} reusable ways to compose a page.</h2>
+            </div>
+            <p>
+              Each specimen pairs the editable Directus contract with the component that visitors
+              actually see. Open the details only when you need fields or accessibility rules.
+            </p>
+          </div>
+          <nav className={styles.componentJumpLinks} aria-label="Approved page blocks">
+            {catalog.map((component, index) => (
+              <a href={`#component-${component.collection}`} key={component.collection}>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                {component.label}
               </a>
-              <details>
-                <summary>Accessibility contract</summary>
-                <ul className={styles.fieldList}>
-                  {component.accessibility.map((rule) => <li key={rule}>{rule}</li>)}
-                </ul>
-              </details>
-            </article>
-            );
-          })}
-        </div>
-        <div className={styles.catalogLabel}>Live compile-time renderer examples</div>
-        <div className={styles.liveExamples}>
-          {COMPONENT_PREVIEW_BLOCKS.map((preview) => {
-            const component = catalog.find(({ collection }) => collection === preview.collection);
-            if (!component) return null;
-            return (
-              <section
-                className={styles.liveExample}
-                id={`live-example-${preview.collection}`}
-                key={preview.collection}
-              >
-                <div className={styles.liveExampleHeading}>
-                  <p className={styles.eyebrow}>{preview.collection} / Live renderer</p>
-                  <h3>{component.label}</h3>
-                  <p>{component.renderer} / v{component.version}</p>
+            ))}
+          </nav>
+          <div className={styles.componentShowcases}>
+            {COMPONENT_PREVIEW_BLOCKS.map((preview, index) => {
+              const component = catalog.find(({ collection }) => collection === preview.collection);
+              if (!component) return null;
+              const usage = componentUsage[component.collection] || [];
+              return (
+                <article
+                  className={styles.componentShowcase}
+                  id={`component-${component.collection}`}
+                  key={component.collection}
+                >
+                <header className={styles.componentShowcaseHeader}>
+                  <div>
+                    <p className={styles.eyebrow}>
+                      {String(index + 1).padStart(2, '0')} / {component.collection} / {component.renderer}
+                    </p>
+                    <h3>{component.label}</h3>
+                    <p>{component.description}</p>
+                  </div>
+                  <div className={styles.componentState}>
+                    <span>{component.status}</span>
+                    <code>v{component.version}</code>
+                  </div>
+                </header>
+
+                <dl className={styles.componentFacts}>
+                  <div>
+                    <dt>Variants</dt>
+                    <dd>{component.variants.length ? component.variants.join(' / ') : 'Single approved form'}</dd>
+                  </div>
+                  <div>
+                    <dt>Spacing</dt>
+                    <dd>{component.spacingModes.join(' / ')}</dd>
+                  </div>
+                  <div>
+                    <dt>Page slots</dt>
+                    <dd>{component.slots.join(' / ')}</dd>
+                  </div>
+                  <div>
+                    <dt>Where used</dt>
+                    <dd>
+                      {usage.length
+                        ? usage.map(({ path, slot }) => `${path} (${slot})`).join(' / ')
+                        : ['block_slideshow', 'block_podcast_player'].includes(component.collection)
+                          ? 'Brand Book specimen'
+                          : 'No published page'}
+                    </dd>
+                  </div>
+                </dl>
+
+                <details className={styles.componentContract}>
+                  <summary>View fields, dependencies, and accessibility contract</summary>
+                  <div className={styles.componentContractGrid}>
+                    <div>
+                      <p className={styles.eyebrow}>Editable fields</p>
+                      <ul className={styles.fieldList}>
+                        {component.fields.map((field) => <li key={field}>{field}</li>)}
+                      </ul>
+                    </div>
+                    <div>
+                      <p className={styles.eyebrow}>Accessibility</p>
+                      <RuleList items={component.accessibility} />
+                      {component.primitives?.length > 0 && (
+                        <p className={styles.cardMeta}>Primitives: {component.primitives.join(' / ')}</p>
+                      )}
+                      {component.trustedOpenSource?.length > 0 && (
+                        <p className={styles.cardMeta}>
+                          Trusted source:{' '}
+                          {component.trustedOpenSource
+                            .map((entry) => `${entry.package} (${entry.license})`)
+                            .join(' / ')}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </details>
+
+                <div className={styles.componentPreviewLabel} id={`live-example-${component.collection}`}>
+                  <span>Rendered specimen</span>
+                  <span>Directus-shaped preview data</span>
                 </div>
-                <DirectusBlock
-                  block={preview}
-                  content={COMPONENT_PREVIEW_CONTENT}
-                  preview
-                />
-              </section>
-            );
-          })}
+                <div className={styles.componentPreview}>
+                  <DirectusBlock
+                    block={preview}
+                    content={COMPONENT_PREVIEW_CONTENT}
+                    preview
+                  />
+                </div>
+                </article>
+              );
+            })}
+          </div>
         </div>
-        <div className={styles.inventoryHeader}>
+        <div className={styles.inventoryHeader} id="component-inventory">
           <div>
             <p className={styles.eyebrow}>Full site inventory</p>
             <h2>{COMPONENT_INVENTORY_COUNT} components, classified by responsibility.</h2>
@@ -567,43 +619,7 @@ function BrandSection({
             global chrome, and primitives keep controlled contracts with Directus.
           </p>
         </div>
-        <div className={styles.inventoryGroups}>
-          {COMPONENT_INVENTORY_GROUPS.map((group) => (
-            <section className={styles.inventoryGroup} key={group.key}>
-              <div className={styles.inventoryGroupHeading}>
-                <h3>{group.title}</h3>
-                <p>{group.description}</p>
-              </div>
-              <div className={styles.inventoryRows}>
-                {group.components.map((component) => (
-                  <article className={styles.inventoryRow} key={`${group.key}-${component.name}`}>
-                    <div>
-                      <strong>{component.name}</strong>
-                      <span>{component.source}</span>
-                    </div>
-                    <code>{component.directus}</code>
-                    <div className={styles.inventoryProofs}>
-                      <span className={styles.statusBadge}>{component.status}</span>
-                      {component.instances.map((instance) => (
-                        <a
-                          href={componentInstanceExternalHref(
-                            instance,
-                            process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3038',
-                          )}
-                          key={`${component.name}-${instance.label}`}
-                          rel="noreferrer"
-                          target="_blank"
-                        >
-                          {instance.label}
-                        </a>
-                      ))}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
+        <ComponentInventoryBrowser groups={inventoryGroups} />
         <div className={styles.usageNote}>
           <strong>Accent use</strong>
           <p>{brand.usage.accent_rule}</p>

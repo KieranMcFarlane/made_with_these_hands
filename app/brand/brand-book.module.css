@@ -395,32 +395,6 @@
   border: 1px solid var(--rule);
 }
 
-.catalogGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-4, 16px);
-  margin-top: 64px;
-}
-
-.catalogCard {
-  padding: 24px;
-  background: var(--paper);
-  border: 1px solid var(--rule);
-}
-
-.catalogCard h3 {
-  margin: var(--space-2, 8px) 0 var(--space-3, 12px);
-  font-family: var(--serif);
-  font-size: 32px;
-  font-weight: 500;
-}
-
-.catalogCard > p:not(.eyebrow) {
-  min-height: 3.2em;
-  color: var(--ink-60);
-  line-height: 1.55;
-}
-
 .fieldList {
   display: flex;
   flex-wrap: wrap;
@@ -439,71 +413,231 @@
   text-transform: uppercase;
 }
 
-.previewLink {
-  display: inline-block;
-  margin-top: 20px;
+.componentDirectory {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+  gap: var(--space-9, 96px);
+  align-items: end;
+  padding-top: var(--space-7, 48px);
+  border-top: 1px solid var(--ink);
+}
+
+.componentDirectory h2 {
+  max-width: 12ch;
+  font-size: clamp(42px, 5vw, 72px);
+}
+
+.componentDirectory > p {
+  max-width: 48ch;
+  margin: 0;
+  color: var(--ink-60);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.componentJumpLinks {
+  position: sticky;
+  z-index: 4;
+  top: 0;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  margin-top: var(--space-7, 48px);
+  background: var(--paper-2);
+  border-block: 1px solid var(--ink);
+}
+
+.componentJumpLinks a {
+  display: grid;
+  gap: var(--space-1, 4px);
+  min-width: 0;
+  padding: var(--space-3, 12px);
+  border-right: 1px solid var(--rule);
   color: var(--ink);
   font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+  text-decoration: none;
   text-transform: uppercase;
 }
 
-.catalogLabel {
-  margin-top: 64px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--ink);
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+.componentJumpLinks a:last-child {
+  border-right: 0;
 }
 
-.liveExamples {
+.componentJumpLinks a span {
+  color: var(--ink-60);
+  font-size: 8px;
+}
+
+.componentJumpLinks a:hover,
+.componentJumpLinks a:focus-visible {
+  background: var(--ink);
+  color: var(--paper);
+  outline: 0;
+}
+
+.componentJumpLinks a:hover span,
+.componentJumpLinks a:focus-visible span {
+  color: var(--paper-2);
+}
+
+.componentShowcases {
   display: grid;
-  gap: 40px;
-  margin-top: 32px;
+  gap: var(--space-8, 64px);
+  margin-top: var(--space-8, 64px);
 }
 
-.liveExample {
-  scroll-margin-top: 24px;
+.componentShowcase {
+  scroll-margin-top: 88px;
   overflow: hidden;
   background: var(--paper);
-  border: 1px solid var(--rule);
+  border: 1px solid var(--ink);
 }
 
-.liveExampleHeading {
+.componentShowcaseHeader {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 12px 32px;
-  align-items: end;
-  padding: 20px clamp(20px, 4vw, 48px);
-  border-bottom: 1px solid var(--rule);
+  gap: var(--space-7, 48px);
+  align-items: start;
+  padding: var(--space-6, 32px);
 }
 
-.liveExampleHeading .eyebrow {
-  grid-column: 1 / -1;
+.componentShowcaseHeader h3 {
+  margin: var(--space-2, 8px) 0 var(--space-3, 12px);
+  font-family: var(--serif);
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 400;
+  line-height: 0.96;
 }
 
-.liveExampleHeading h3,
-.liveExampleHeading p {
+.componentShowcaseHeader > div:first-child > p:last-child {
+  max-width: 54ch;
+  margin: 0;
+  color: var(--ink-60);
+  line-height: 1.55;
+}
+
+.componentState {
+  display: grid;
+  gap: var(--space-2, 8px);
+  min-width: 112px;
+  padding-left: var(--space-4, 16px);
+  border-left: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.componentState span {
+  color: var(--accent);
+}
+
+.componentState code {
+  color: var(--ink-60);
+  font-family: inherit;
+}
+
+.componentFacts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  border-block: 1px solid var(--rule);
+}
+
+.componentFacts > div {
+  min-width: 0;
+  padding: var(--space-4, 16px);
+  border-right: 1px solid var(--rule);
+}
+
+.componentFacts > div:last-child {
+  border-right: 0;
+}
+
+.componentFacts dt,
+.componentFacts dd {
   margin: 0;
 }
 
-.liveExampleHeading h3 {
-  font-family: var(--serif);
-  font-size: clamp(30px, 4vw, 48px);
-  font-weight: 400;
-}
-
-.liveExampleHeading > p:last-child {
+.componentFacts dt {
+  margin-bottom: var(--space-2, 8px);
   color: var(--ink-60);
   font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.06em;
+  font-size: 8px;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
+}
+
+.componentFacts dd {
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.componentContract {
+  border-bottom: 1px solid var(--rule);
+}
+
+.componentContract summary {
+  cursor: pointer;
+  padding: var(--space-4, 16px) var(--space-6, 32px);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.componentContract summary:hover,
+.componentContract summary:focus-visible {
+  background: var(--paper-2);
+  outline: 0;
+}
+
+.componentContractGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-7, 48px);
+  padding: var(--space-6, 32px);
+  border-top: 1px solid var(--rule);
+}
+
+.componentContractGrid .fieldList {
+  margin-top: var(--space-4, 16px);
+}
+
+.componentContractGrid .ruleList {
+  margin-top: var(--space-4, 16px);
+}
+
+.componentContractGrid .cardMeta {
+  margin-top: var(--space-5, 24px);
+  color: var(--ink-60);
+  line-height: 1.6;
+}
+
+.componentPreviewLabel {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4, 16px);
+  padding: var(--space-3, 12px) var(--space-6, 32px);
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.09em;
+  scroll-margin-top: 88px;
+  text-transform: uppercase;
+}
+
+.componentPreview {
+  overflow: hidden;
+}
+
+.componentPreview > div {
+  --component-block: var(--space-8, 64px);
+  --component-inline: var(--space-7, 48px);
 }
 
 .inventoryHeader {
@@ -511,9 +645,10 @@
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
   gap: clamp(40px, 8vw, 120px);
   align-items: end;
-  margin-top: clamp(88px, 12vw, 160px);
+  margin-top: var(--space-10, 128px);
   padding-top: 28px;
   border-top: 1px solid var(--ink);
+  scroll-margin-top: 88px;
 }
 
 .inventoryHeader h2 {
@@ -527,10 +662,123 @@
   line-height: 1.65;
 }
 
+.inventoryBrowser {
+  margin-top: var(--space-7, 48px);
+}
+
+.inventoryTools {
+  position: sticky;
+  z-index: 3;
+  top: 0;
+  padding: var(--space-4, 16px) 0;
+  background: var(--paper-2);
+  border-block: 1px solid var(--ink);
+}
+
+.inventorySearch {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 32px;
+  gap: var(--space-3, 12px);
+  align-items: center;
+  min-height: 48px;
+  padding: 0 var(--space-4, 16px);
+  background: var(--paper);
+  border: 1px solid var(--ink);
+}
+
+.inventorySearch input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 14px/1.4 var(--sans);
+}
+
+.inventorySearch input::placeholder {
+  color: var(--ink-60);
+}
+
+.inventorySearch button {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  place-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.inventorySearch button:hover,
+.inventorySearch button:focus-visible {
+  background: var(--ink);
+  color: var(--paper);
+  outline: 0;
+}
+
+.inventoryFilters {
+  display: flex;
+  overflow-x: auto;
+  margin-top: var(--space-3, 12px);
+  scrollbar-width: thin;
+}
+
+.inventoryFilters button {
+  display: inline-flex;
+  min-height: 40px;
+  flex: 0 0 auto;
+  gap: var(--space-2, 8px);
+  align-items: center;
+  padding: var(--space-2, 8px) var(--space-3, 12px);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-right: 0;
+  color: var(--ink);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.inventoryFilters button:last-child {
+  border-right: 1px solid var(--rule);
+}
+
+.inventoryFilters button[data-active='true'],
+.inventoryFilters button:hover,
+.inventoryFilters button:focus-visible {
+  background: var(--ink);
+  color: var(--paper);
+  outline: 0;
+}
+
+.inventoryFilters button span {
+  color: var(--ink-60);
+}
+
+.inventoryFilters button[data-active='true'] span,
+.inventoryFilters button:hover span,
+.inventoryFilters button:focus-visible span {
+  color: var(--paper-2);
+}
+
+.inventoryResults {
+  margin: var(--space-3, 12px) 0 0;
+  color: var(--ink-60);
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .inventoryGroups {
   display: grid;
-  gap: 64px;
-  margin-top: 72px;
+  gap: var(--space-8, 64px);
+  margin-top: var(--space-8, 64px);
 }
 
 .inventoryGroup {
@@ -544,6 +792,11 @@
   gap: 32px;
   padding-bottom: var(--space-4, 16px);
   border-bottom: 1px solid var(--ink);
+}
+
+.inventoryGroupHeading > div {
+  display: grid;
+  gap: var(--space-2, 8px);
 }
 
 .inventoryGroupHeading h3 {
@@ -564,16 +817,29 @@
   display: grid;
 }
 
+.inventoryColumnLabels {
+  display: grid;
+  grid-template-columns: minmax(200px, 0.85fr) minmax(220px, 1fr) 112px minmax(220px, 0.9fr);
+  gap: var(--space-5, 24px);
+  padding: var(--space-3, 12px) 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-60);
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .inventoryRow {
   display: grid;
-  grid-template-columns: minmax(220px, 0.8fr) minmax(260px, 1fr) 110px;
-  gap: 24px;
+  grid-template-columns: minmax(200px, 0.85fr) minmax(220px, 1fr) 112px minmax(220px, 0.9fr);
+  gap: var(--space-5, 24px);
   align-items: center;
   padding: 16px 0;
   border-bottom: 1px solid var(--rule);
 }
 
-.inventoryRow > div:not(.inventoryProofs) {
+.inventoryIdentity {
   display: grid;
   gap: var(--space-1, 4px);
 }
@@ -596,7 +862,7 @@
 }
 
 .statusBadge {
-  justify-self: end;
+  justify-self: start;
   padding: var(--space-2, 8px);
   border: 1px solid var(--rule);
   font-family: var(--mono);
@@ -610,10 +876,13 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2, 8px);
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .inventoryProofs a {
+  display: inline-flex;
+  gap: var(--space-2, 8px);
+  align-items: center;
   border: 1px solid var(--ink);
   color: var(--ink);
   font-family: var(--mono);
@@ -625,10 +894,56 @@
   white-space: nowrap;
 }
 
+.inventoryProofs a[data-surface='site'] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
 .inventoryProofs a:focus-visible,
 .inventoryProofs a:hover {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+.inventoryEmpty {
+  display: grid;
+  min-height: 280px;
+  margin-top: var(--space-7, 48px);
+  padding: var(--space-7, 48px);
+  place-content: center;
+  text-align: center;
+  border: 1px solid var(--rule);
+}
+
+.inventoryEmpty h3 {
+  max-width: 18ch;
+  margin: var(--space-3, 12px) auto var(--space-5, 24px);
+  font-family: var(--serif);
+  font-size: 32px;
+  font-weight: 500;
+}
+
+.inventoryEmpty button {
+  justify-self: center;
+  padding: var(--space-3, 12px) var(--space-4, 16px);
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  color: var(--paper);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .componentCard h2 {
@@ -737,18 +1052,45 @@
     grid-template-columns: 1fr;
   }
 
-  .catalogGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
+  .componentDirectory,
+  .componentContractGrid,
   .inventoryHeader,
-  .inventoryGroupHeading,
-  .liveExampleHeading {
+  .inventoryGroupHeading {
     grid-template-columns: 1fr;
   }
 
+  .componentJumpLinks {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .componentJumpLinks a:nth-child(4) {
+    border-right: 0;
+  }
+
+  .componentJumpLinks a:nth-child(-n + 4) {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .componentFacts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .componentFacts > div:nth-child(2) {
+    border-right: 0;
+  }
+
+  .componentFacts > div:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .inventoryColumnLabels,
   .inventoryRow {
-    grid-template-columns: minmax(180px, 0.7fr) minmax(220px, 1fr) 100px;
+    grid-template-columns: minmax(180px, 0.8fr) minmax(220px, 1fr) 104px;
+  }
+
+  .inventoryColumnLabels span:last-child,
+  .inventoryProofs {
+    grid-column: 1 / -1;
   }
 
   .typeSpecimens article {
@@ -770,10 +1112,79 @@
 
   .swatchGrid,
   .componentGrid,
-  .catalogGrid,
   .guidanceGrid,
   .voiceGrid {
     grid-template-columns: 1fr;
+  }
+
+  .componentDirectory {
+    gap: var(--space-5, 24px);
+  }
+
+  .componentJumpLinks {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  .componentJumpLinks a {
+    min-width: 128px;
+    border-bottom: 0 !important;
+  }
+
+  .componentShowcase {
+    scroll-margin-top: 64px;
+  }
+
+  .componentShowcaseHeader {
+    grid-template-columns: 1fr;
+    gap: var(--space-5, 24px);
+    padding: var(--space-5, 24px);
+  }
+
+  .componentState {
+    grid-template-columns: auto auto;
+    justify-content: start;
+    padding-top: var(--space-3, 12px);
+    padding-left: 0;
+    border-top: 1px solid var(--rule);
+    border-left: 0;
+  }
+
+  .componentFacts {
+    grid-template-columns: 1fr;
+  }
+
+  .componentFacts > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .componentFacts > div:last-child {
+    border-bottom: 0;
+  }
+
+  .componentContract summary,
+  .componentContractGrid,
+  .componentPreviewLabel {
+    padding-inline: var(--space-5, 24px);
+  }
+
+  .componentPreviewLabel {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .componentPreview > div {
+    --component-block: var(--space-7, 48px);
+    --component-inline: var(--space-5, 24px);
+  }
+
+  .inventoryTools {
+    position: static;
+  }
+
+  .inventoryColumnLabels {
+    display: none;
   }
 
   .usageNote {
